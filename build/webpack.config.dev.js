@@ -1,5 +1,5 @@
 'use strict'
-//loader for single-file components
+const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -8,6 +8,12 @@ module.exports = {
   entry: [
     './src/app.js'
   ],
+  devServer: {
+  hot: true,
+  watchOptions: {
+    poll: true
+  }
+},
   module: {
     rules: [
       {
@@ -17,8 +23,8 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new VueLoaderPlugin(),
-    //inject paths for hot module reloading
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
