@@ -1,5 +1,5 @@
 <template>
-  <div>
-    <h1>Hello World! Test3</h1>
+  <div class="full-width center-content">
+    <h1>Hello World!</h1>
   </div>
 </template>
