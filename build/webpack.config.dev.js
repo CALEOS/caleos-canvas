@@ -34,6 +34,10 @@ module.exports = {
           'css-loader',
           'stylus-loader'
         ]
+      },
+      {
+        test: /\.js$/,
+        use: 'babel-loader'
       }
     ]
   },
