@@ -4,6 +4,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path')
+const MiniCssExtractPlugin  = require('mini-css-extract-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -33,7 +34,7 @@ module.exports = {
       {
         test: /\.styl(us)?$/,
         use: [
-          'vue-style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
           'stylus-loader'
         ]
@@ -61,6 +62,9 @@ module.exports = {
       from: resolve('static/img'),
       to: resolve('dist/static/img'),
       toType: 'dir'
-    }])
+    }]),
+    new MiniCssExtractPlugin({
+      filename: 'main.css'
+    })
   ]
 }
