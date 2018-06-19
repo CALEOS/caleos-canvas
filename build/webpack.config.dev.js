@@ -5,9 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   mode: 'development',
-  entry: [
-    './src/app.js'
-  ],
   devServer: {
   hot: true,
   watchOptions: {
