@@ -1,6 +1,9 @@
 <template>
-  <h1>Hello {{ name }}!</h1>
+  <div id="canvas">
+    <h1>Canvas{{ name }}!</h1>
+  </div>
 </template>
+
 <script>
 export default {
   props: {
@@ -12,4 +15,5 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+
 </style>

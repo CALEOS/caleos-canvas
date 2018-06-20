@@ -1,15 +1,21 @@
 <template>
-  <div class="full-width center-content">
-    <hello-component name="World" />
+  <div class="app-container">
+    <header-component name="" />
+    <canvas-component name=" pixels" />
+    <footer-component name="" />
   </div>
 </template>
 
 <script>
-import HelloComponent from './components/HelloComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue'
+import CanvasComponent from './components/CanvasComponent.vue'
+import FooterComponent from './components/FooterComponent.vue'
 
 export default {
   components: {
-    HelloComponent
+    HeaderComponent,
+    CanvasComponent,
+    FooterComponent
   }
 }
 </script>
