@@ -1,6 +1,6 @@
 <template>
   <div id="canvas">
-    <h1>Canvas{{ name }}!</h1>
+    <h1>Canvas{{ $place.placeTest() }}!</h1>
   </div>
 </template>
 
