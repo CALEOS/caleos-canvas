@@ -1,6 +1,6 @@
 <template>
-  <div id="canvas">
-    <h1>Canvas{{ $place.placeTest() }}!</h1>
+  <div id="header">
+    <h1>Header {{ name }}!</h1>
   </div>
 </template>
 

@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "eosjs": "^15.0.1",
+    "transform-runtime": "0.0.0",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1"
   },
