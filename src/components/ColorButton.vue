@@ -1,6 +1,8 @@
 <template>
-  <div id="color-button">
-    <h1>Color:{{ color }}</h1>
+  <div
+    id="color-button"
+    :class="color" >
+    <h1>{{ color }}</h1>
   </div>
 </template>
 
