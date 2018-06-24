@@ -1,13 +1,13 @@
 <template>
   <div id="header">
-    <h1>Header {{ name }}!</h1>
+    <h1>Header {{ color }}!</h1>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    name: {
+    color: {
       type: String,
       required: true
     }

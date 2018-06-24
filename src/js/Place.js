@@ -74,7 +74,7 @@ class Place {
   }
 
   placeTest () {
-    return 'GLOBAL PLACE OBJECT!'
+    return 'GLOBAL PLACE OBJECT TEST'
   }
 }
 
