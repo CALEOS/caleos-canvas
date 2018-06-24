@@ -1,6 +1,6 @@
 <template>
-  <div id="tool">
-    <h1>Tool: {{ name }}!</h1>
+  <div id="toolbox-button">
+    <h1>Tool: {{ name }}</h1>
   </div>
 </template>
 

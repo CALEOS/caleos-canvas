@@ -1,5 +1,5 @@
 <template>
-  <div id="header">
+  <div id="color-palette-container">
     <h1>Header {{ name }}!</h1>
     <color-button color="white" />
     <color-button color="light-grey" />

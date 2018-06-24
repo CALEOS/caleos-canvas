@@ -1,6 +1,6 @@
 <template>
-  <div id="header">
-    <h1>Header {{ color }}!</h1>
+  <div id="color-button">
+    <h1>Color:{{ color }}</h1>
   </div>
 </template>
 
