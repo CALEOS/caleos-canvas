@@ -32,14 +32,22 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #toolbox-button
-  border 1px #888
+  border 1px #999
   border-radius 4px
+  border-style solid
   display inline-block
   height 36px
   width 36px
   text-align center
+  &:hover
+    border 1px #777
+    border-style solid
+    color #777
+    -webkit-filter: invert(100%)
+    filter invert(100%)
+    cursor pointer
 svg
-  fill #888
+  fill #999
   margin-top 2px
   text-align center
 </style>
