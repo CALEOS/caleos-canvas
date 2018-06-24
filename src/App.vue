@@ -1,21 +1,22 @@
 <template>
   <div class="app-container">
-    <header-component name="" />
-    <canvas-component name=" pixels" />
-    <footer-component name="" />
+    <header-container name=""/>
+    <canvas-container name=" pixels" />
+    <footer-container name="" />
   </div>
 </template>
 
 <script>
-import HeaderComponent from './components/HeaderComponent.vue'
-import CanvasComponent from './components/CanvasComponent.vue'
-import FooterComponent from './components/FooterComponent.vue'
+
+import HeaderContainer from './components/Header.vue'
+import CanvasContainer from './components/Canvas.vue'
+import FooterContainer from './components/Footer.vue'
 
 export default {
   components: {
-    HeaderComponent,
-    CanvasComponent,
-    FooterComponent
+    HeaderContainer,
+    CanvasContainer,
+    FooterContainer
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div id="header">
-    <h1>Header {{ name }}!</h1>
+  <div id="tool">
+    <h1>Tool: {{ name }}!</h1>
   </div>
 </template>
 
