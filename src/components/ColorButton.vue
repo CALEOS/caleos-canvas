@@ -2,7 +2,7 @@
   <div
     id="color-button"
     :class="color" >
-    <h1>{{ color }}</h1>
+    <h1/>
   </div>
 </template>
 
