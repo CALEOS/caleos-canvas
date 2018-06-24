@@ -1,25 +1,24 @@
 <template>
   <div id="toolbox-container">
-    <h1>{{ name }}</h1>
-    <icon name="camera" />
-    <toolbox-button name="draw" />
-    <toolbox-button name="erase" />
-    <toolbox-button name="zin" />
-    <toolbox-button name="zout" />
-    <toolbox-button name="fit" />
+    <toolbox-button name="expand" />
+    <toolbox-button name="arrows-alt" />
+    <toolbox-button name="pencil" />
+    <toolbox-button name="eraser" />
+    <toolbox-button name="search-plus" />
+    <toolbox-button name="search-minus" />
   </div>
 </template>
 
 <script>
 
 import ToolboxButton from './ToolboxButton.vue'
-import 'vue-awesome/icons/camera'
-import Icon from 'vue-awesome/components/Icon.vue'
+// import 'vue-awesome/icons/camera'
+// import Icon from 'vue-awesome/components/Icon.vue'
 
 export default {
   components: {
-    ToolboxButton,
-    Icon
+    ToolboxButton // ,
+    // Icon
   },
   props: {
     name: {
@@ -28,6 +27,7 @@ export default {
     }
   }
 }
+
 </script>
 <style lang="stylus" scoped>
 
