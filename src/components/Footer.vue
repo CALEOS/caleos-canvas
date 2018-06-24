@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    <h1>Footer {{ name }}!</h1>
+    <h1>Footer {{ name }}</h1>
     <color-palette-container name="color palette" />
   </div>
 </template>
