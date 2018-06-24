@@ -36,7 +36,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #color-palette-container
-  margin 14px
+  margin 18px
 .white
   background-color #FFFFFF
 .light-grey
