@@ -1,6 +1,6 @@
 <template>
   <div id="toolbox-container">
-    <h1>Toolbox {{ name }}!</h1>
+    <h1>{{ name }}</h1>
     <toolbox-button name="draw" />
     <toolbox-button name="erase" />
     <toolbox-button name="zin" />
