@@ -32,7 +32,14 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #toolbox-button
-  height 30px
-  width 30px
+  border 1px #888
+  border-radius 4px
   display inline-block
+  height 36px
+  width 36px
+  text-align center
+svg
+  fill #888
+  margin-top 2px
+  text-align center
 </style>

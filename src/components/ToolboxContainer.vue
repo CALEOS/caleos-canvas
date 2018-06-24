@@ -30,5 +30,6 @@ export default {
 
 </script>
 <style lang="stylus" scoped>
-
+#toolbox-container
+  margin 14px
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div id="color-palette-container">
-    <h1>{{ name }}</h1>
     <color-button color="white" />
     <color-button color="light-grey" />
     <color-button color="grey" />
@@ -36,6 +35,8 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+#color-palette-container
+  margin 14px
 .white
   background-color #FFFFFF
 .light-grey
@@ -68,4 +69,5 @@ export default {
   background-color #CF6EE4
 .purple
   background-color #820080
+
 </style>
