@@ -21,5 +21,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+#footer
+  border-top 1px solid #999
 </style>
