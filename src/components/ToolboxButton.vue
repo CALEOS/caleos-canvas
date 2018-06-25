@@ -1,6 +1,7 @@
 <template>
   <div
     id="toolbox-button"
+    :class="{active: isActive}"
     @click="triggerEvent()"
   >
     <icon
@@ -31,9 +32,15 @@ export default {
       required: true
     }
   },
+  data: function () {
+    return {
+      isActive: false
+    }
+  },
   methods: {
     triggerEvent: function (e) {
-      alert('event handler')
+      alert('event triggered')
+      this.isActive = !this.isActive
     }
   }
 }
@@ -48,6 +55,7 @@ export default {
   width 36px
   text-align center
   &:hover
+  &.active
     border 1px #777
     border-style solid
     color #777
