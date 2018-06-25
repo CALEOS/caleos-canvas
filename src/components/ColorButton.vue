@@ -1,7 +1,7 @@
 <template>
   <div
     id="color-button"
-    :class="color"
+    :class="[color,{active: isActive}]"
     @click="triggerEvent()"
   >
     <h1/>
@@ -16,9 +16,15 @@ export default {
       required: true
     }
   },
+  data: function () {
+    return {
+      isActive: false
+    }
+  },
   methods: {
     triggerEvent: function (e) {
-      alert('event handler')
+      alert('event triggered')
+      this.isActive = !this.isActive
     }
   }
 }
@@ -35,6 +41,7 @@ export default {
   width 30px
   opacity .6
   &:hover
+  &.active
     border 1px #777
     border-style solid
     opacity 1
