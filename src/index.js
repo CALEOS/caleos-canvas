@@ -10,11 +10,19 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    count: 0,
+    activeTool: null,
+    activeColor: null
   },
   mutations: {
     increment (state) {
       state.count++
+    },
+    setActiveTool (state, toolName) {
+      state.activeTool = toolName
+    },
+    setActiveColor (state, colorName) {
+      state.activeColor = colorName
     }
   }
 })

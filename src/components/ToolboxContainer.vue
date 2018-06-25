@@ -29,8 +29,6 @@ export default {
   },
   methods: {
     triggerEvent: function (e) {
-      // this.$root.store.setMessageAction('state changed from child component')
-      alert('toolbox event triggered')
       this.$store.commit('increment')
       console.log(this.$store.state.count)
     }
