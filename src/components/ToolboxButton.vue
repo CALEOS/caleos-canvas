@@ -38,8 +38,13 @@ export default {
     }
   },
   methods: {
-    triggerEvent: function (e) {
+    triggerEvent: function (event) {
       alert('event triggered')
+      // let toolButtons = event.target.parentElement
+      // console.dir(toolButtons)
+      // // for (var button in toolButtons) {
+      // //   toolButtons[button]._data.isActive = false
+      // // }
       this.isActive = !this.isActive
     }
   }

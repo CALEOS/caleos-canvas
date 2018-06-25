@@ -1,5 +1,9 @@
 <template>
-  <div id="toolbox-container">
+  <div
+    id="toolbox-container"
+    ref="toolbox-container"
+    @click="triggerEvent()"
+  >
     <toolbox-button name="expand" />
     <toolbox-button name="arrows-alt" />
     <toolbox-button name="pencil" />
@@ -12,18 +16,20 @@
 <script>
 
 import ToolboxButton from './ToolboxButton.vue'
-// import 'vue-awesome/icons/camera'
-// import Icon from 'vue-awesome/components/Icon.vue'
 
 export default {
   components: {
-    ToolboxButton // ,
-    // Icon
+    ToolboxButton
   },
   props: {
     name: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    triggerEvent: function (e) {
+      alert('toolbox event triggered')
     }
   }
 }
