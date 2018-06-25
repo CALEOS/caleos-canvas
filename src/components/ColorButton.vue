@@ -16,15 +16,12 @@ export default {
       required: true
     }
   },
-  data: function () {
-    return {
-      isActive: false
-    }
+  computed: {
+    isActive: function () { return this.color != null ? this.color === this.$store.state.activeColor : false }
   },
   methods: {
-    triggerEvent: function (e) {
-      alert('event triggered')
-      this.isActive = !this.isActive
+    triggerEvent: function (event) {
+      this.$store.commit('setActiveColor', this.color)
     }
   }
 }

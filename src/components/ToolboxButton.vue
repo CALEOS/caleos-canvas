@@ -21,6 +21,7 @@ import 'vue-awesome/icons/search-plus'
 import 'vue-awesome/icons/search-minus'
 
 import Icon from 'vue-awesome/components/Icon.vue'
+// import {mapState} from 'vuex'
 
 export default {
   components: {
@@ -32,20 +33,17 @@ export default {
       required: true
     }
   },
-  data: function () {
-    return {
-      isActive: false
-    }
+  // data: function () {
+  //   return {
+  //     isActive: this.$store.state.activeTool === this.name
+  //   }
+  // },
+  computed: {
+    isActive: function () { return this.name != null ? this.name === this.$store.state.activeTool : false }
   },
   methods: {
     triggerEvent: function (event) {
-      alert('event triggered')
-      // let toolButtons = event.target.parentElement
-      // console.dir(toolButtons)
-      // // for (var button in toolButtons) {
-      // //   toolButtons[button]._data.isActive = false
-      // // }
-      this.isActive = !this.isActive
+      this.$store.commit('setActiveTool', this.name)
     }
   }
 }

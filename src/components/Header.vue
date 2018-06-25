@@ -1,6 +1,5 @@
 <template>
   <div id="header">
-    <!-- <h1>Header {{ name }}</h1> -->
     <toolbox-container name="toolbox container"/>
   </div>
 </template>
