@@ -1,7 +1,9 @@
 <template>
   <div
     id="color-button"
-    :class="color" >
+    :class="color"
+    @click="triggerEvent()"
+  >
     <h1/>
   </div>
 </template>
@@ -12,6 +14,11 @@ export default {
     color: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    triggerEvent: function (e) {
+      alert('event handler')
     }
   }
 }

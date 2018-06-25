@@ -1,5 +1,8 @@
 <template>
-  <div id="toolbox-button">
+  <div
+    id="toolbox-button"
+    @click="triggerEvent()"
+  >
     <icon
       :name="name"
       :scale="2"
@@ -26,6 +29,11 @@ export default {
     name: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    triggerEvent: function (e) {
+      alert('event handler')
     }
   }
 }
