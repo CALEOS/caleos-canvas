@@ -21,7 +21,11 @@ export default {
   },
   methods: {
     triggerEvent: function (event) {
-      this.$store.commit('setActiveColor', this.color)
+      if (this.$store.state.activeColor === this.color) {
+        this.$store.commit('setActiveColor', null)
+      } else {
+        this.$store.commit('setActiveColor', this.color)
+      }
     }
   }
 }

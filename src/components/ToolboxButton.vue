@@ -33,17 +33,16 @@ export default {
       required: true
     }
   },
-  // data: function () {
-  //   return {
-  //     isActive: this.$store.state.activeTool === this.name
-  //   }
-  // },
   computed: {
     isActive: function () { return this.name != null ? this.name === this.$store.state.activeTool : false }
   },
   methods: {
     triggerEvent: function (event) {
-      this.$store.commit('setActiveTool', this.name)
+      if (this.$store.state.activeTool === this.name) {
+        this.$store.commit('setActiveTool', null)
+      } else {
+        this.$store.commit('setActiveTool', this.name)
+      }
     }
   }
 }
