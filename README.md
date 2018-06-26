@@ -40,7 +40,7 @@ run jest tests<br />
 ├──build   
 │   └──webpack.config.dev.js    # webpack build configuration        
 ├──src                           
-│   ├──__tests__               # Jest tests     
+│   ├──__tests__                # jest tests     
 │   ├──components               # components parent dir
 │   ├──js                       # external js & 3rd party    
 │   ├──pages                    # page root instances
