@@ -19,13 +19,13 @@ install project dependencies<br/>
 
 ### Running caleos-canvas
 
-run dev build with hot-reloading:
+run dev build with hot-reloading<br />
 `npm run dev`<br />
 
-run linter:
+run linter<br />
 `npm run lint`<br />
 
-run linter auto-fix:
+run linter auto-fix<br />
 `npm run lint:fix`<br />
 
 ### Running Tests
