@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import '../assets/app.styl'
 import Place from './js/Place'
-// import Canvasse from './js/Canvasse'
 import 'vue-awesome/icons/flag'
 
 Vue.prototype.$place = new Place()
@@ -37,9 +36,5 @@ const store = new Vuex.Store({
 new Vue({
   el: '#app',
   store,
-  // mounted: function () {
-  //   Vue.prototype.$canvasse = new Canvasse(document.getElementById('place-canvasse'))
-  // },
   render: h => h(App)
-
 })

@@ -64,6 +64,10 @@
     },
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
     ]
   }
 }

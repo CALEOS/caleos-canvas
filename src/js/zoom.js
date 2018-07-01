@@ -1,5 +1,5 @@
 
-var canvas = $('#zoom-canvas')[0]
+var canvas = document.getElementById('zoom-canvas')
 canvas.width = 1000; canvas.height = 1000
 var ball = new Image()
 window.onload = function () {
@@ -18,7 +18,7 @@ window.onload = function () {
     var p1 = ctx.transformedPoint(0, 0)
     var p2 = ctx.transformedPoint(canvas.width, canvas.height)
     ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y)
-    ctx.drawImage($('#place-canvasse')[0], 0, 0)
+    ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
   }
   redraw()
 

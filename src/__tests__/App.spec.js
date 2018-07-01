@@ -6,5 +6,5 @@ test('App has a .center-content class', () => {
 
   const app = mount(App, { vue })
 
-  expect(app.classes()).toContain('center-content')
+  expect(app.classes()).toContain('app-container')
 })
