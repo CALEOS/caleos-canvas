@@ -1,5 +1,7 @@
 class Canvasse {
-  constructor (el, width, height) {
+  constructor (el) {
+    let width = 1000
+    let height = 1000
     this.palleteHex = [
       '#FFFFFF', // white
       '#E4E4E4', // light grey
@@ -46,8 +48,8 @@ class Canvasse {
 
     // The canvas state as visible to the user
     this.el = el
-    this.el.width = width
-    this.el.height = height
+    this.el.width = 1000
+    this.el.height = 1000
     this.ctx = this.el.getContext('2d')
     this.ctx.mozImageSmoothingEnabled = false
     this.ctx.webkitImageSmoothingEnabled = false
@@ -86,11 +88,11 @@ class Canvasse {
      * @param {int} y
      * @param {number} color AGBR color number
      */
-  drawTileAt (x, y, color) {
-    this.drawTileToBuffer(x, y, color)
-    var api = require('api')
-    api.draw(x, y, color)
-  }
+  // drawTileAt (x, y, color) {
+  //   this.drawTileToBuffer(x, y, color)
+  //   var api = require('./api')
+  //   api.draw(x, y, color)
+  // }
 
   /**
      * Draw a color to the display canvas
@@ -211,4 +213,9 @@ class Canvasse {
     this.ctx.putImageData(imageData, 0, 0)
     this.isBufferDirty = false
   }
+  canvasseTest () {
+    return 'GLOBAL CANVAS OBJECT TEST'
+  }
 }
+
+export default Canvasse

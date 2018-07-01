@@ -13,6 +13,7 @@
 
 <script>
 
+// import only nec icons
 import 'vue-awesome/icons/expand'
 import 'vue-awesome/icons/arrows-alt'
 import 'vue-awesome/icons/pencil'
@@ -21,7 +22,6 @@ import 'vue-awesome/icons/search-plus'
 import 'vue-awesome/icons/search-minus'
 
 import Icon from 'vue-awesome/components/Icon.vue'
-// import {mapState} from 'vuex'
 
 export default {
   components: {
