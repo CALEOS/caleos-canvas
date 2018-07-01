@@ -25,6 +25,7 @@ export default {
         this.$store.commit('setActiveColor', null)
       } else {
         this.$store.commit('setActiveColor', this.color)
+        console.log(this.$store.state.activeColor)
       }
     }
   }

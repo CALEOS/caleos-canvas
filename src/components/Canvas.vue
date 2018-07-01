@@ -28,7 +28,7 @@ export default {
     this.$canvasse = new Canvasse(document.getElementById('place-canvasse'))
 
     let zoomScript = document.createElement('script')
-    zoomScript.setAttribute('src', '../js/zoom')
+    zoomScript.setAttribute('src', 'src/js/zoom.js')
     document.head.appendChild(zoomScript)
   },
   methods: {
