@@ -41,6 +41,7 @@ const store = new Vuex.Store({
     },
     clearPixelArray (state) {
       state.pixelCoordArray = []
+      console.dir(state.pixelCoordArray)
     }
   }
 })

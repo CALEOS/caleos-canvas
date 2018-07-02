@@ -10,6 +10,7 @@
     <toolbox-button name="eraser" />
     <toolbox-button name="search-plus" />
     <toolbox-button name="search-minus" />
+    <toolbox-button name="trash" />
   </div>
 </template>
 
