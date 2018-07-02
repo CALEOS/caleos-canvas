@@ -24,11 +24,13 @@ export default {
     }
   },
   mounted: function () {
-    this.$canvasse = new Canvasse(document.getElementById('place-canvasse'))
+    let canvasElement = document.getElementById('place-canvasse')
+    this.$canvasse = new Canvasse(canvasElement)
 
     let zoomScript = document.createElement('script')
     zoomScript.setAttribute('src', 'src/js/zoom.js')
     document.head.appendChild(zoomScript)
+    canvasElement.addEventListener('click', this.getPixelCoord)
   },
   methods: {
     refreshCanvas: function () {
@@ -42,6 +44,13 @@ export default {
         this.$canvasse.setBufferFromRawArray(canvas)
         this.$store.commit('setReloading', false)
       })
+    },
+    getPixelCoord: function (event) {
+      let canvasElement = document.getElementById('place-canvasse')
+      var rect = canvasElement.getBoundingClientRect()
+      var x = event.clientX - rect.left
+      var y = event.clientY - rect.top
+      console.log('x: ' + x + ' y: ' + y)
     }
   }
 }
