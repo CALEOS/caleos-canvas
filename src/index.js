@@ -16,7 +16,8 @@ const store = new Vuex.Store({
     activeTool: null,
     activeColorName: null,
     activeColorHex: null,
-    reloading: false
+    reloading: false,
+    pixelCoordArray: []
   },
   mutations: {
     increment (state) {
@@ -33,6 +34,13 @@ const store = new Vuex.Store({
     },
     setLoadingStatus (state, boolStatus) {
       state.activeTool = boolStatus
+    },
+    addPixelToArray (state, pixelObj) {
+      state.pixelCoordArray.push({x: pixelObj.x, y: pixelObj.y, color: state.activeColorHex})
+      console.dir(state.pixelCoordArray)
+    },
+    clearPixelArray (state) {
+      state.pixelCoordArray = []
     }
   }
 })
