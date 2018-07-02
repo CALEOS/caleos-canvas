@@ -1,21 +1,69 @@
 <template>
   <div id="color-palette-container">
-    <color-button color="white" />
-    <color-button color="light-grey" />
-    <color-button color="grey" />
-    <color-button color="black" />
-    <color-button color="pink" />
-    <color-button color="red" />
-    <color-button color="orange" />
-    <color-button color="brown" />
-    <color-button color="yellow" />
-    <color-button color="lime" />
-    <color-button color="green" />
-    <color-button color="cyan" />
-    <color-button color="blue" />
-    <color-button color="dark-blue" />
-    <color-button color="magenta" />
-    <color-button color="purple" />
+    <color-button
+      color="white"
+      hex="#FFFFFF"
+    />
+    <color-button
+      color="light-grey"
+      hex="#E4E4E4"
+    />
+    <color-button
+      color="grey"
+      hex="#888888"
+    />
+    <color-button
+      color="black"
+      hex="#222222"
+    />
+    <color-button
+      color="pink"
+      hex="#FFA7D1"
+    />
+    <color-button
+      color="red"
+      hex="#E50000"
+    />
+    <color-button
+      color="orange"
+      hex="#E59500"
+    />
+    <color-button
+      color="brown"
+      hex="#A06A42"
+    />
+    <color-button
+      color="yellow"
+      hex="#E5D900"
+    />
+    <color-button
+      color="lime"
+      hex="#94E044"
+    />
+    <color-button
+      color="green"
+      hex="#02BE01"
+    />
+    <color-button
+      color="cyan"
+      hex="#00D3DD"
+    />
+    <color-button
+      color="blue"
+      hex="#0083C7"
+    />
+    <color-button
+      color="dark-blue"
+      hex="#0000EA"
+    />
+    <color-button
+      color="magenta"
+      hex="#CF6EE4"
+    />
+    <color-button
+      color="purple"
+      hex="#820080"
+    />
   </div>
 </template>
 

@@ -14,7 +14,8 @@ const store = new Vuex.Store({
   state: {
     count: 0,
     activeTool: null,
-    activeColor: null,
+    activeColorName: null,
+    activeColorHex: null,
     reloading: false
   },
   mutations: {
@@ -24,8 +25,11 @@ const store = new Vuex.Store({
     setActiveTool (state, toolName) {
       state.activeTool = toolName
     },
-    setActiveColor (state, colorName) {
-      state.activeColor = colorName
+    setActiveColorName (state, colorName) {
+      state.activeColorName = colorName
+    },
+    setActiveColorHex (state, colorHex) {
+      state.activeColorHex = colorHex
     },
     setLoadingStatus (state, boolStatus) {
       state.activeTool = boolStatus

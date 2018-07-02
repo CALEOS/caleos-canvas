@@ -14,18 +14,24 @@ export default {
     color: {
       type: String,
       required: true
+    },
+    hex: {
+      type: String,
+      required: true
     }
   },
   computed: {
-    isActive: function () { return this.color != null ? this.color === this.$store.state.activeColor : false }
+    isActive: function () { return this.color != null ? this.color === this.$store.state.activeColorName : false }
   },
   methods: {
     triggerEvent: function (event) {
-      if (this.$store.state.activeColor === this.color) {
-        this.$store.commit('setActiveColor', null)
+      if (this.$store.state.activeColorName === this.color) {
+        this.$store.commit('setActiveColorName', null)
+        this.$store.commit('setActiveColorHex', null)
       } else {
-        this.$store.commit('setActiveColor', this.color)
-        console.log(this.$store.state.activeColor)
+        this.$store.commit('setActiveColorName', this.color)
+        this.$store.commit('setActiveColorHex', this.hex)
+        console.log('Color: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)
       }
     }
   }

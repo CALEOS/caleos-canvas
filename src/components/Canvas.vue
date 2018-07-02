@@ -1,8 +1,7 @@
 <template>
   <div
     id="place"
-    class="place"
-  >
+    class="place">
     <h1>Place{{ $place.placeTest() }}!</h1>
 
     <canvas
