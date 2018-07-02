@@ -20,6 +20,7 @@ import 'vue-awesome/icons/pencil'
 import 'vue-awesome/icons/eraser'
 import 'vue-awesome/icons/search-plus'
 import 'vue-awesome/icons/search-minus'
+import 'vue-awesome/icons/trash'
 
 import Icon from 'vue-awesome/components/Icon.vue'
 
@@ -38,7 +39,9 @@ export default {
   },
   methods: {
     triggerEvent: function (event) {
-      if (this.$store.state.activeTool === this.name) {
+      if (this.name === 'trash') {
+        this.$store.commit('clearPixelArray')
+      } else if (this.$store.state.activeTool === this.name) {
         this.$store.commit('setActiveTool', null)
       } else {
         this.$store.commit('setActiveTool', this.name)
