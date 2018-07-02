@@ -47,10 +47,17 @@ export default {
     },
     getPixelCoord: function (event) {
       let canvasElement = document.getElementById('place-canvasse')
-      var rect = canvasElement.getBoundingClientRect()
-      var x = event.clientX - rect.left
-      var y = Math.floor(event.clientY - rect.top)
-      console.log('x: ' + x + ' y: ' + y)
+      let rect = canvasElement.getBoundingClientRect()
+      let pixelObj = {
+        x: event.clientX - rect.left,
+        y: Math.floor(event.clientY - rect.top)
+      }
+      this.addPixelToPaintSession(pixelObj)
+      console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
+    },
+    addPixelToPaintSession: function (pixelObj) {
+      this.$store.commit('addPixelToArray', pixelObj)
+      console.dir(this.$store.state.pixelCoordArray)
     }
   }
 }
