@@ -49,7 +49,7 @@ export default {
       let canvasElement = document.getElementById('place-canvasse')
       var rect = canvasElement.getBoundingClientRect()
       var x = event.clientX - rect.left
-      var y = event.clientY - rect.top
+      var y = Math.floor(event.clientY - rect.top)
       console.log('x: ' + x + ' y: ' + y)
     }
   }
