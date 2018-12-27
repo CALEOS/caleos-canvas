@@ -56,9 +56,7 @@ class Place {
     var size = PlaceConfig.width * PlaceConfig.height
     var canvas = new Uint8Array(size)
     let lastRowLoaded = 0
-    let rows = []
-    debugger
-    rows = this.getRows(lastRowLoaded)
+    let rows = await this.getRows(lastRowLoaded)
     for (let i = 0; i < rows.length; i++) {
       let row = rows[i]
       for (let b = 0; b < row.data.length; b++) {
@@ -71,22 +69,30 @@ class Place {
         canvas[secondPos] = byte & 15
       }
     }
-    return rows
+    return canvas
   }
 
   async getRows (fromIndex) {
-    debugger
-    let response = await this.rpc.get_table_rows({
-      json: true,
-      table_key: 'id',
-      scope: this.contract,
-      code: this.contract,
-      table: 'rows',
-      lower_bound: isNaN(fromIndex) ? 0 : fromIndex,
-      limit: PlaceConfig.height
-    })
+    let response = {
+      more: true
+    }
 
-    return response.rows
+    let rows = []
+
+    while (response.more) {
+      response = await this.rpc.get_table_rows({
+        json: true,
+        table_key: 'id',
+        scope: this.contract,
+        code: this.contract,
+        table: 'rows',
+        lower_bound: isNaN(fromIndex) ? 0 : fromIndex,
+        limit: PlaceConfig.height
+      })
+      rows = rows.concat(response.rows)
+    }
+
+    return rows
   }
 }
 
