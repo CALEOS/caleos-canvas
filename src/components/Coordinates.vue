@@ -21,17 +21,22 @@ export default {
   },
   computed: {
   },
-  mounted () {
-    document.getElementById('place').addEventListener('mousemove', this.getCoordinates)
-  },
   destroyed: function () {
     document.getElementById('place').removeEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place').addEventListener('mouseDown', this.appendCoordArray)
+  },
+  mounted () {
+    document.getElementById('place').addEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place').addEventListener('mouseDown', this.appendCoordArray)
   },
   methods: {
     getCoordinates: function (e) {
       this.xCoord = e.pageX
       this.yCoord = e.pageY
       console.log(this.xCoord, this.yCoord)
+    },
+    appendCoordArray: function (e) {
+      this.$store.commit('setActiveTool', {x: this.xCoord, y: this.yCoord})
     }
   }
 }
