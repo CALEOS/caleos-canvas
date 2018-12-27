@@ -8,6 +8,7 @@
 
 <script>
 
+import 'babel-polyfill'
 import HeaderContainer from './components/Header.vue'
 import CanvasContainer from './components/Canvas.vue'
 import FooterContainer from './components/Footer.vue'

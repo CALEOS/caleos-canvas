@@ -13,6 +13,7 @@
 </template>
 
 <script>
+
 import Canvasse from '../js/Canvasse'
 
 export default {
@@ -30,19 +31,19 @@ export default {
     zoomScript.setAttribute('src', 'src/js/zoom.js')
     document.head.appendChild(zoomScript)
     canvasElement.addEventListener('click', this.getPixelCoord)
+    this.refreshCanvas()
   },
   methods: {
-    refreshCanvas: function () {
+    refreshCanvas: async function () {
       if (this.$store.state.reloading) {
         console.log('Skipping reload')
         return
       }
       console.log('Reloading Canvas')
       this.$store.commit('setReloading', true)
-      this.$place.getPixelsRaw(function (canvas) {
-        this.$canvasse.setBufferFromRawArray(canvas)
-        this.$store.commit('setReloading', false)
-      })
+      let canvas = await this.$place.getPixelsRaw()
+      this.$canvasse.setBufferFromRawArray(canvas)
+      this.$store.commit('setReloading', false)
     },
     getPixelCoord: function (event) {
       let canvasElement = document.getElementById('place-canvasse')

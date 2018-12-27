@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { Api, JsonRpc, RpcError } from 'eosjs'
 
 import JsSignatureProvider from 'eosjs/dist/eosjs-jssig' // development only
@@ -51,32 +52,41 @@ class Place {
     }])
   }
 
-  async getPixelsRaw (callback) {
-    this.rpc.get_table_rows({
+  async getPixelsRaw () {
+    var size = PlaceConfig.width * PlaceConfig.height
+    var canvas = new Uint8Array(size)
+    let lastRowLoaded = 0
+    let rows = []
+    debugger
+    rows = this.getRows(lastRowLoaded)
+    for (let i = 0; i < rows.length; i++) {
+      let row = rows[i]
+      for (let b = 0; b < row.data.length; b++) {
+        let byte = row.data[b]
+        let startPos = row.id * 1000
+        let firstPos = startPos + (b * 2)
+        let secondPos = startPos + (b * 2) + 1
+
+        canvas[firstPos] = byte >> 4
+        canvas[secondPos] = byte & 15
+      }
+    }
+    return rows
+  }
+
+  async getRows (fromIndex) {
+    debugger
+    let response = await this.rpc.get_table_rows({
       json: true,
       table_key: 'id',
       scope: this.contract,
       code: this.contract,
-      table: 'rows'
-    }).then(function (result) {
-      console.dir(result)
-      var size = PlaceConfig.width * PlaceConfig.height
-      var canvas = new Uint8Array(size)
-      let rows = result.rows
-      for (let i = 0; i < rows.length; i++) {
-        let row = rows[i]
-        for (let b = 0; b < row.data.length; b++) {
-          let byte = row.data[b]
-          let startPos = row.id * 1000
-          let firstPos = startPos + (b * 2)
-          let secondPos = startPos + (b * 2) + 1
-
-          canvas[firstPos] = byte >> 4
-          canvas[secondPos] = byte & 15
-        }
-      }
-      callback(canvas)
+      table: 'rows',
+      lower_bound: isNaN(fromIndex) ? 0 : fromIndex,
+      limit: PlaceConfig.height
     })
+
+    return response.rows
   }
 }
 
