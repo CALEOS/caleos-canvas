@@ -2,7 +2,7 @@
   <div
     id="toolbox-button"
     :class="{active: isActive}"
-    @click="triggerEvent()"
+    @click="selectTool()"
   >
     <icon
       :name="name"
@@ -38,13 +38,36 @@ export default {
     isActive: function () { return this.name != null ? this.name === this.$store.state.activeTool : false }
   },
   methods: {
-    triggerEvent: function (event) {
-      if (this.name === 'trash') {
-        this.$store.commit('clearPixelArray')
-      } else if (this.$store.state.activeTool === this.name) {
+    selectTool: function (event) {
+      if (this.$store.state.activeTool === this.name) {
         this.$store.commit('setActiveTool', null)
       } else {
         this.$store.commit('setActiveTool', this.name)
+      }
+      switch (this.name) {
+        case 'trash':
+          this.$store.commit('clearPixelArray')
+          console.log('clearing draw canvas')
+          break
+        case 'pencil':
+          console.log('draw pixels')
+          break
+        case 'eraser':
+          console.log('erase pixels')
+          break
+        case 'search-plus':
+          console.log('zoom in')
+          break
+        case 'search-minus':
+          console.log('zoom out')
+          break
+        case 'expand':
+          console.log('fit to screen')
+          break
+        case 'arrows-alt':
+          console.log('full screen')
+          break
+        default:
       }
     }
   }
