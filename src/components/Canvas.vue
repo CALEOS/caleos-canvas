@@ -2,8 +2,7 @@
   <div
     id="place"
     class="place">
-    <h1>Place{{ $place.placeTest() }}!</h1>
-
+    <h1>TESTING</h1>
     <canvas
       id="place-canvasse"
       class="place-canvas"
