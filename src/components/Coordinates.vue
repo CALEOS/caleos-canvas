@@ -22,10 +22,10 @@ export default {
   computed: {
   },
   mounted () {
-    window.addEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place').addEventListener('mousemove', this.getCoordinates)
   },
   destroyed: function () {
-    window.removeEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place').removeEventListener('mousemove', this.getCoordinates)
   },
   methods: {
     getCoordinates: function (e) {
