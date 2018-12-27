@@ -1,7 +1,7 @@
 
 var canvas = document.getElementById('zoom-canvas')
 canvas.width = 1000; canvas.height = 1000
-var ball = new Image()
+// var ball = new Image() //avoiding lint/build error @TODO
 window.onload = function () {
   var ctx = canvas.getContext('2d')
 
@@ -22,8 +22,9 @@ window.onload = function () {
   }
   redraw()
 
-  var lastX = canvas.width / 2, lastY = canvas.height / 2
-  var dragStart, dragged
+  let lastX = canvas.width / 2
+  let lastY = canvas.height / 2
+  let dragStart, dragged
   canvas.addEventListener('mousedown', function (evt) {
     document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
     lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)

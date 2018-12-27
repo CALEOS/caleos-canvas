@@ -1,56 +1,62 @@
-import Eos from 'eosjs'
+import { Api, JsonRpc, RpcError } from 'eosjs'
+
+import JsSignatureProvider from 'eosjs/dist/eosjs-jssig' // development only
 
 const PlaceConfig = {
   width: 1000,
   height: 1000
-  // defaultColor: 0,
-  // zoomDimension: 200, //width of zoom window
-  // zoomScale: 3, //magnification scale
-  // scaleLevel: 200,
-  // canvasSelector: "#place-canvasse",
-  // parentDivSelector: "#place",
-  // zoomWindowSelector: "#zoom-canvas",
-  // xSelector: "#x-value",
-  // ySelector: "#y-value",
-  // colorSelector: "#color",
-  // colorBoxSelector: "#color-box",
-  // refreshButton: "#refresh-button",
-  // paintButton: "#paint-button",
-  // defaultColor: 0
 }
 
 class Place {
   constructor () {
-    this.user1Private = '5KNfncH6Dc5jHf7rRnsc6uEFZKbrHQkoUTPzU9xSw1UpeCT9mJP'
-    this.user1Public = 'EOS78PDo23NcGd6jkxR8oTXwWq1b7FHJcd9nq5Tcz9ftRAKd2JKyp'
-    this.keyProvider = this.user1Private
-    this.eos = Eos({httpEndpoint: 'http://poplexity.net:8888', keyProvider: this.keyProvider})
-    this.options = {
-      authorization: [
-        'user1@active'
-      ]
-    }
-
-    this.signProvider = (buf, sign) => {
-      return sign(buf, this.user1Private)
-    }
+    this.testuser = 'caleostester'
+    this.privateKey = '5J6AMrtdbHhfDU4q2LFoDd4YThL7vmmvwaEaZxkpHqnpfbvE2dU'
+    this.publicKey = 'EOS8ek6TD4kiwbVdSaCyVN5bbYiK1PusfFUdoq8VkmFJE27bbcqem'
+    this.contract = 'caleoscanvas'
+    this.endpoint = 'https://testnet.telos.caleos.io'
+    this.rpc = new JsonRpc(this.endpoint)
+    this.signatureProvider = new JsSignatureProvider([this.privateKey])
+    this.api = new Api({ rpc: this.rpc, signatureProvider: this.signatureProvider })
+    this.keyProvider = this.privateKey
   }
 
-  setPixel (x, y, color, callback) {
-    this.eos.contract('place', {signProvider: this.signProvider}).then(place => {
-      let pixelId = (y * 1000) + x
-      place.setpixel('user1', pixelId, color, this.options).then(result => {
-        callback(result)
+  async sendActions (actions) {
+    try {
+      return this.api.transact({
+        actions: actions
+      }, {
+        blocksBehind: 3,
+        expireSeconds: 30
       })
-    })
+    } catch (err) {
+      console.log('\nCaught exception: ' + err)
+      if (err instanceof RpcError) { console.log(JSON.stringify(err.json, null, 2)) }
+    }
   }
 
-  getPixelsRaw (callback) {
-    this.eos.getTableRows({
+  async setPixel (x, y, color) {
+    let pixelId = (y * 1000) + x
+    return this.sendActions([{
+      account: this.contract,
+      name: 'setpixel',
+      authorization: [{
+        actor: this.testuser,
+        permission: 'active'
+      }],
+      data: {
+        account: this.testuser,
+        pixel: pixelId,
+        color: color
+      }
+    }])
+  }
+
+  async getPixelsRaw (callback) {
+    this.rpc.get_table_rows({
       json: true,
       table_key: 'id',
-      scope: 'place',
-      code: 'place',
+      scope: this.contract,
+      code: this.contract,
       table: 'rows'
     }).then(function (result) {
       console.dir(result)
@@ -71,10 +77,6 @@ class Place {
       }
       callback(canvas)
     })
-  }
-
-  placeTest () {
-    return 'GLOBAL PLACE OBJECT TEST'
   }
 }
 
