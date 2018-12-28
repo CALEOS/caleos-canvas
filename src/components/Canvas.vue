@@ -23,7 +23,7 @@ export default {
       required: true
     }
   },
-  mounted: function () {
+  mounted () {
     let canvasElement = document.getElementById('place-canvasse')
     this.$canvasse = new Canvasse(canvasElement)
 
@@ -34,7 +34,7 @@ export default {
     this.refreshCanvas()
   },
   methods: {
-    refreshCanvas: async function () {
+    async refreshCanvas () {
       if (this.$store.state.reloading) {
         console.log('Skipping reload')
         return
@@ -45,7 +45,7 @@ export default {
       this.$canvasse.setBufferFromRawArray(canvas)
       this.$store.commit('setReloading', false)
     },
-    getPixelCoord: function (event) {
+    getPixelCoord (event) {
       let canvasElement = document.getElementById('place-canvasse')
       let rect = canvasElement.getBoundingClientRect()
       let pixelObj = {
@@ -55,7 +55,7 @@ export default {
       this.addPixelToPaintSession(pixelObj)
       console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
     },
-    addPixelToPaintSession: function (pixelObj) {
+    addPixelToPaintSession (pixelObj) {
       this.$store.commit('addPixelToArray', pixelObj)
       console.dir(this.$store.state.pixelCoordArray)
     }

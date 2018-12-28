@@ -46,7 +46,7 @@ run jest tests<br />
 │   ├──pages                    # page root instances
 │   ├──router                   # routes & nav   
 │   ├──App.vue                  # root app component
-│   ├──index.js                 # entry point
+│   ├──main.js                 # entry point
 │   └── img                     # immages
 ├──static                       # static assets //TODO move to assets dir
 │   └── img                     # images
