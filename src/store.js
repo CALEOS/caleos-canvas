@@ -1,11 +1,31 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {Actions} from './actions'
+import {Network} from 'scatterjs-core'
+import {JsonRpc} from 'eosjs'
 
 Vue.use(Vuex)
 
+const network = Network.fromJson({
+  blockchain: 'eos',
+  protocol: 'https',
+  host: 'testnet.telos.caleos.io',
+  port: 443,
+  chainId: 'e17615decaecd202a365f4c029f206eee98511979de8a5756317e2469f2289e3'
+})
+
 const state = {
+  width: 1000,
+  height: 1000,
+  contract: 'caleoscanvas',
+  scatterAppName: 'caleoscanvas',
+  canvasse: null,
+  scatter: null,
+  identity: null,
   count: 0,
+  network: network,
+  rpc: new JsonRpc(network.fullhost(), {fetch}),
+  api: null,
   activeTool: null,
   activeColorName: null,
   activeColorHex: null,
@@ -14,6 +34,19 @@ const state = {
 }
 
 const actions = {
+  [Actions.SET_IDENTITY] ({ commit }, identity) {
+    commit(Actions.SET_IDENTITY, identity)
+  },
+  [Actions.SET_API] ({ commit }, api) {
+    commit(Actions.SET_API, api)
+  },
+  [Actions.SET_CANVASSE] ({ commit }, canvasse) {
+    commit(Actions.SET_CANVASSE, canvasse)
+  },
+  [Actions.SET_SCATTER] ({ commit }, scatter) {
+    if (scatter.identity) { commit(Actions.SET_IDENTITY, scatter.identity) }
+    commit(Actions.SET_SCATTER, scatter)
+  },
   [Actions.INCREMENT] ({ commit }) {
     commit(Actions.INCREMENT)
   },
@@ -38,6 +71,18 @@ const actions = {
 }
 
 const mutations = {
+  [Actions.SET_IDENTITY] (state, identity) {
+    state.identity = identity
+  },
+  [Actions.SET_API] (state, api) {
+    state.api = api
+  },
+  [Actions.SET_CANVASSE] (state, canvasse) {
+    state.canvasse = canvasse
+  },
+  [Actions.SET_SCATTER] (state, scatter) {
+    state.scatter = scatter
+  },
   [Actions.INCREMENT] (state) {
     state.count++
   },

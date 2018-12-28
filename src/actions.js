@@ -6,7 +6,8 @@ export const Actions = {
   SET_LOADING_STATUS: 'setLoadingStatus',
   ADD_PIXEL_TO_ARRAY: 'addPixelToArray',
   CLEAR_PIXEL_ARRAY: 'clearPixelArray',
-  SET_EOS: 'SetEos',
+  SET_API: 'SetApi',
   SET_SCATTER: 'SetScatter',
-  SET_IDENTITY: 'SetIdentity'
+  SET_IDENTITY: 'SetIdentity',
+  SET_CANVASSE: 'SetCanvasse'
 }

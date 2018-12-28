@@ -1,15 +1,18 @@
 <template>
   <div id="header">
-    <toolbox-container name="toolbox container"/>
+    <ToolboxContainer name="toolbox container" />
+    <LoginLogout name="login-logout" />
   </div>
 </template>
 <script>
 
 import ToolboxContainer from './ToolboxContainer.vue'
+import LoginLogout from './LoginLogout.vue'
 
 export default {
   components: {
-    ToolboxContainer
+    ToolboxContainer,
+    LoginLogout
   },
   props: {
     name: {

@@ -1,20 +1,24 @@
 <template>
   <div
     id="place"
-    class="place">
+    class="place"
+  >
     <h1>TESTING</h1>
     <canvas
       id="place-canvasse"
       class="place-canvas"
     />
 
-    <canvas id="zoom-canvas"/>
+    <canvas id="zoom-canvas" />
   </div>
 </template>
 
 <script>
 
 import Canvasse from '../js/Canvasse'
+import { RpcError } from 'eosjs'
+import { Actions } from '../actions'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -23,28 +27,41 @@ export default {
       required: true
     }
   },
+
+  computed: {
+    ...mapState({
+      myHeight: 'height',
+      myWidth: 'width',
+      myRpc: 'rpc',
+      myContract: 'contract'
+    })
+  },
+
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
-    this.$canvasse = new Canvasse(canvasElement)
+    this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
 
-    let zoomScript = document.createElement('script')
-    zoomScript.setAttribute('src', 'src/js/zoom.js')
-    document.head.appendChild(zoomScript)
+    // let zoomScript = document.createElement('script')
+    // zoomScript.setAttribute('src', 'src/js/zoom.js')
+    // document.head.appendChild(zoomScript)
     canvasElement.addEventListener('click', this.getPixelCoord)
     this.refreshCanvas()
   },
+
   methods: {
+
     async refreshCanvas () {
       if (this.$store.state.reloading) {
         console.log('Skipping reload')
         return
       }
       console.log('Reloading Canvas')
-      this.$store.commit('setReloading', true)
-      let canvas = await this.$place.getPixelsRaw()
-      this.$canvasse.setBufferFromRawArray(canvas)
-      this.$store.commit('setReloading', false)
+      this.$store.dispatch(Actions.SET_LOADING_STATUS, true)
+      let canvas = await this.getPixelsRaw()
+      this.$store.state.canvasse.setBufferFromRawArray(canvas)
+      this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
     },
+
     getPixelCoord (event) {
       let canvasElement = document.getElementById('place-canvasse')
       let rect = canvasElement.getBoundingClientRect()
@@ -55,9 +72,84 @@ export default {
       this.addPixelToPaintSession(pixelObj)
       console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
     },
+
     addPixelToPaintSession (pixelObj) {
-      this.$store.commit('addPixelToArray', pixelObj)
+      this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
       console.dir(this.$store.state.pixelCoordArray)
+    },
+
+    async sendActions (actions) {
+      try {
+        return this.myApi.transact({
+          actions: actions
+        }, {
+          blocksBehind: 3,
+          expireSeconds: 30
+        })
+      } catch (err) {
+        console.log('\nCaught exception: ' + err)
+        if (err instanceof RpcError) { console.log(JSON.stringify(err.json, null, 2)) }
+      }
+    },
+
+    async setPixel (x, y, color) {
+      let pixelId = (y * 1000) + x
+      return this.sendActions([{
+        account: this.contract,
+        name: 'setpixel',
+        authorization: [{
+          actor: this.testuser,
+          permission: 'active'
+        }],
+        data: {
+          account: this.testuser,
+          pixel: pixelId,
+          color: color
+        }
+      }])
+    },
+
+    async getPixelsRaw () {
+      var size = this.myWidth * this.myHeight
+      var canvas = new Uint8Array(size)
+      let lastRowLoaded = 0
+      let rows = await this.getRows(lastRowLoaded)
+      for (let i = 0; i < rows.length; i++) {
+        let row = rows[i]
+        for (let b = 0; b < row.data.length; b++) {
+          let byte = row.data[b]
+          let startPos = row.id * 1000
+          let firstPos = startPos + (b * 2)
+          let secondPos = startPos + (b * 2) + 1
+
+          canvas[firstPos] = byte >> 4
+          canvas[secondPos] = byte & 15
+        }
+      }
+      return canvas
+    },
+
+    async getRows (fromIndex) {
+      let response = {
+        more: true
+      }
+
+      let rows = []
+
+      while (response.more) {
+        response = await this.myRpc.get_table_rows({
+          json: true,
+          table_key: 'id',
+          scope: this.myContract,
+          code: this.myContract,
+          table: 'rows',
+          lower_bound: isNaN(fromIndex) ? 0 : fromIndex,
+          limit: this.myHeight
+        })
+        rows = rows.concat(response.rows)
+      }
+
+      return rows
     }
   }
 }

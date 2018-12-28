@@ -213,9 +213,6 @@ class Canvasse {
     this.ctx.putImageData(imageData, 0, 0)
     this.isBufferDirty = false
   }
-  canvasseTest () {
-    return 'GLOBAL CANVAS OBJECT TEST'
-  }
 }
 
 export default Canvasse

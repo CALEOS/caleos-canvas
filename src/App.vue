@@ -1,23 +1,65 @@
 <template>
   <div class="app-container">
-    <header-container name=""/>
-    <canvas-container name=" pixels" />
-    <footer-container name="" />
+    <HeaderContainer name="" />
+    <CanvasContainer name=" pixels" />
+    <FooterContainer name="" />
   </div>
 </template>
 
 <script>
+import ScatterJS from 'scatterjs-core'
+import ScatterEOS from 'scatterjs-plugin-eosjs2'
+import { Actions } from './actions'
 
 import 'babel-polyfill'
 import HeaderContainer from './components/Header.vue'
 import CanvasContainer from './components/Canvas.vue'
 import FooterContainer from './components/Footer.vue'
+import {Api} from 'eosjs'
+ScatterJS.plugins(new ScatterEOS())
 
 export default {
   components: {
     HeaderContainer,
     CanvasContainer,
     FooterContainer
+  },
+
+  computed: {
+    account () {
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
+      return this.$store.state.scatter.identity.accounts[0]
+    }
+  },
+
+  watch: {
+    account () {
+      this.setApiInstance()
+    }
+  },
+
+  mounted () {
+    this.setApiInstance()
+    let _this = this
+    ScatterJS.scatter.connect(this.$store.state.scatterAppName).then(connected => {
+      if (!connected) {
+        console.error('Could not connect to Scatter.')
+        return
+      }
+      _this.$store.dispatch(Actions.SET_SCATTER, ScatterJS.scatter)
+      window.ScatterJS = null
+    })
+  },
+
+  methods: {
+    setApiInstance () {
+      if (this.account) {
+        this.$store.dispatch(Actions.SET_API, this.$store.state.scatter.eos(this.$store.state.network, Api, {rpc: this.$store.state.rpc}))
+      } else {
+        this.$store.dispatch(Actions.SET_API, new Api({ rpc: this.$store.state.rpc }))
+      }
+    }
   }
+
 }
 </script>
