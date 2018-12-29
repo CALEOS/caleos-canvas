@@ -10,7 +10,7 @@
       v-if="myScatter && account"
       class="logged-in-with"
     >
-      <button>Logged in as: {{ account.name }}</button>
+      <span>Logged in as: {{ account.name }}</span>
       <button @click="logout">
         Logout
       </button>

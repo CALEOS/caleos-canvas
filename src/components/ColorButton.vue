@@ -4,11 +4,13 @@
     :class="[color,{active: isActive}]"
     @click="triggerEvent()"
   >
-    <h1/>
+    <h1 />
   </div>
 </template>
 
 <script>
+import { Actions } from '../actions'
+
 export default {
   props: {
     color: {
@@ -16,6 +18,10 @@ export default {
       required: true
     },
     hex: {
+      type: String,
+      required: true
+    },
+    colorint: {
       type: String,
       required: true
     }
@@ -26,12 +32,14 @@ export default {
   methods: {
     triggerEvent: function (event) {
       if (this.$store.state.activeColorName === this.color) {
-        this.$store.commit('setActiveColorName', null)
-        this.$store.commit('setActiveColorHex', null)
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, null)
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, null)
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, null)
       } else {
-        this.$store.commit('setActiveColorName', this.color)
-        this.$store.commit('setActiveColorHex', this.hex)
-        console.log('Color: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, parseInt(this.color, 10))
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, this.hex)
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, this.colorint)
+        console.log('Color-int: ' + this.$store.state.activeColorInt + '\nColor: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)
       }
     }
   }

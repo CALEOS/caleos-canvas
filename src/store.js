@@ -27,6 +27,7 @@ const state = {
   rpc: new JsonRpc(network.fullhost(), {fetch}),
   api: null,
   activeTool: null,
+  activeColorInt: null,
   activeColorName: null,
   activeColorHex: null,
   reloading: false,
@@ -52,6 +53,9 @@ const actions = {
   },
   [Actions.SET_ACTIVE_TOOL] ({ commit }, toolName) {
     commit(Actions.SET_ACTIVE_TOOL, toolName)
+  },
+  [Actions.SET_ACTIVE_COLOR_INT] ({ commit }, colorInt) {
+    commit(Actions.SET_ACTIVE_COLOR_INT, colorInt)
   },
   [Actions.SET_ACTIVE_COLOR_NAME] ({ commit }, colorName) {
     commit(Actions.SET_ACTIVE_COLOR_NAME, colorName)
@@ -88,6 +92,9 @@ const mutations = {
   },
   [Actions.SET_ACTIVE_TOOL] (state, toolName) {
     state.activeTool = toolName
+  },
+  [Actions.SET_ACTIVE_COLOR_INT] (state, int) {
+    state.activeColorInt = int
   },
   [Actions.SET_ACTIVE_COLOR_NAME] (state, colorName) {
     state.activeColorName = colorName

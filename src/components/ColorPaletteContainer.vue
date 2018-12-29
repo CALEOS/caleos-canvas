@@ -3,66 +3,82 @@
     <color-button
       color="white"
       hex="#FFFFFF"
+      colorint="0"
     />
     <color-button
       color="light-grey"
       hex="#E4E4E4"
+      colorint="1"
     />
     <color-button
       color="grey"
       hex="#888888"
+      colorint="2"
     />
     <color-button
       color="black"
       hex="#222222"
+      colorint="3"
     />
     <color-button
       color="pink"
       hex="#FFA7D1"
+      colorint="4"
     />
     <color-button
       color="red"
       hex="#E50000"
+      colorint="5"
     />
     <color-button
       color="orange"
       hex="#E59500"
+      colorint="6"
     />
     <color-button
       color="brown"
       hex="#A06A42"
+      colorint="7"
     />
     <color-button
       color="yellow"
       hex="#E5D900"
+      colorint="8"
     />
     <color-button
       color="lime"
       hex="#94E044"
+      colorint="9"
     />
     <color-button
       color="green"
       hex="#02BE01"
+      colorint="10"
     />
     <color-button
       color="cyan"
       hex="#00D3DD"
+      colorint="11"
     />
     <color-button
       color="blue"
       hex="#0083C7"
+      colorint="12"
     />
     <color-button
       color="dark-blue"
       hex="#0000EA"
+      colorint="13"
     />
     <color-button
       color="magenta"
       hex="#CF6EE4"
+      colorint="14"
     />
     <color-button
       color="purple"
       hex="#820080"
+      colorint="15"
     />
   </div>
 </template>

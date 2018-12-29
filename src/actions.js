@@ -3,6 +3,7 @@ export const Actions = {
   SET_ACTIVE_TOOL: 'setActiveTool',
   SET_ACTIVE_COLOR_NAME: 'setActiveColorName',
   SET_ACTIVE_COLOR_HEX: 'setActiveColorHex',
+  SET_ACTIVE_COLOR_INT: 'setActiveColorInt',
   SET_LOADING_STATUS: 'setLoadingStatus',
   ADD_PIXEL_TO_ARRAY: 'addPixelToArray',
   CLEAR_PIXEL_ARRAY: 'clearPixelArray',
