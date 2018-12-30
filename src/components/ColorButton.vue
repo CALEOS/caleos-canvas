@@ -27,7 +27,8 @@ export default {
     }
   },
   computed: {
-    isActive: function () { return this.color != null ? this.color === this.$store.state.activeColorName : false }
+    isActive: function () {
+      return this.color != null ? this.color === this.$store.state.activeColorName : false }
   },
   methods: {
     triggerEvent: function (event) {
@@ -36,7 +37,7 @@ export default {
         this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, null)
         this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, null)
       } else {
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, parseInt(this.color, 10))
+        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, this.color)
         this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, this.hex)
         this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, this.colorint)
         console.log('Color-int: ' + this.$store.state.activeColorInt + '\nColor: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)

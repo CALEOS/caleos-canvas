@@ -10,11 +10,11 @@ module.exports = {
     'vue'
   ],
   env: {
-  browser: true,
-  node: true,
-  mocha: true
-},
-globals: {
-  expect: true
-}
+    browser: true,
+    node: true,
+    mocha: true
+  },
+  globals: {
+    expect: true
+  }
 }

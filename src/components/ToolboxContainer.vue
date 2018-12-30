@@ -4,13 +4,13 @@
     ref="toolbox-container"
     @click="triggerEvent()"
   >
-    <toolbox-button name="expand" />
-    <toolbox-button name="arrows-alt" />
-    <toolbox-button name="pencil" />
-    <toolbox-button name="eraser" />
-    <toolbox-button name="search-plus" />
-    <toolbox-button name="search-minus" />
-    <toolbox-button name="trash" />
+    <ToolboxButton name="expand" />
+    <ToolboxButton name="arrows-alt" />
+    <ToolboxButton name="pencil" />
+    <ToolboxButton name="eraser" />
+    <ToolboxButton name="search-plus" />
+    <ToolboxButton name="search-minus" />
+    <ToolboxButton name="trash" />
   </div>
 </template>
 

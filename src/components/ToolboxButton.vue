@@ -4,7 +4,7 @@
     :class="{active: isActive}"
     @click="selectTool()"
   >
-    <icon
+    <Icon
       :name="name"
       :scale="2"
     />

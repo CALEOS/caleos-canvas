@@ -1,9 +1,14 @@
 <template>
   <div v-if="myScatter && account">
     <button
-      @click="paint"
+      @click="paintMultiplePixels"
     >
-      Paint Pixels
+      Paint Multiple Pixels (mouse clicks)
+    </button>
+    <button
+      @click="paintPixel"
+    >
+      Paint Pixel (inputs)
     </button>
     <label for="x-axis">
       X
@@ -28,6 +33,12 @@
 import { mapState } from 'vuex'
 
 export default {
+  data: function () {
+    return {
+      x: null,
+      y: null
+    }
+  },
   computed: {
     ...mapState({
       myScatter: 'scatter'
@@ -38,14 +49,28 @@ export default {
     }
 
   },
-  data: function () {
-    return {
-      x: null,
-      y: null
-    }
-  },
   methods: {
-    paint () {
+    paintMultiplePixels () {
+      this.$store.state.api.transact({
+        actions: [{
+          account: this.$store.state.contract,
+          name: 'setpixels',
+          authorization: [{
+            actor: this.account.name,
+            permission: 'active'
+          }],
+          data: {
+            account: this.account.name,
+            pixels: this.$store.state.pixelCoordArray,
+            colors: this.$store.state.colorArray
+          }
+        }
+        ]}, {
+        blocksBehind: 3,
+        expireSeconds: 30
+      })
+    },
+    paintPixel () {
       let color = this.$store.state.activeColorInt
       let x = parseInt(this.x, 10)
       let y = parseInt(this.y, 10)

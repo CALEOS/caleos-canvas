@@ -7,7 +7,6 @@ import 'vue-awesome/icons/flag'
 
 import { store } from './store'
 
-
 Vue.use(Vuex)
 
 /* eslint-disable-next-line no-new */

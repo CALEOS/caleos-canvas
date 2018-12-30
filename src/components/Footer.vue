@@ -1,7 +1,7 @@
 <template>
   <div id="footer">
-    <color-palette-container name="color palette container" />
-    <coordinates/>
+    <ColorPaletteContainer name="color palette container" />
+    <Coordinates />
   </div>
 </template>
 

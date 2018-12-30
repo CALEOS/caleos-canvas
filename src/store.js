@@ -31,7 +31,8 @@ const state = {
   activeColorName: null,
   activeColorHex: null,
   reloading: false,
-  pixelCoordArray: []
+  pixelCoordArray: [],
+  colorArray: []
 }
 
 const actions = {
@@ -106,11 +107,13 @@ const mutations = {
     state.reloading = boolStatus
   },
   [Actions.ADD_PIXEL_TO_ARRAY] (state, pixelObj) {
-    state.pixelCoordArray.push({x: pixelObj.x, y: pixelObj.y, color: state.activeColorHex})
+    state.pixelCoordArray.push((pixelObj.y * 1000) + pixelObj.x)
+    state.colorArray.push(state.activeColorInt)
     console.dir(state.pixelCoordArray)
   },
   [Actions.CLEAR_PIXEL_ARRAY] (state) {
     state.pixelCoordArray = []
+    state.colorArray = []
     console.dir(state.pixelCoordArray)
   }
 }
