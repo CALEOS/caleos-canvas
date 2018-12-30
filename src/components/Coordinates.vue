@@ -22,12 +22,12 @@ export default {
   computed: {
   },
   destroyed: function () {
-    document.getElementById('place').removeEventListener('mousemove', this.getCoordinates)
-    document.getElementById('place').addEventListener('mouseDown', this.appendCoordArray)
+    document.getElementById('place-canvasse').removeEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place-canvasse').addEventListener('mouseDown', this.appendCoordArray)
   },
   mounted () {
-    document.getElementById('place').addEventListener('mousemove', this.getCoordinates)
-    document.getElementById('place').addEventListener('mouseDown', this.appendCoordArray)
+    document.getElementById('place-canvasse').addEventListener('mousemove', this.getCoordinates)
+    document.getElementById('place-canvasse').addEventListener('mouseDown', this.appendCoordArray)
   },
   methods: {
     findPos: function(obj) {
@@ -42,7 +42,7 @@ export default {
       return undefined;
     },
     getCoordinates: function (e) {
-      var canvas = document.getElementById('place');
+      var canvas = document.getElementById('place-canvasse');
       var pos = this.findPos(canvas);
       this.xCoord = e.pageX - pos.x;
       this.yCoord = e.pageY - pos.y;
