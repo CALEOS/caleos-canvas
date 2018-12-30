@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     paint () {
-      debugger
       let color = this.$store.state.activeColorInt
       let x = parseInt(this.x, 10)
       let y = parseInt(this.y, 10)

@@ -30,10 +30,23 @@ export default {
     document.getElementById('place').addEventListener('mouseDown', this.appendCoordArray)
   },
   methods: {
+    findPos: function(obj) {
+      var curleft = 0, curtop = 0;
+      if (obj.offsetParent) {
+        do {
+            curleft += obj.offsetLeft;
+            curtop += obj.offsetTop;
+        } while (obj = obj.offsetParent);
+        return { x: curleft, y: curtop };
+      }
+      return undefined;
+    },
     getCoordinates: function (e) {
-      this.xCoord = e.pageX
-      this.yCoord = e.pageY
-      console.log(this.xCoord, this.yCoord)
+      var canvas = document.getElementById('place');
+      var pos = this.findPos(canvas);
+      this.xCoord = e.pageX - pos.x;
+      this.yCoord = e.pageY - pos.y;
+      // console.log(this.xCoord, this.yCoord)
     },
     appendCoordArray: function (e) {
       this.$store.commit('setActiveTool', {x: this.xCoord, y: this.yCoord})
