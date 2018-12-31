@@ -36,17 +36,6 @@ export default {
       lifetimePixels: null
     }
   },
-  watch: {
-    myLastRefresh () {
-      this.loadAccount()
-    },
-    myIdentity () {
-      this.loadAccount()
-    }
-  },
-  mounted () {
-    this.loadAccount()
-  },
   computed: {
     ...mapState({
       myScatter: 'scatter',
@@ -58,6 +47,17 @@ export default {
       if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
       return this.$store.state.scatter.identity.accounts[0]
     }
+  },
+  watch: {
+    myLastRefresh () {
+      this.loadAccount()
+    },
+    myIdentity () {
+      this.loadAccount()
+    }
+  },
+  mounted () {
+    this.loadAccount()
   },
   methods: {
     async login () {

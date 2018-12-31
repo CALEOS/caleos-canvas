@@ -52,6 +52,7 @@ export default {
   },
   methods: {
     async paintMultiplePixels () {
+      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
       await this.$store.state.api.transact({
         actions: [{
           account: this.$store.state.contract,
@@ -71,11 +72,13 @@ export default {
         expireSeconds: 30
       })
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
+      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
     },
     async paintPixel () {
       let color = this.$store.state.activeColorInt
       let x = parseInt(this.x, 10)
       let y = parseInt(this.y, 10)
+      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
       await this.$store.state.api.transact({
         actions: [{
           account: this.$store.state.contract,
@@ -95,6 +98,7 @@ export default {
         expireSeconds: 30
       })
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
+      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
     }
   }
 }
