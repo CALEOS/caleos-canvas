@@ -1,20 +1,20 @@
 <template>
   <div id="header">
     <ToolboxContainer name="toolbox container" />
-    <LoginLogout name="login-logout" />
+    <UserInfo name="user-info" />
     <TestPainter name="test-painter" />
   </div>
 </template>
 <script>
 
 import ToolboxContainer from './ToolboxContainer.vue'
-import LoginLogout from './LoginLogout.vue'
+import UserInfo from './UserInfo.vue'
 import TestPainter from './TestPainter'
 
 export default {
   components: {
     ToolboxContainer,
-    LoginLogout,
+    UserInfo,
     TestPainter
   },
   props: {

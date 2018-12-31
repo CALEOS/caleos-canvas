@@ -32,6 +32,7 @@ const state = {
   activeColorName: null,
   activeColorHex: null,
   reloading: false,
+  sendingTransaction: false,
   pixelCoordArray: [],
   colorArray: []
 }
@@ -45,6 +46,9 @@ const actions = {
   },
   [Actions.SET_LAST_REFRESH] ({ commit }, lastRefresh) {
     commit(Actions.SET_LAST_REFRESH, lastRefresh)
+  },
+  [Actions.SET_SENDING_TRANSACTION] ({ commit }, isSending) {
+    commit(Actions.SET_SENDING_TRANSACTION, isSending)
   },
   [Actions.SET_CANVASSE] ({ commit }, canvasse) {
     commit(Actions.SET_CANVASSE, canvasse)
@@ -88,6 +92,9 @@ const mutations = {
   },
   [Actions.SET_LAST_REFRESH] (state, lastRefresh) {
     state.lastRefresh = lastRefresh
+  },
+  [Actions.SET_SENDING_TRANSACTION] (state, isSending) {
+    state.sendingTransaction = isSending
   },
   [Actions.SET_CANVASSE] (state, canvasse) {
     state.canvasse = canvasse

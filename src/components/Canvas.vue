@@ -51,7 +51,7 @@ export default {
     // zoomScript.setAttribute('src', 'src/js/zoom.js')
     // document.head.appendChild(zoomScript)
     canvasElement.addEventListener('click', this.getPixelCoord)
-    this.refreshCanvas()
+    this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
   },
 
   methods: {
@@ -89,6 +89,7 @@ export default {
 
     async sendActions (actions) {
       try {
+        this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
         return this.myApi.transact({
           actions: actions
         }, {
@@ -98,6 +99,8 @@ export default {
       } catch (err) {
         console.log('\nCaught exception: ' + err)
         if (err instanceof RpcError) { console.log(JSON.stringify(err.json, null, 2)) }
+      } finally {
+        this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
       }
     },
 
