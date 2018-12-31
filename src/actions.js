@@ -12,5 +12,7 @@ export const Actions = {
   SET_SENDING_TRANSACTION: 'SetSendingTransaction',
   SET_SCATTER: 'SetScatter',
   SET_IDENTITY: 'SetIdentity',
-  SET_CANVASSE: 'SetCanvasse'
+  SET_CANVASSE: 'SetCanvasse',
+  SET_CONTRACT_CONFIG: 'SetContractConfig',
+  SET_CONTRACT_ACCOUNT: 'SetContractAccount'
 }

@@ -17,6 +17,9 @@
       <button @click="logout">
         Logout
       </button>
+      <span v-if="myContractConfig">
+        {{ cooldownMessage }}
+      </span>
     </section>
     <span v-if="mySendingTransaction">
       Sending transaction...
@@ -29,6 +32,7 @@
 
 import { mapState } from 'vuex'
 import { Actions } from '../actions'
+// import moment from 'moment'
 
 export default {
   data () {
@@ -41,12 +45,31 @@ export default {
       myScatter: 'scatter',
       myLastRefresh: 'lastRefresh',
       myIdentity: 'identity',
-      mySendingTransaction: 'sendingTransaction'
+      mySendingTransaction: 'sendingTransaction',
+      myContractConfig: 'config'
     }),
     account () {
       if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
       return this.$store.state.scatter.identity.accounts[0]
+    },
+    cooldownMessage () {
+      if (!this.$store.state.config) return null
+      let cooldown = this.$store.state.config.cooldown
+      if (cooldown === 0) {
+        return 'There is no cooldown, party mode 🎉🎉🎉'
+      }
+
+      let friendlyCooldown = cooldown > 60 ? Math.floor(cooldown / 60) + ' min ' + cooldown % 60 + ' sec' : cooldown + ' sec '
+
+      if (!this.$store.state.contractAccount) {
+        return `The cooldown is ${friendlyCooldown}`
+      }
+
+      // TODO: make a countdown type display to show how much longer until the user can paint again, using the cooldown seconds and the last_access epoch time for this contractAccount
+      // let lastAccessMoment = moment.unix(this.$store.state.contractAccount.last_access)
+      return `The cooldown is ${friendlyCooldown}`
     }
+
   },
   watch: {
     myLastRefresh () {
@@ -83,15 +106,16 @@ export default {
       }
 
       let contract = this.$store.state.contract
-      let acctRows = await this.$store.state.rpc.get_table_rows({
+      let acctResponse = await this.$store.state.rpc.get_table_rows({
         code: contract,
         scope: contract,
         table: 'accounts',
         lower_bound: this.account.name,
         limit: 1
       })
-      if (acctRows.rows.length) {
-        this.lifetimePixels = acctRows.rows[0].total_paint_count
+      if (acctResponse.rows.length) {
+        this.dispatch(Actions.SET_CONTRACT_ACCOUNT, acctResponse.rows[0])
+        this.lifetimePixels = acctResponse.rows[0].total_paint_count
       }
     }
 

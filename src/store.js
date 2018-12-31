@@ -15,6 +15,8 @@ const network = Network.fromJson({
 })
 
 const state = {
+  config: null,
+  contractAccount: null,
   width: 1000,
   height: 1000,
   contract: 'caleoscanvas',
@@ -38,6 +40,12 @@ const state = {
 }
 
 const actions = {
+  [Actions.SET_CONTRACT_CONFIG] ({ commit }, config) {
+    commit(Actions.SET_CONTRACT_CONFIG, config)
+  },
+  [Actions.SET_CONTRACT_ACCOUNT] ({ commit }, account) {
+    commit(Actions.SET_CONTRACT_ACCOUNT, account)
+  },
   [Actions.SET_IDENTITY] ({ commit }, identity) {
     commit(Actions.SET_IDENTITY, identity)
   },
@@ -84,6 +92,12 @@ const actions = {
 }
 
 const mutations = {
+  [Actions.SET_CONTRACT_CONFIG] (state, config) {
+    state.config = config
+  },
+  [Actions.SET_CONTRACT_ACCOUNT] (state, account) {
+    state.account = account
+  },
   [Actions.SET_IDENTITY] (state, identity) {
     state.identity = identity
   },

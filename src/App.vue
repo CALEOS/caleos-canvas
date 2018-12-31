@@ -40,6 +40,7 @@ export default {
 
   mounted () {
     this.setApiInstance()
+    this.loadContractConfig()
     let _this = this
     ScatterJS.scatter.connect(this.$store.state.scatterAppName).then(connected => {
       if (!connected) {
@@ -57,6 +58,18 @@ export default {
         this.$store.dispatch(Actions.SET_API, this.$store.state.scatter.eos(this.$store.state.network, Api, {rpc: this.$store.state.rpc}))
       } else {
         this.$store.dispatch(Actions.SET_API, new Api({ rpc: this.$store.state.rpc }))
+      }
+    },
+    async loadContractConfig () {
+      let contract = this.$store.state.contract
+      let configResponse = await this.$store.state.rpc.get_table_rows({
+        code: contract,
+        scope: contract,
+        table: 'config'
+      })
+
+      if (configResponse.rows.length) {
+        this.$store.dispatch(Actions.SET_CONTRACT_CONFIG, configResponse.rows[0])
       }
     }
   }
