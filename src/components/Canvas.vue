@@ -33,10 +33,16 @@ export default {
       myHeight: 'height',
       myWidth: 'width',
       myRpc: 'rpc',
-      myContract: 'contract'
+      myContract: 'contract',
+      myLastRefresh: 'lastRefresh'
     })
   },
 
+  watch: {
+    myLastRefresh () {
+      this.refreshCanvas()
+    }
+  },
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
@@ -57,9 +63,12 @@ export default {
       }
       console.log('Reloading Canvas')
       this.$store.dispatch(Actions.SET_LOADING_STATUS, true)
-      let canvas = await this.getPixelsRaw()
-      this.$store.state.canvasse.setBufferFromRawArray(canvas)
-      this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
+      try {
+        let canvas = await this.getPixelsRaw()
+        this.$store.state.canvasse.setBufferFromRawArray(canvas)
+      } finally {
+        this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
+      }
     },
 
     getPixelCoord (event) {

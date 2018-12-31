@@ -26,6 +26,7 @@ const state = {
   network: network,
   rpc: new JsonRpc(network.fullhost(), {fetch}),
   api: null,
+  lastRefresh: null,
   activeTool: null,
   activeColorInt: null,
   activeColorName: null,
@@ -41,6 +42,9 @@ const actions = {
   },
   [Actions.SET_API] ({ commit }, api) {
     commit(Actions.SET_API, api)
+  },
+  [Actions.SET_LAST_REFRESH] ({ commit }, lastRefresh) {
+    commit(Actions.SET_LAST_REFRESH, lastRefresh)
   },
   [Actions.SET_CANVASSE] ({ commit }, canvasse) {
     commit(Actions.SET_CANVASSE, canvasse)
@@ -81,6 +85,9 @@ const mutations = {
   },
   [Actions.SET_API] (state, api) {
     state.api = api
+  },
+  [Actions.SET_LAST_REFRESH] (state, lastRefresh) {
+    state.lastRefresh = lastRefresh
   },
   [Actions.SET_CANVASSE] (state, canvasse) {
     state.canvasse = canvasse

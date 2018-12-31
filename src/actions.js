@@ -8,6 +8,8 @@ export const Actions = {
   ADD_PIXEL_TO_ARRAY: 'addPixelToArray',
   CLEAR_PIXEL_ARRAY: 'clearPixelArray',
   SET_API: 'SetApi',
+  SET_LAST_REFRESH: 'SetLastRefresh',
+  SET_SENDING_TRANSACTION: 'SetSendingTransaction',
   SET_SCATTER: 'SetScatter',
   SET_IDENTITY: 'SetIdentity',
   SET_CANVASSE: 'SetCanvasse'

@@ -31,6 +31,7 @@
 /* eslint-disable no-debugger */
 
 import { mapState } from 'vuex'
+import {Actions} from '../actions'
 
 export default {
   data: function () {
@@ -50,8 +51,8 @@ export default {
 
   },
   methods: {
-    paintMultiplePixels () {
-      this.$store.state.api.transact({
+    async paintMultiplePixels () {
+      await this.$store.state.api.transact({
         actions: [{
           account: this.$store.state.contract,
           name: 'setpixels',
@@ -69,12 +70,13 @@ export default {
         blocksBehind: 3,
         expireSeconds: 30
       })
+      this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
     },
-    paintPixel () {
+    async paintPixel () {
       let color = this.$store.state.activeColorInt
       let x = parseInt(this.x, 10)
       let y = parseInt(this.y, 10)
-      this.$store.state.api.transact({
+      await this.$store.state.api.transact({
         actions: [{
           account: this.$store.state.contract,
           name: 'setpixel',
@@ -92,6 +94,7 @@ export default {
         blocksBehind: 3,
         expireSeconds: 30
       })
+      this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
     }
   }
 }
