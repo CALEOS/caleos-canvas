@@ -23,6 +23,7 @@ import 'vue-awesome/icons/search-minus'
 import 'vue-awesome/icons/trash'
 
 import Icon from 'vue-awesome/components/Icon.vue'
+import { Actions } from '../actions.js'
 
 export default {
   components: {
@@ -40,13 +41,13 @@ export default {
   methods: {
     selectTool: function (event) {
       if (this.$store.state.activeTool === this.name) {
-        this.$store.commit('setActiveTool', null)
+        this.$store.dispatch(Actions.SET_ACTIVE_TOOL, null)
       } else {
-        this.$store.commit('setActiveTool', this.name)
+        this.$store.dispatch(Actions.SET_ACTIVE_TOOL, this.name)
       }
       switch (this.name) {
         case 'trash':
-          this.$store.commit('clearPixelArray')
+          this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
           console.log('clearing draw canvas')
           break
         case 'pencil':

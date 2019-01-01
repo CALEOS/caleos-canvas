@@ -15,7 +15,7 @@
 </template>
 
 <script>
-
+import { Actions } from '../actions.js'
 import ToolboxButton from './ToolboxButton.vue'
 
 export default {
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     triggerEvent: function (e) {
-      this.$store.commit('increment')
+      this.$store.dispatch(Actions.INCREMENT)
       console.log(this.$store.state.count)
     }
   }

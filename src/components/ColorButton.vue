@@ -33,13 +33,13 @@ export default {
   methods: {
     triggerEvent: function (event) {
       if (this.$store.state.activeColorName === this.color) {
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, null)
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, null)
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, null)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, null)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, null)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, null)
       } else {
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_NAME, this.color)
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_HEX, this.hex)
-        this.$store.commit(Actions.SET_ACTIVE_COLOR_INT, this.colorint)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, this.color)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, this.hex)
+        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, this.colorint)
         console.log('Color-int: ' + this.$store.state.activeColorInt + '\nColor: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)
       }
     }

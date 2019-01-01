@@ -14,6 +14,9 @@
 </template>
 
 <script>
+
+import { Actions } from '../actions'
+
 export default {
   props: {
   },
@@ -52,7 +55,7 @@ export default {
       this.yCoord = e.pageY - pos.y
     },
     appendCoordArray: function (e) {
-      this.$store.commit('addPixelToArray', {x: this.xCoord, y: this.yCoord})
+      this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, {x: this.xCoord, y: this.yCoord})
     }
   }
 }
