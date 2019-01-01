@@ -17,7 +17,7 @@
       <button @click="logout">
         Logout
       </button>
-      <span v-if="myContractConfig">
+      <span v-if="cooldownMessage">
         {{ cooldownMessage }}
       </span>
     </section>
@@ -32,12 +32,16 @@
 
 import { mapState } from 'vuex'
 import { Actions } from '../actions'
-// import moment from 'moment'
+import moment from 'moment'
+import 'moment-countdown'
 
 export default {
   data () {
     return {
-      lifetimePixels: null
+      lifetimePixels: null,
+      cooldownMessage: null,
+      cooldownCountdown: null,
+      cooldownInterval: null
     }
   },
   computed: {
@@ -51,25 +55,7 @@ export default {
     account () {
       if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
       return this.$store.state.scatter.identity.accounts[0]
-    },
-    cooldownMessage () {
-      if (!this.$store.state.config) return null
-      let cooldown = this.$store.state.config.cooldown
-      if (cooldown === 0) {
-        return 'There is no cooldown, party mode 🎉🎉🎉'
-      }
-
-      let friendlyCooldown = cooldown > 60 ? Math.floor(cooldown / 60) + ' min ' + cooldown % 60 + ' sec' : cooldown + ' sec '
-
-      if (!this.$store.state.contractAccount) {
-        return `The cooldown is ${friendlyCooldown}`
-      }
-
-      // TODO: make a countdown type display to show how much longer until the user can paint again, using the cooldown seconds and the last_access epoch time for this contractAccount
-      // let lastAccessMoment = moment.unix(this.$store.state.contractAccount.last_access)
-      return `The cooldown is ${friendlyCooldown}`
     }
-
   },
   watch: {
     myLastRefresh () {
@@ -100,6 +86,42 @@ export default {
       this.loadAccount()
     },
 
+    setCooldownMessage () {
+      if (!this.$store.state.config) {
+        return
+      }
+
+      let cooldown = this.$store.state.config.cooldown
+      if (cooldown === 0) {
+        this.cooldownInterval = null
+        this.cooldownMessage = 'There is no cooldown, party mode 🎉🎉🎉'
+        return
+      }
+
+      let friendlyCooldown = this.makeFriendlyDuration(cooldown)
+
+      if (!this.$store.state.contractAccount) {
+        this.cooldownInterval = null
+        this.cooldownMessage = `The cooldown is ${friendlyCooldown}`
+        return
+      }
+
+      let cooldownExpires = moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown)
+      if (cooldownExpires.isBefore()) {
+        this.cooldownInterval = null
+        this.cooldownMessage = 'Cooldown complete, time to paint!'
+      } else {
+        this.cooldownMessage = `Can paint again in ${cooldownExpires.countdown().toString()}`
+        if (!this.cooldownInterval) {
+          this.cooldownInterval = setInterval(this.setCooldownMessage, 1000)
+        }
+      }
+    },
+
+    makeFriendlyDuration (seconds) {
+      return seconds > 60 ? Math.floor(seconds / 60) + ' min ' + seconds % 60 + ' sec' : seconds + ' sec '
+    },
+
     async loadAccount () {
       if (!this.account) {
         return
@@ -114,8 +136,9 @@ export default {
         limit: 1
       })
       if (acctResponse.rows.length) {
-        this.dispatch(Actions.SET_CONTRACT_ACCOUNT, acctResponse.rows[0])
+        this.$store.dispatch(Actions.SET_CONTRACT_ACCOUNT, acctResponse.rows[0])
         this.lifetimePixels = acctResponse.rows[0].total_paint_count
+        this.setCooldownMessage()
       }
     }
 

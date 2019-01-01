@@ -96,7 +96,7 @@ const mutations = {
     state.config = config
   },
   [Actions.SET_CONTRACT_ACCOUNT] (state, account) {
-    state.account = account
+    state.contractAccount = account
   },
   [Actions.SET_IDENTITY] (state, identity) {
     state.identity = identity
