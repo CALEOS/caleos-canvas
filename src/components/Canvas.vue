@@ -73,14 +73,26 @@ export default {
     },
 
     getPixelCoord (event) {
-      let canvasElement = document.getElementById('place-canvasse')
-      let rect = canvasElement.getBoundingClientRect()
-      let pixelObj = {
-        x: event.clientX - rect.left,
-        y: Math.floor(event.clientY - rect.top)
+      let currentTool = this.$store.state.activeTool
+      if (currentTool === 'pencil') {
+        if (this.$store.state.activeColorInt === null) {
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
+        }
+        let canvasElement = document.getElementById('place-canvasse')
+        let rect = canvasElement.getBoundingClientRect()
+        let pixelObj = {
+          x: Math.floor(event.clientX - rect.left),
+          y: Math.floor(event.clientY - rect.top)
+        }
+        this.addPixelToPaintSession(pixelObj)
+        console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
+      } else if (currentTool === 'eraser') {
+        console.log('erasing pixel')
+      } else {
+
       }
-      this.addPixelToPaintSession(pixelObj)
-      console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
     },
 
     getZoomPixelCoord (event) {
