@@ -113,6 +113,13 @@ export default {
 
     addPixelToPaintSession (pixelObj) {
       this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+
+      // temporarily set color in canvas
+      let canvasElement = document.getElementById('place-canvasse')
+      let ctx = canvasElement.getContext('2d')
+      ctx.fillStyle = this.$store.state.activeColorName
+      ctx.fillRect(pixelObj.x, pixelObj.y, 1, 1)
+
       console.dir(this.$store.state.pixelCoordArray)
     },
 

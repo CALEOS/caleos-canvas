@@ -3,7 +3,7 @@
     <button
       @click="paintMultiplePixels"
     >
-      Paint Multiple Pixels (mouse clicks)
+      Paint!
     </button>
     <!-- <button
       @click="paintPixel"
