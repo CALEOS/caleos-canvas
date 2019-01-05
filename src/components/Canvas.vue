@@ -74,29 +74,15 @@ export default {
 
     getPixelCoord (event) {
       let currentTool = this.$store.state.activeTool
-      if (currentTool === 'pencil') {
-        if (this.$store.state.activeColorInt === null) {
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
-        }
+      if (currentTool === 'pencil' || currentTool === 'eraser') {
         let canvasElement = document.getElementById('place-canvasse')
         let rect = canvasElement.getBoundingClientRect()
         let pixelObj = {
           x: Math.floor(event.clientX - rect.left),
           y: Math.floor(event.clientY - rect.top)
         }
-        this.addPixelToPaintSession(pixelObj)
-      } else if (currentTool === 'eraser') {
-        let canvasElement = document.getElementById('place-canvasse')
-        let rect = canvasElement.getBoundingClientRect()
-        let pixelObj = {
-          x: Math.floor(event.clientX - rect.left),
-          y: Math.floor(event.clientY - rect.top)
-        }
-        this.removePixelFromPaintSession(pixelObj)
+        currentTool === 'pencil' ? this.addPixelToPaintSession(pixelObj) : this.removePixelFromPaintSession(pixelObj)
       } else {
-
       }
     },
 

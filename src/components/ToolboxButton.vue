@@ -51,6 +51,11 @@ export default {
           console.log('clearing draw canvas')
           break
         case 'pencil':
+          if (this.$store.state.activeColorInt === null) {
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
+          }
           console.log('draw pixels')
           break
         case 'eraser':
