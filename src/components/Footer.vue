@@ -1,18 +1,15 @@
 <template>
   <div id="footer">
     <ColorPaletteContainer name="color palette container" />
-    <Coordinates />
   </div>
 </template>
 
 <script>
 import ColorPaletteContainer from './ColorPaletteContainer.vue'
-import Coordinates from './Coordinates.vue'
 
 export default {
   components: {
-    ColorPaletteContainer,
-    Coordinates
+    ColorPaletteContainer
   },
   props: {
     name: {
@@ -25,5 +22,5 @@ export default {
 
 <style lang="stylus" scoped>
 #footer
-  border-top 1px solid #999
+  // border-top 1px solid #999
 </style>

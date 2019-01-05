@@ -6,6 +6,7 @@ export const Actions = {
   SET_ACTIVE_COLOR_INT: 'SetActiveColorInt',
   SET_LOADING_STATUS: 'SetLoadingStatus',
   ADD_PIXEL_TO_ARRAY: 'AddPixelToArray',
+  REMOVE_PIXEL_FROM_ARRAY: 'RemovePixelFromArray',
   CLEAR_PIXEL_ARRAY: 'ClearPixelArray',
   SET_API: 'SetApi',
   SET_LAST_REFRESH: 'SetLastRefresh',

@@ -5,7 +5,7 @@
     >
       Paint Multiple Pixels (mouse clicks)
     </button>
-    <button
+    <!-- <button
       @click="paintPixel"
     >
       Paint Pixel (inputs)
@@ -23,7 +23,8 @@
     <input
       id="y-axis"
       v-model="y"
-    >
+    > -->
+    <Coordinates />
   </div>
 </template>
 
@@ -32,8 +33,12 @@
 
 import { mapState } from 'vuex'
 import {Actions} from '../actions'
+import Coordinates from './Coordinates.vue'
 
 export default {
+  components: {
+    Coordinates
+  },
   data: function () {
     return {
       x: null,

@@ -86,6 +86,9 @@ const actions = {
   [Actions.ADD_PIXEL_TO_ARRAY] ({ commit }, pixelObj) {
     commit(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
   },
+  [Actions.REMOVE_PIXEL_FROM_ARRAY] ({ commit }, pixelObj) {
+    commit(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
+  },
   [Actions.CLEAR_PIXEL_ARRAY] ({ commit }) {
     commit(Actions.CLEAR_PIXEL_ARRAY)
   }
@@ -138,6 +141,13 @@ const mutations = {
     state.pixelCoordArray.push((pixelObj.y * 1000) + pixelObj.x)
     state.colorArray.push(state.activeColorInt)
     console.dir(state.pixelCoordArray)
+  },
+  [Actions.REMOVE_PIXEL_FROM_ARRAY] (state, pixelObj) {
+    let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)
+    if (index > -1) {
+      state.pixelCoordArray.splice(index, 1)
+      state.colorArray.splice(index, 1)
+    }
   },
   [Actions.CLEAR_PIXEL_ARRAY] (state) {
     state.pixelCoordArray = []

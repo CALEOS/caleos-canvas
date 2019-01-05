@@ -87,9 +87,14 @@ export default {
           y: Math.floor(event.clientY - rect.top)
         }
         this.addPixelToPaintSession(pixelObj)
-        console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
       } else if (currentTool === 'eraser') {
-        console.log('erasing pixel')
+        let canvasElement = document.getElementById('place-canvasse')
+        let rect = canvasElement.getBoundingClientRect()
+        let pixelObj = {
+          x: Math.floor(event.clientX - rect.left),
+          y: Math.floor(event.clientY - rect.top)
+        }
+        this.removePixelFromPaintSession(pixelObj)
       } else {
 
       }
@@ -108,6 +113,11 @@ export default {
 
     addPixelToPaintSession (pixelObj) {
       this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+      console.dir(this.$store.state.pixelCoordArray)
+    },
+
+    removePixelFromPaintSession (pixelObj) {
+      this.$store.dispatch(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
       console.dir(this.$store.state.pixelCoordArray)
     },
 
