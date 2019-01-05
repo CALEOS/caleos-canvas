@@ -28,7 +28,8 @@ export default {
   },
   computed: {
     isActive: function () {
-      return this.color != null ? this.color === this.$store.state.activeColorName : false }
+      return this.color != null ? this.color === this.$store.state.activeColorName : false
+    }
   },
   methods: {
     triggerEvent: function (event) {

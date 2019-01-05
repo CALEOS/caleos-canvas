@@ -19,6 +19,7 @@ import Canvasse from '../js/Canvasse'
 import { RpcError } from 'eosjs'
 import { Actions } from '../actions'
 import { mapState } from 'vuex'
+import Zoom from '../js/zoom'
 
 export default {
   props: {
@@ -46,10 +47,6 @@ export default {
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
-
-    // let zoomScript = document.createElement('script')
-    // zoomScript.setAttribute('src', 'src/js/zoom.js')
-    // document.head.appendChild(zoomScript)
     canvasElement.addEventListener('click', this.getPixelCoord)
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
   },
@@ -68,6 +65,7 @@ export default {
         this.$store.state.canvasse.setBufferFromRawArray(canvas)
       } finally {
         this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
+        Zoom()
       }
     },
 
