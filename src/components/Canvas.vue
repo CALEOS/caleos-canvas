@@ -3,7 +3,6 @@
     id="place"
     class="place"
   >
-    <h1>TESTING</h1>
     <canvas
       id="place-canvasse"
       class="place-canvas"
