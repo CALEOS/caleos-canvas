@@ -143,10 +143,14 @@ const mutations = {
     state.reloading = boolStatus
   },
   [Actions.ADD_PIXEL_TO_ARRAY] (state, pixelObj) {
+    //the mouse listeners are doubling up for some reason, temp fix @TODO
+    let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)
+    if (index < 0){
     state.pixelCoordArray.push((pixelObj.y * 1000) + pixelObj.x)
     state.intColorArray.push(state.activeColorInt)
     state.pixelObjArray.push({x: pixelObj.x, y: pixelObj.y, color: state.activeColorName})
     console.dir(state.pixelCoordArray)
+  }
   },
   [Actions.REMOVE_PIXEL_FROM_ARRAY] (state, pixelObj) {
     let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)

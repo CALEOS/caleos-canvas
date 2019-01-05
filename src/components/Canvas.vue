@@ -189,15 +189,18 @@ export default {
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
-      canvas.addEventListener('mousedown', function (evt) {
+      canvas.removeEventListener("mousedown", mouseDownfunction);
+      canvas.addEventListener('mousedown', mouseDownfunction, false)
+      function mouseDownfunction(evt) {
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragStart = ctx.transformedPoint(lastX, lastY)
         dragged = false
-      }, false)
-
-      canvas.addEventListener('mousemove', function (evt) {
+      }
+      canvas.removeEventListener("mousemove", mouseMoveFunction);
+      canvas.addEventListener('mousemove', mouseMoveFunction, false)
+      function mouseMoveFunction(evt) {
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragged = true
@@ -206,14 +209,15 @@ export default {
           ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y)
           redraw()
         }
-      }, false)
-
-      canvas.addEventListener('mouseup', function (evt) {
+      }
+      canvas.removeEventListener("mouseup", mouseUpFunction);
+      canvas.addEventListener('mouseup', mouseUpFunction, false)
+      function mouseUpFunction(evt) {
         dragStart = null
         // this will zoom on click, leave for now implement w/zoom buttons @TODO
         // if (!dragged) zoom(evt.shiftKey ? -1 : 1)
         if (!dragged) paintZoom(evt)
-      }, false)
+      }
 
       let paintZoom = (event) => {
         let currentTool = this.$store.state.activeTool
