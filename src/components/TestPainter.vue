@@ -69,7 +69,7 @@ export default {
           data: {
             account: this.account.name,
             pixels: this.$store.state.pixelCoordArray,
-            colors: this.$store.state.colorArray
+            colors: this.$store.state.intColorArray
           }
         }
         ]}, {

@@ -18,7 +18,6 @@ import Canvasse from '../js/Canvasse'
 import { RpcError } from 'eosjs'
 import { Actions } from '../actions'
 import { mapState } from 'vuex'
-// import Zoom from '../js/zoom'
 
 export default {
   props: {
@@ -45,9 +44,7 @@ export default {
   },
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
-    // let canvasElement = document.getElementById('zoom-canvas')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
-    canvasElement.addEventListener('click', this.getPixelCoord)
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
   },
 
@@ -65,53 +62,8 @@ export default {
         this.$store.state.canvasse.setBufferFromRawArray(canvas)
       } finally {
         this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
-        // Zoom()
         this.createZoomCanvas()
-        let canvasElement = document.getElementById('zoom-canvas')
-        // this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
-        canvasElement.addEventListener('click', this.getZoomPixelCoord)
       }
-    },
-
-    getPixelCoord (event) {
-      let currentTool = this.$store.state.activeTool
-      if (currentTool === 'pencil' || currentTool === 'eraser') {
-        let canvasElement = document.getElementById('place-canvasse')
-        let rect = canvasElement.getBoundingClientRect()
-        let pixelObj = {
-          x: Math.floor(event.clientX - rect.left),
-          y: Math.floor(event.clientY - rect.top)
-        }
-        currentTool === 'pencil' ? this.addPixelToPaintSession(pixelObj) : this.removePixelFromPaintSession(pixelObj)
-      } else {
-      }
-    },
-
-    getZoomPixelCoord (event) {
-      debugger;
-      let canvasElement = document.getElementById('zoom-canvas')
-      let rect = canvasElement.getBoundingClientRect()
-      let pixelObj = {
-        x: Math.floor(event.clientX - rect.left),
-        y: Math.floor(event.clientY - rect.top)
-      }
-      // this.addPixelToPaintSession(pixelObj)
-      let ctx = canvasElement.getContext('2d')
-      ctx.fillStyle = this.$store.state.activeColorName
-      ctx.fillRect(pixelObj.x, pixelObj.y, 1, 1)
-      console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
-    },
-
-    addPixelToPaintSession (pixelObj) {
-      this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
-
-      // temporarily set color in canvas
-      let canvasElement = document.getElementById('place-canvasse')
-      let ctx = canvasElement.getContext('2d')
-      ctx.fillStyle = this.$store.state.activeColorName
-      ctx.fillRect(pixelObj.x, pixelObj.y, 1, 1)
-
-      console.dir(this.$store.state.pixelCoordArray)
     },
 
     removePixelFromPaintSession (pixelObj) {
@@ -195,7 +147,9 @@ export default {
 
       return rows
     },
-    createZoomCanvas() {
+
+    createZoomCanvas () {
+      let state = this.$store.state
       var canvas = document.getElementById('zoom-canvas')
       canvas.width = 1000; canvas.height = 1000
       var ctx = canvas.getContext('2d')
@@ -208,13 +162,28 @@ export default {
       ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
 
       trackTransforms(ctx)
-      function redraw () {
-        // Clear the entire canvas
+
+      let paintTempPixels = (pixelObj, color) => {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        var pt = svg.createSVGPoint()
+        pt.x = pixelObj.x; pt.y = pixelObj.y
+        let xform = ctx.getTransform() // get current transform for point
+        pt = pt.matrixTransform(xform.inverse())
+        pt.x = Math.floor(pt.x)
+        pt.y = Math.floor(pt.y)
+        let zoomCanvas = document.getElementById('place-canvasse')
+        let ctxZoom = zoomCanvas.getContext('2d')
+        ctxZoom.fillStyle = color
+        ctxZoom.fillRect(pt.x, pt.y, 1, 1)
+      }
+
+      let redraw = () => {
         var p1 = ctx.transformedPoint(0, 0)
         var p2 = ctx.transformedPoint(canvas.width, canvas.height)
         ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y)
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
       }
+
       redraw()
 
       let lastX = canvas.width / 2
@@ -227,6 +196,7 @@ export default {
         dragStart = ctx.transformedPoint(lastX, lastY)
         dragged = false
       }, false)
+
       canvas.addEventListener('mousemove', function (evt) {
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
@@ -237,10 +207,44 @@ export default {
           redraw()
         }
       }, false)
+
       canvas.addEventListener('mouseup', function (evt) {
         dragStart = null
-        if (!dragged) zoom(evt.shiftKey ? -1 : 1)
+        // this will zoom on click, leave for now implement w/zoom buttons @TODO
+        // if (!dragged) zoom(evt.shiftKey ? -1 : 1)
+        if (!dragged) paintZoom(evt)
       }, false)
+
+      let paintZoom = (event) => {
+        let currentTool = this.$store.state.activeTool
+        if (currentTool === 'pencil' || currentTool === 'eraser') {
+          let canvasElement = document.getElementById('zoom-canvas')
+          let rect = canvasElement.getBoundingClientRect()
+          let pixelObj = {
+            x: Math.floor(event.clientX - rect.left),
+            y: Math.floor(event.clientY - rect.top)
+          }
+          if (currentTool === 'pencil') {
+            this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+            // temporarily display selected pixel on zoom canvas, it's redrawn on transform
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            var pt = svg.createSVGPoint()
+            pt.x = pixelObj.x; pt.y = pixelObj.y
+            let xform = ctx.getTransform() // get current transform for point
+            pt = pt.matrixTransform(xform.inverse())
+            pt.x = Math.floor(pt.x)
+            pt.y = Math.floor(pt.y)
+            let ctxZoom = canvasElement.getContext('2d')
+            ctxZoom.fillStyle = this.$store.state.activeColorName
+            ctxZoom.fillRect(pt.x, pt.y, 1, 1)
+            paintTempPixels(pixelObj, state.activeColorName)
+          } else {
+            this.removePixelFromPaintSession(pixelObj)
+          }
+        } else {
+
+        }
+      }
 
       var scaleFactor = 1.1
       var zoom = function (clicks) {

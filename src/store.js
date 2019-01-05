@@ -35,8 +35,10 @@ const state = {
   activeColorHex: null,
   reloading: false,
   sendingTransaction: false,
-  pixelCoordArray: [],
-  colorArray: []
+  pixelCoordArray: [], // contains absolute pixel position ( y * 1000 + x)
+  intColorArray: [],
+  pixelObjArray: [], // contains array of session { x: , y: , color: <string>}
+  zoomLevel: null
 }
 
 const actions = {
@@ -91,6 +93,9 @@ const actions = {
   },
   [Actions.CLEAR_PIXEL_ARRAY] ({ commit }) {
     commit(Actions.CLEAR_PIXEL_ARRAY)
+  },
+  [Actions.SET_ZOOM_LEVEL] ({ commit }) {
+    commit(Actions.SET_ZOOM_LEVEL)
   }
 }
 
@@ -139,20 +144,26 @@ const mutations = {
   },
   [Actions.ADD_PIXEL_TO_ARRAY] (state, pixelObj) {
     state.pixelCoordArray.push((pixelObj.y * 1000) + pixelObj.x)
-    state.colorArray.push(state.activeColorInt)
+    state.intColorArray.push(state.activeColorInt)
+    state.pixelObjArray.push({x: pixelObj.x, y: pixelObj.y, color: state.activeColorName})
     console.dir(state.pixelCoordArray)
   },
   [Actions.REMOVE_PIXEL_FROM_ARRAY] (state, pixelObj) {
     let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)
     if (index > -1) {
       state.pixelCoordArray.splice(index, 1)
-      state.colorArray.splice(index, 1)
+      state.intColorArray.splice(index, 1)
+      state.pixelObjArray.splice(index, 1)
     }
   },
   [Actions.CLEAR_PIXEL_ARRAY] (state) {
     state.pixelCoordArray = []
-    state.colorArray = []
+    state.intColorArray = []
+    state.pixelObjArray = []
     console.dir(state.pixelCoordArray)
+  },
+  [Actions.SET_ZOOM_LEVEL] (state, zoomLevel) {
+    state.zoomLevel = zoomLevel
   }
 }
 

@@ -15,5 +15,6 @@ export const Actions = {
   SET_IDENTITY: 'SetIdentity',
   SET_CANVASSE: 'SetCanvasse',
   SET_CONTRACT_CONFIG: 'SetContractConfig',
-  SET_CONTRACT_ACCOUNT: 'SetContractAccount'
+  SET_CONTRACT_ACCOUNT: 'SetContractAccount',
+  SET_ZOOM_LEVEL: 'SetZoomLevel'
 }
