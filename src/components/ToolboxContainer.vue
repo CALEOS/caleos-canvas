@@ -39,5 +39,6 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #toolbox-container
-  margin 14px
+  margin auto
+  width 285px
 </style>

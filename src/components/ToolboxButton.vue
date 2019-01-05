@@ -83,6 +83,7 @@ export default {
   height 36px
   width 36px
   text-align center
+  margin 2px
   &:hover
   &.active
     border 1px #777

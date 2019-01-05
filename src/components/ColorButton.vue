@@ -55,6 +55,7 @@ export default {
   border-radius 4px
   border-style solid
   display inline-block
+  margin 2px
   height 30px
   width 30px
   opacity .6

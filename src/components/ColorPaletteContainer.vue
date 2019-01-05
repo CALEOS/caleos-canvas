@@ -100,7 +100,9 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #color-palette-container
-  margin 18px
+  margin auto
+  min-width 300px
+  max-width 550px
 .white
   background-color #FFFFFF
 .light-grey

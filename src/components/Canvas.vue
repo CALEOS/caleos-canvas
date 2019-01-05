@@ -46,6 +46,7 @@ export default {
   },
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
+    // let canvasElement = document.getElementById('zoom-canvas')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
     canvasElement.addEventListener('click', this.getPixelCoord)
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
@@ -66,6 +67,9 @@ export default {
       } finally {
         this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
         Zoom()
+        let canvasElement = document.getElementById('zoom-canvas')
+        // this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
+        canvasElement.addEventListener('click', this.getZoomPixelCoord)
       }
     },
 
@@ -77,6 +81,17 @@ export default {
         y: Math.floor(event.clientY - rect.top)
       }
       this.addPixelToPaintSession(pixelObj)
+      console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
+    },
+
+    getZoomPixelCoord (event) {
+      let canvasElement = document.getElementById('zoom-canvas')
+      let rect = canvasElement.getBoundingClientRect()
+      let pixelObj = {
+        x: event.clientX - rect.left,
+        y: Math.floor(event.clientY - rect.top)
+      }
+      // this.addPixelToPaintSession(pixelObj)
       console.log('x: ' + pixelObj.x + ' y: ' + pixelObj.y)
     },
 

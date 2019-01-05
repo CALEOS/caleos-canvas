@@ -1,8 +1,6 @@
 let Zoom = () => {
   var canvas = document.getElementById('zoom-canvas')
   canvas.width = 1000; canvas.height = 1000
-  var ball = new Image()
-
   var ctx = canvas.getContext('2d')
 
   // disable browser "smoothing" on scaling as workaround for image-rendering
