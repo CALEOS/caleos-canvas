@@ -15,8 +15,6 @@
 
 <script>
 
-import { Actions } from '../actions'
-
 export default {
   props: {
   },

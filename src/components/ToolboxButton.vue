@@ -1,6 +1,6 @@
 <template>
   <div
-    id="toolbox-button"
+    class="toolbox-button"
     :class="{active: isActive}"
     @click="selectTool()"
   >
@@ -62,9 +62,12 @@ export default {
           console.log('erase pixels')
           break
         case 'search-plus':
+          this.$root.$emit('zoom-in')
+
           console.log('zoom in')
           break
         case 'search-minus':
+          this.$root.$emit('zoom-out')
           console.log('zoom out')
           break
         case 'expand':
@@ -80,7 +83,7 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-#toolbox-button
+.toolbox-button
   border 1px #999
   border-radius 4px
   border-style solid

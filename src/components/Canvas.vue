@@ -151,6 +151,7 @@ export default {
     createZoomCanvas () {
       let state = this.$store.state
       var canvas = document.getElementById('zoom-canvas')
+
       canvas.width = 1000; canvas.height = 1000
       var ctx = canvas.getContext('2d')
 
@@ -189,18 +190,18 @@ export default {
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
-      canvas.removeEventListener("mousedown", mouseDownfunction);
+      canvas.removeEventListener('mousedown', mouseDownfunction)
       canvas.addEventListener('mousedown', mouseDownfunction, false)
-      function mouseDownfunction(evt) {
+      function mouseDownfunction (evt) {
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragStart = ctx.transformedPoint(lastX, lastY)
         dragged = false
       }
-      canvas.removeEventListener("mousemove", mouseMoveFunction);
+      canvas.removeEventListener('mousemove', mouseMoveFunction)
       canvas.addEventListener('mousemove', mouseMoveFunction, false)
-      function mouseMoveFunction(evt) {
+      function mouseMoveFunction (evt) {
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragged = true
@@ -210,9 +211,9 @@ export default {
           redraw()
         }
       }
-      canvas.removeEventListener("mouseup", mouseUpFunction);
+      canvas.removeEventListener('mouseup', mouseUpFunction)
       canvas.addEventListener('mouseup', mouseUpFunction, false)
-      function mouseUpFunction(evt) {
+      function mouseUpFunction (evt) {
         dragStart = null
         // this will zoom on click, leave for now implement w/zoom buttons @TODO
         // if (!dragged) zoom(evt.shiftKey ? -1 : 1)
@@ -259,6 +260,12 @@ export default {
         ctx.translate(-pt.x, -pt.y)
         redraw()
       }
+      this.$root.$on('zoom-out', () => {
+        zoom(-1)
+      })
+      this.$root.$on('zoom-in', () => {
+        zoom(1)
+      })
 
       var handleScroll = function (evt) {
         var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0
