@@ -33,14 +33,15 @@ export default {
     this.$root.$on('cooldown', (active) => {
       let transactionButton = document.getElementsByName('share-square')
       if (active) {
-        transactionButton[0].classList.remove('green')
-        transactionButton[0].className += ' red'
+        transactionButton[0].classList.remove('green-button')
+        transactionButton[0].className += ' red-button'
       } else if (active === false) {
-        transactionButton[0].classList.remove('red')
+        transactionButton[0].classList.remove('red-button')
 
-        transactionButton[0].className += ' green'
+        transactionButton[0].className += ' green-button'
       } else {
-        transactionButton[0].classList.remove('red').remove('green')
+        transactionButton[0].classList.remove('red-button')
+        transactionButton[0].classList.remove('green-button')
       }
     })
   },

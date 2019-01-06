@@ -18,6 +18,7 @@ import Canvasse from '../js/Canvasse'
 import { RpcError } from 'eosjs'
 import { Actions } from '../actions'
 import { mapState } from 'vuex'
+import moment from 'moment'
 
 export default {
   props: {
@@ -245,6 +246,17 @@ export default {
       canvas.removeEventListener('mouseup', mouseUpFunction)
       canvas.addEventListener('mouseup', mouseUpFunction, false)
 
+      let setTransactionButton = () => {
+        let cooldownExpires = moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown)
+        if (cooldownExpires.isBefore()) {
+          if (this.$store.state.pixelCoordArray.length) {
+            this.$root.$emit('cooldown', false)
+          } else {
+            this.$root.$emit('cooldown')
+          }
+        }
+      }
+
       let paintZoom = (event) => {
         let currentTool = this.$store.state.activeTool
         if (currentTool === 'paint-brush' || currentTool === 'eraser') {
@@ -256,7 +268,7 @@ export default {
           }
           if (currentTool === 'paint-brush') {
             this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
-            this.$root.$emit('cooldown', false)
+            setTransactionButton()
             // temporarily display selected pixel on zoom canvas, it's redrawn on transform
             var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
             var pt = svg.createSVGPoint()
