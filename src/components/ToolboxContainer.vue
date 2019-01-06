@@ -7,12 +7,11 @@
     <ToolboxButton name="paint-brush" />
     <ToolboxButton name="eraser" />
     <ToolboxButton name="expand" />
-    <ToolboxButton name="arrows-alt" />
+    <ToolboxButton name="hand-grab-o" />
     <ToolboxButton name="trash" />
     <ToolboxButton name="search-plus" />
     <ToolboxButton name="search-minus" />
     <ToolboxButton name="share-square" />
-
   </div>
 </template>
 

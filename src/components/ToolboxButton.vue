@@ -15,7 +15,7 @@
 
 // import only nec icons
 import 'vue-awesome/icons/expand'
-import 'vue-awesome/icons/arrows-alt'
+import 'vue-awesome/icons/hand-grab-o'
 import 'vue-awesome/icons/paint-brush'
 import 'vue-awesome/icons/eraser'
 import 'vue-awesome/icons/search-plus'
@@ -80,14 +80,16 @@ export default {
           this.$root.$emit('fit-screen')
           console.log('fit to screen')
           break
-        case 'arrows-alt':
+        case 'hand-grab-o':
           toggleActive()
           this.$root.$emit('cursor', 'explore-canvas')
           console.log('full screen')
           break
         case 'share-square':
           this.$root.$emit('send-transaction')
+          break
         default:
+          break
       }
     }
   }

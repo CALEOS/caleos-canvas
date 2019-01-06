@@ -1,9 +1,9 @@
 <template>
-  <div class='info-block'>
+  <div class="info-block">
     <button
       v-if="myScatter && !account"
-      @click="login"
       class="login"
+      @click="login"
     >
       Login with Scatter
     </button>
@@ -16,17 +16,16 @@
       <button @click="logout">
         Logout
       </button>
-
     </section>
     <section>
       <span v-if="myScatter && account">
         Lifetime pixels: {{ lifetimePixels }}
       </span>
       <section>
-      <span v-if="cooldownMessage">
-        {{ cooldownMessage }}
-      </span>
-    </section>
+        <span v-if="cooldownMessage">
+          {{ cooldownMessage }}
+        </span>
+      </section>
     </section>
     <span v-if="mySendingTransaction">
       Sending transaction...

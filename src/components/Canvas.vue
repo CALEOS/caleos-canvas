@@ -203,35 +203,41 @@ export default {
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
-      canvas.removeEventListener('mousedown', mouseDownfunction)
-      canvas.addEventListener('mousedown', mouseDownfunction, false)
-      function mouseDownfunction (evt) {
+
+      let mouseDownfunction = (evt) => {
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragStart = ctx.transformedPoint(lastX, lastY)
         dragged = false
       }
-      canvas.removeEventListener('mousemove', mouseMoveFunction)
-      canvas.addEventListener('mousemove', mouseMoveFunction, false)
-      function mouseMoveFunction (evt) {
+      canvas.removeEventListener('mousedown', mouseDownfunction)
+      canvas.addEventListener('mousedown', mouseDownfunction, false)
+
+      let mouseMoveFunction = (evt) => {
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragged = true
         if (dragStart) {
-          var pt = ctx.transformedPoint(lastX, lastY)
-          ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y)
-          redraw()
+          let currentTool = this.$store.state.activeTool
+          if (currentTool === 'paint-brush') {
+            paintZoom(evt)
+          } else if (currentTool === 'hand-grab-o') {
+            var pt = ctx.transformedPoint(lastX, lastY)
+            ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y)
+            redraw()
+          }
         }
+      }
+      canvas.removeEventListener('mousemove', mouseMoveFunction)
+      canvas.addEventListener('mousemove', mouseMoveFunction, false)
+
+      let mouseUpFunction = (evt) => {
+        dragStart = null
+        if (!dragged) paintZoom(evt)
       }
       canvas.removeEventListener('mouseup', mouseUpFunction)
       canvas.addEventListener('mouseup', mouseUpFunction, false)
-      function mouseUpFunction (evt) {
-        dragStart = null
-        // this will zoom on click, leave for now implement w/zoom buttons @TODO
-        // if (!dragged) zoom(evt.shiftKey ? -1 : 1)
-        if (!dragged) paintZoom(evt)
-      }
 
       let paintZoom = (event) => {
         let currentTool = this.$store.state.activeTool
