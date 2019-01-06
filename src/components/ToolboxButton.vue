@@ -51,6 +51,7 @@ export default {
       switch (this.name) {
         case 'trash':
           this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
+          this.$root.$emit('fit-screen', true)
           console.log('clearing draw canvas')
           break
         case 'paint-brush':
