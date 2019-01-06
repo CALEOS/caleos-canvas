@@ -40,10 +40,12 @@ export default {
   },
   methods: {
     selectTool: function (event) {
-      if (this.$store.state.activeTool === this.name) {
-        this.$store.dispatch(Actions.SET_ACTIVE_TOOL, null)
-      } else {
-        this.$store.dispatch(Actions.SET_ACTIVE_TOOL, this.name)
+      let toggleActive = () => {
+        if (this.$store.state.activeTool === this.name) {
+          this.$store.dispatch(Actions.SET_ACTIVE_TOOL, null)
+        } else {
+          this.$store.dispatch(Actions.SET_ACTIVE_TOOL, this.name)
+        }
       }
       switch (this.name) {
         case 'trash':
@@ -51,6 +53,7 @@ export default {
           console.log('clearing draw canvas')
           break
         case 'pencil':
+          toggleActive()
           if (this.$store.state.activeColorInt === null) {
             this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
             this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
@@ -59,6 +62,7 @@ export default {
           console.log('draw pixels')
           break
         case 'eraser':
+          toggleActive()
           console.log('erase pixels')
           break
         case 'search-plus':
@@ -74,6 +78,7 @@ export default {
           console.log('fit to screen')
           break
         case 'arrows-alt':
+          toggleActive()
           console.log('full screen')
           break
         default:
