@@ -24,7 +24,7 @@
       id="y-axis"
       v-model="y"
     > -->
-    <!-- <Coordinates /> -->
+    <Coordinates />
   </div>
 </template>
 
@@ -33,11 +33,11 @@
 
 import { mapState } from 'vuex'
 import {Actions} from '../actions'
-// import Coordinates from './Coordinates.vue'
+import Coordinates from './Coordinates.vue'
 
 export default {
   components: {
-    // Coordinates
+    Coordinates
   },
   data: function () {
     return {
