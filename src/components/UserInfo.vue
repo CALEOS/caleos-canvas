@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class='info-block'>
     <button
       v-if="myScatter && !account"
       @click="login"
@@ -22,9 +22,11 @@
       <span v-if="myScatter && account">
         Lifetime pixels: {{ lifetimePixels }}
       </span>
+      <section>
       <span v-if="cooldownMessage">
         {{ cooldownMessage }}
       </span>
+    </section>
     </section>
     <span v-if="mySendingTransaction">
       Sending transaction...
@@ -152,21 +154,23 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.login
 button
-  border 1px #999
+  font-size medium
+  border 1px #32b2fb
   border-radius 4px
   border-style solid
   display inline-block
-  height 36px
+  height 23px
   text-align center
   margin 2px
+  color:white
+  background-color #4fc8fb
   &:hover
-    border 1px #777
-    border-style solid
-    color #777
-    -webkit-filter: invert(100%)
-    filter invert(100%)
+    border 1px #32b2fb
+    color white
+    background-color #32b2fb
     cursor pointer
-.login
-  margin-top -100px
+.info-block
+  font 400 16px Arial
  </style>
