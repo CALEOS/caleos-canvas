@@ -30,3 +30,20 @@ body
   -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
   display:none
 }
+
+.grabbable {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.grabbable:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.eraser-pointer {
+  cursor: url('../static/img/eraser.png'), auto;
+}

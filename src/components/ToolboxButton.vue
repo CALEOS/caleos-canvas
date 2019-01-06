@@ -54,6 +54,7 @@ export default {
           break
         case 'pencil':
           toggleActive()
+          this.$root.$emit('cursor', 'paint')
           if (this.$store.state.activeColorInt === null) {
             this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
             this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
@@ -63,6 +64,7 @@ export default {
           break
         case 'eraser':
           toggleActive()
+          this.$root.$emit('cursor', 'eraser')
           console.log('erase pixels')
           break
         case 'search-plus':
@@ -79,6 +81,7 @@ export default {
           break
         case 'arrows-alt':
           toggleActive()
+          this.$root.$emit('cursor', 'explore-canvas')
           console.log('full screen')
           break
         default:

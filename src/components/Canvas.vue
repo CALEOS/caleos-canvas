@@ -49,6 +49,16 @@ export default {
     this.$root.$on('fit-screen', () => {
       this.createZoomCanvas()
     })
+    this.$root.$on('cursor', (pointer) => {
+      let canvasElement = document.getElementById('zoom-canvas')
+      if (pointer === 'eraser') {
+        canvasElement.className = ' eraser-pointer'
+      } else if (pointer === 'explore-canvas') {
+        canvasElement.className = ' grabbable'
+      } else {
+        canvasElement.className = ''
+      }
+    })
   },
 
   methods: {
