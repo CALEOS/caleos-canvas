@@ -67,7 +67,6 @@ export default {
           break
         case 'search-plus':
           this.$root.$emit('zoom-in')
-
           console.log('zoom in')
           break
         case 'search-minus':
@@ -75,6 +74,7 @@ export default {
           console.log('zoom out')
           break
         case 'expand':
+          this.$root.$emit('fit-screen')
           console.log('fit to screen')
           break
         case 'arrows-alt':
