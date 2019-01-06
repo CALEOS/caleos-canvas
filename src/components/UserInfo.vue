@@ -119,7 +119,7 @@ export default {
         this.cooldownMessage = 'Cooldown complete, time to paint!'
       } else {
         this.$root.$emit('cooldown', true)
-        this.cooldownMessage = `Can paint again in ${cooldownExpires.countdown().toString()}`
+        this.cooldownMessage = `Paint again in ${cooldownExpires.countdown().toString()}...`
         if (!this.cooldownInterval) {
           this.cooldownInterval = setInterval(this.setCooldownMessage, 1000)
         }
