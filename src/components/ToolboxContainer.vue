@@ -35,10 +35,12 @@ export default {
       if (active) {
         transactionButton[0].classList.remove('green')
         transactionButton[0].className += ' red'
-      } else {
+      } else if (active === false) {
         transactionButton[0].classList.remove('red')
 
         transactionButton[0].className += ' green'
+      } else {
+        transactionButton[0].classList.remove('red').remove('green')
       }
     })
   },

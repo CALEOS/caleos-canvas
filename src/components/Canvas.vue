@@ -85,6 +85,9 @@ export default {
     removePixelFromPaintSession (pixelObj) {
       this.$store.dispatch(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
       console.dir(this.$store.state.pixelCoordArray)
+      if (this.$store.state.pixelCoordArray.length === 0) {
+        this.$root.$emit('cooldown')
+      }
     },
 
     async sendActions (actions) {
@@ -253,6 +256,7 @@ export default {
           }
           if (currentTool === 'paint-brush') {
             this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+            this.$root.$emit('cooldown', false)
             // temporarily display selected pixel on zoom canvas, it's redrawn on transform
             var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
             var pt = svg.createSVGPoint()

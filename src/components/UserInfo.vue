@@ -114,7 +114,11 @@ export default {
 
       let cooldownExpires = moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown)
       if (cooldownExpires.isBefore()) {
-        this.$root.$emit('cooldown', false)
+        if (this.$store.state.pixelCoordArray.length) {
+          this.$root.$emit('cooldown', false)
+        } else {
+          this.$root.$emit('cooldown')
+        }
         this.cooldownInterval = null
         this.cooldownMessage = 'Cooldown complete, time to paint!'
       } else {
