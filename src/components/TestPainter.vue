@@ -1,10 +1,10 @@
 <template>
   <div v-if="myScatter && account">
-    <button
+    <!-- <button
       @click="paintMultiplePixels"
     >
       Paint!
-    </button>
+    </button> -->
     <!-- <button
       @click="paintPixel"
     >
@@ -24,7 +24,7 @@
       id="y-axis"
       v-model="y"
     > -->
-    <Coordinates />
+    <!-- <Coordinates /> -->
   </div>
 </template>
 
@@ -54,6 +54,11 @@ export default {
       return this.$store.state.scatter.identity.accounts[0]
     }
 
+  },
+  mounted () {
+    this.$root.$on('send-transaction', () => {
+      this.paintMultiplePixels()
+    })
   },
   methods: {
     async paintMultiplePixels () {

@@ -16,11 +16,12 @@
 // import only nec icons
 import 'vue-awesome/icons/expand'
 import 'vue-awesome/icons/arrows-alt'
-import 'vue-awesome/icons/pencil'
+import 'vue-awesome/icons/paint-brush'
 import 'vue-awesome/icons/eraser'
 import 'vue-awesome/icons/search-plus'
 import 'vue-awesome/icons/search-minus'
 import 'vue-awesome/icons/trash'
+import 'vue-awesome/icons/share-square'
 
 import Icon from 'vue-awesome/components/Icon.vue'
 import { Actions } from '../actions.js'
@@ -52,7 +53,7 @@ export default {
           this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
           console.log('clearing draw canvas')
           break
-        case 'pencil':
+        case 'paint-brush':
           toggleActive()
           this.$root.$emit('cursor', 'paint')
           if (this.$store.state.activeColorInt === null) {
@@ -84,6 +85,8 @@ export default {
           this.$root.$emit('cursor', 'explore-canvas')
           console.log('full screen')
           break
+        case 'share-square':
+          this.$root.$emit('send-transaction')
         default:
       }
     }

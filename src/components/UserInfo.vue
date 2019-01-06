@@ -3,6 +3,7 @@
     <button
       v-if="myScatter && !account"
       @click="login"
+      class="login"
     >
       Login with Scatter
     </button>
@@ -10,13 +11,17 @@
       v-if="myScatter && account"
       class="user-info"
     >
-      <span>Logged in as: {{ account.name }}</span>
-      <span>
-        Lifetime pixels: {{ lifetimePixels }}
-      </span>
+      <span>Hi, {{ account.name }}!</span>
+
       <button @click="logout">
         Logout
       </button>
+
+    </section>
+    <section>
+      <span v-if="myScatter && account">
+        Lifetime pixels: {{ lifetimePixels }}
+      </span>
       <span v-if="cooldownMessage">
         {{ cooldownMessage }}
       </span>
@@ -146,6 +151,22 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style lang="stylus" scoped>
+button
+  border 1px #999
+  border-radius 4px
+  border-style solid
+  display inline-block
+  height 36px
+  text-align center
+  margin 2px
+  &:hover
+    border 1px #777
+    border-style solid
+    color #777
+    -webkit-filter: invert(100%)
+    filter invert(100%)
+    cursor pointer
+.login
+  margin-top -100px
+ </style>

@@ -235,14 +235,14 @@ export default {
 
       let paintZoom = (event) => {
         let currentTool = this.$store.state.activeTool
-        if (currentTool === 'pencil' || currentTool === 'eraser') {
+        if (currentTool === 'paint-brush' || currentTool === 'eraser') {
           let canvasElement = document.getElementById('zoom-canvas')
           let rect = canvasElement.getBoundingClientRect()
           let pixelObj = {
             x: Math.floor(event.clientX - rect.left),
             y: Math.floor(event.clientY - rect.top)
           }
-          if (currentTool === 'pencil') {
+          if (currentTool === 'paint-brush') {
             this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
             // temporarily display selected pixel on zoom canvas, it's redrawn on transform
             var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')

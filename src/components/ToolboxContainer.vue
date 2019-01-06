@@ -4,13 +4,15 @@
     ref="toolbox-container"
     @click="triggerEvent()"
   >
+    <ToolboxButton name="paint-brush" />
+    <ToolboxButton name="eraser" />
     <ToolboxButton name="expand" />
     <ToolboxButton name="arrows-alt" />
-    <ToolboxButton name="pencil" />
-    <ToolboxButton name="eraser" />
+    <ToolboxButton name="trash" />
     <ToolboxButton name="search-plus" />
     <ToolboxButton name="search-minus" />
-    <ToolboxButton name="trash" />
+    <ToolboxButton name="share-square" />
+
   </div>
 </template>
 
@@ -40,5 +42,5 @@ export default {
 <style lang="stylus" scoped>
 #toolbox-container
   margin auto
-  width 285px
+  width 324px
 </style>
