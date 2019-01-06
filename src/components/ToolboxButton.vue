@@ -2,6 +2,7 @@
   <div
     class="toolbox-button"
     :class="{active: isActive}"
+    :name="name"
     @click="selectTool()"
   >
     <Icon
@@ -98,7 +99,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .toolbox-button
-  border 1px #999
+  box-shadow lightgray 3px 3px 5px
   border-radius 4px
   border-style solid
   display inline-block
@@ -108,12 +109,12 @@ export default {
   margin 2px
   &:hover
   &.active
-    border 1px #777
-    border-style solid
-    color #777
-    -webkit-filter: invert(100%)
-    filter invert(100%)
-    cursor pointer
+   border 1px #777
+   border-style solid
+   color #777
+   -webkit-filter: invert(100%)
+   filter invert(100%)
+   cursor pointer
 svg
   fill #999
   margin-top 2px

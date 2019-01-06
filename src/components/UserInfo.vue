@@ -11,7 +11,7 @@
       v-if="myScatter && account"
       class="user-info"
     >
-      <span>Hi, {{ account.name }}!</span>
+      <span>Account: <b>{{ account.name }}</b></span>
 
       <button @click="logout">
         Logout
@@ -22,7 +22,7 @@
         Lifetime pixels: {{ lifetimePixels }}
       </span>
       <section>
-        <span v-if="cooldownMessage">
+        <span v-if="cooldownMessage && myScatter && account">
           {{ cooldownMessage }}
         </span>
       </section>
@@ -114,9 +114,11 @@ export default {
 
       let cooldownExpires = moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown)
       if (cooldownExpires.isBefore()) {
+        this.$root.$emit('cooldown', false)
         this.cooldownInterval = null
         this.cooldownMessage = 'Cooldown complete, time to paint!'
       } else {
+        this.$root.$emit('cooldown', true)
         this.cooldownMessage = `Can paint again in ${cooldownExpires.countdown().toString()}`
         if (!this.cooldownInterval) {
           this.cooldownInterval = setInterval(this.setCooldownMessage, 1000)
@@ -165,6 +167,8 @@ button
   margin 2px
   color:white
   background-color #4fc8fb
+  box-shadow #777 3px 3px 5px
+
   &:hover
     border 1px #32b2fb
     color white
@@ -172,4 +176,6 @@ button
     cursor pointer
 .info-block
   font 400 16px Arial
+  margin-left 12px
+  margin-top -30px
  </style>

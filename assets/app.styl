@@ -8,18 +8,24 @@ body
 
 #header
 #footer
-.toolbox-button
   box-sizing border-box
-  // box-shadow lightgray 3px 3px 5px
+  border 1px #999
   width 100%
   margin-bottom 4px;
+
+.toolbox-button
+  box-sizing border-box
+  border 1px #999
+  width 100%
+  margin-bottom 4px
+
 
 #place
   flex 2
   overflow auto
   text-align: center;
 
-.place-canvas {
+.place-canvas
   image-rendering:optimizeSpeed;             /* Legal fallback */
   image-rendering:-moz-crisp-edges;          /* Firefox        */
   image-rendering:-o-crisp-edges;            /* Opera          */
@@ -29,25 +35,49 @@ body
   image-rendering:pixelated;                 /* CSS4 Proposed  */
   -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
   display:none
-}
 
-.grabbable {
+.grabbable
     cursor: move;
     cursor: grab;
     cursor: -moz-grab;
     cursor: -webkit-grab;
-}
 
-.grabbable:active {
+.grabbable:active
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
-}
 
-.eraser-pointer {
+.eraser-pointer
   cursor: url('../static/img/eraser.png'), auto;
-}
 
-.user-info{
+.user-info
   margin-top -40px
-}
+
+.green
+  border 1px #02BE01
+  opacity .6
+  &:hover
+    opacity 1
+    border 1px #02BE01 !important
+    color #02BE01
+    -webkit-filter: invert(0%) !important
+    filter invert(0%) !important
+    box-shadow #777 3px 3px 5px
+    border-style solid
+  svg
+    fill #02BE01
+
+.red
+  pointer-events none
+  border 1px #E50000
+  opacity .6
+  &:hover
+    opacity 1
+    border 1px #E50000 !important
+    color #E50000
+    -webkit-filter: invert(0%) !important
+    filter invert(0%) !important
+    box-shadow #777 3px 3px 5px
+    border-style solid
+  svg
+    fill #E50000

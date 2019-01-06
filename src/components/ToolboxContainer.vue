@@ -29,11 +29,25 @@ export default {
       required: true
     }
   },
+  mounted () {
+    this.$root.$on('cooldown', (active) => {
+      let transactionButton = document.getElementsByName('share-square')
+      if (active) {
+        transactionButton[0].classList.remove('green')
+        transactionButton[0].className += ' red'
+      } else {
+        transactionButton[0].classList.remove('red')
+
+        transactionButton[0].className += ' green'
+      }
+    })
+  },
   methods: {
     triggerEvent: function (e) {
       this.$store.dispatch(Actions.INCREMENT)
       console.log(this.$store.state.count)
     }
+
   }
 }
 
