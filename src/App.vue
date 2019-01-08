@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
     <HeaderContainer name="" />
+    <UserInfo name="user-info" />
+    <TestPainter name="test-painter" />
     <CanvasContainer name=" pixels" />
     <FooterContainer name="" />
   </div>
@@ -13,6 +15,8 @@ import { Actions } from './actions'
 
 import 'babel-polyfill'
 import HeaderContainer from './components/Header.vue'
+import UserInfo from './components/UserInfo.vue'
+import TestPainter from './components/TestPainter'
 import CanvasContainer from './components/Canvas.vue'
 import FooterContainer from './components/Footer.vue'
 import {Api} from 'eosjs'
@@ -21,6 +25,8 @@ ScatterJS.plugins(new ScatterEOS())
 export default {
   components: {
     HeaderContainer,
+    UserInfo,
+    TestPainter,
     CanvasContainer,
     FooterContainer
   },

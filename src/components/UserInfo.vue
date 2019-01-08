@@ -17,7 +17,7 @@
         Logout
       </button>
     </section>
-    <section>
+    <section class="cooldown-div">
       <span v-if="myScatter && account">
         Lifetime pixels: {{ lifetimePixels }}
       </span>
@@ -181,5 +181,4 @@ button
 .info-block
   font 400 16px Arial
   margin-left 12px
-  margin-top -30px
  </style>

@@ -1,5 +1,8 @@
 <template>
-  <div v-if="myScatter && account">
+  <div
+    v-if="myScatter && account"
+    class="test-painter"
+  >
     <!-- <button
       @click="paintMultiplePixels"
     >

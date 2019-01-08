@@ -5,56 +5,45 @@ body
   flex-flow column
   height 100%
   margin 0
+  background-color lightgray
 
 #coordinates
   margin-left 12px
+  width 200px
+  float left
 
-#header
 #footer
+#header
   box-sizing border-box
   border 1px #999
   width 100%
-  margin-bottom 4px;
-
-.toolbox-button
-  box-sizing border-box
-  border 1px #999
-  width 100%
-  margin-bottom 4px
-
+  background-color lightgray
+  height 43px
 
 #place
   flex 2
   overflow auto
   text-align: center;
+  background-color lightgray
+  margin-top -40px
 
-.place-canvas
-  image-rendering:optimizeSpeed;             /* Legal fallback */
-  image-rendering:-moz-crisp-edges;          /* Firefox        */
-  image-rendering:-o-crisp-edges;            /* Opera          */
-  image-rendering:-webkit-optimize-contrast; /* Safari         */
-  image-rendering:optimize-contrast;         /* CSS3 Proposed  */
-  image-rendering:crisp-edges;               /* CSS4 Proposed  */
-  image-rendering:pixelated;                 /* CSS4 Proposed  */
-  -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
-  display:none
-
-.grabbable
-    cursor: move;
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-
-.grabbable:active
-    cursor: grabbing;
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
+.cooldown-div
+  width 300px
+  float left
 
 .eraser-pointer
   cursor: url('../static/img/eraser.png'), auto;
 
-.user-info
-  margin-top -40px
+.grabbable
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+
+.grabbable:active
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 
 .green-button
   border 1px #02BE01
@@ -70,6 +59,30 @@ body
   svg
     fill #02BE01
 
+.info-block
+  margin-top -40px
+  width 300px
+  float left
+  z-index 999
+
+.place-canvas
+  image-rendering:optimizeSpeed;             /* Legal fallback */
+  image-rendering:-moz-crisp-edges;          /* Firefox        */
+  image-rendering:-o-crisp-edges;            /* Opera          */
+  image-rendering:-webkit-optimize-contrast; /* Safari         */
+  image-rendering:optimize-contrast;         /* CSS3 Proposed  */
+  image-rendering:crisp-edges;               /* CSS4 Proposed  */
+  image-rendering:pixelated;                 /* CSS4 Proposed  */
+  -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
+  display:none
+
+.toolbox-button
+  box-sizing border-box
+  border 1px #999
+  width 100%
+  margin-bottom 4px
+  background-color white
+
 .red-button
   pointer-events none
   border 1px #E50000
@@ -84,3 +97,8 @@ body
     border-style solid
   svg
     fill #E50000
+
+.test-painter
+    width 100px
+    float left
+    z-index 999

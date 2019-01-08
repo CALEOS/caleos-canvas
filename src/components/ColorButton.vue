@@ -62,6 +62,7 @@ export default {
   &:hover
   &.active
     border 1px #777
+    box-shadow black 3px 3px 5px
     border-style solid
     opacity 1
     cursor pointer

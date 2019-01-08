@@ -99,7 +99,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .toolbox-button
-  box-shadow lightgray 3px 3px 5px
+  box-shadow #999 3px 3px 5px
   border-radius 4px
   border-style solid
   display inline-block
@@ -112,11 +112,14 @@ export default {
    border 1px #777
    border-style solid
    color #777
-   -webkit-filter: invert(100%)
-   filter invert(100%)
+   box-shadow black 3px 3px 5px
    cursor pointer
 svg
   fill #999
   margin-top 2px
   text-align center
+  &:hover
+  &.active
+   -webkit-filter: invert(100%)
+   filter invert(100%)
 </style>

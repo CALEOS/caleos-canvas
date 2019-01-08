@@ -103,6 +103,7 @@ export default {
   margin auto
   min-width 300px
   max-width 550px
+  margin-top 4px
 .white
   background-color #FFFFFF
 .light-grey
