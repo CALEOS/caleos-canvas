@@ -56,16 +56,6 @@ export default {
       }
       this.createZoomCanvas()
     })
-    this.$root.$on('cursor', (pointer) => {
-      let canvasElement = document.getElementById('zoom-canvas')
-      if (pointer === 'eraser') {
-        canvasElement.className = ' eraser-pointer'
-      } else if (pointer === 'explore-canvas') {
-        canvasElement.className = ' grabbable'
-      } else {
-        canvasElement.className = ''
-      }
-    })
   },
 
   methods: {
@@ -92,40 +82,6 @@ export default {
       if (this.$store.state.pixelCoordArray.length === 0) {
         this.$root.$emit('cooldown')
       }
-    },
-
-    async sendActions (actions) {
-      try {
-        this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
-        return this.myApi.transact({
-          actions: actions
-        }, {
-          blocksBehind: 3,
-          expireSeconds: 30
-        })
-      } catch (err) {
-        console.log('\nCaught exception: ' + err)
-        if (err instanceof RpcError) { console.log(JSON.stringify(err.json, null, 2)) }
-      } finally {
-        this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
-      }
-    },
-
-    async setPixel (x, y, color) {
-      let pixelId = (y * 1000) + x
-      return this.sendActions([{
-        account: this.contract,
-        name: 'setpixel',
-        authorization: [{
-          actor: this.testuser,
-          permission: 'active'
-        }],
-        data: {
-          account: this.testuser,
-          pixel: pixelId,
-          color: color
-        }
-      }])
     },
 
     async getPixelsRaw () {
@@ -205,7 +161,7 @@ export default {
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
       }
 
-      redraw()
+      // redraw()
 
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
@@ -234,7 +190,7 @@ export default {
         let left = window.getComputedStyle(canvas).getPropertyValue('left')
         canvas.style.left = parseInt(left, 10) + moveX + 'px'
         canvas.style.top = parseInt(top, 10) + moveY + 'px'
-        redraw()
+        // redraw()
       }
 
       canvas.removeEventListener('mousemove', mouseMoveFunction)
