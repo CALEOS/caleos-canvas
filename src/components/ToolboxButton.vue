@@ -16,9 +16,6 @@
 
 // import only nec icons
 import 'vue-awesome/icons/expand'
-import 'vue-awesome/icons/hand-grab-o'
-import 'vue-awesome/icons/paint-brush'
-import 'vue-awesome/icons/eraser'
 import 'vue-awesome/icons/search-plus'
 import 'vue-awesome/icons/search-minus'
 import 'vue-awesome/icons/trash'
@@ -55,21 +52,6 @@ export default {
           this.$root.$emit('fit-screen', true)
           console.log('clearing draw canvas')
           break
-        case 'paint-brush':
-          toggleActive()
-          this.$root.$emit('cursor', 'paint')
-          if (this.$store.state.activeColorInt === null) {
-            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
-            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
-            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
-          }
-          console.log('draw pixels')
-          break
-        case 'eraser':
-          toggleActive()
-          this.$root.$emit('cursor', 'eraser')
-          console.log('erase pixels')
-          break
         case 'search-plus':
           this.$root.$emit('zoom-in')
           console.log('zoom in')
@@ -81,11 +63,6 @@ export default {
         case 'expand':
           this.$root.$emit('fit-screen')
           console.log('fit to screen')
-          break
-        case 'hand-grab-o':
-          toggleActive()
-          this.$root.$emit('cursor', 'explore-canvas')
-          console.log('full screen')
           break
         case 'share-square':
           this.$root.$emit('send-transaction')

@@ -1,15 +1,12 @@
 <template>
   <div id="header">
-    <ToolboxContainer name="toolbox container" />
   </div>
 </template>
 <script>
 
-import ToolboxContainer from './ToolboxContainer.vue'
 
 export default {
   components: {
-    ToolboxContainer
 
   },
   props: {

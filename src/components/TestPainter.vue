@@ -3,30 +3,6 @@
     v-if="myScatter && account"
     class="test-painter"
   >
-    <!-- <button
-      @click="paintMultiplePixels"
-    >
-      Paint!
-    </button> -->
-    <!-- <button
-      @click="paintPixel"
-    >
-      Paint Pixel (inputs)
-    </button>
-    <label for="x-axis">
-      X
-    </label>
-    <input
-      id="x-axis"
-      v-model="x"
-    >
-    <label for="y-axis">
-      Y
-    </label>
-    <input
-      id="y-axis"
-      v-model="y"
-    > -->
     <Coordinates />
   </div>
 </template>
@@ -85,32 +61,6 @@ export default {
         expireSeconds: 30
       })
       this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
-      this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
-      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
-    },
-    async paintPixel () {
-      let color = this.$store.state.activeColorInt
-      let x = parseInt(this.x, 10)
-      let y = parseInt(this.y, 10)
-      this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
-      await this.$store.state.api.transact({
-        actions: [{
-          account: this.$store.state.contract,
-          name: 'setpixel',
-          authorization: [{
-            actor: this.account.name,
-            permission: 'active'
-          }],
-          data: {
-            account: this.account.name,
-            pixel: (y * 1000) + x,
-            color: color
-          }
-        }
-        ]}, {
-        blocksBehind: 3,
-        expireSeconds: 30
-      })
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
     }

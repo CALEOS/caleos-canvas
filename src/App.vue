@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <HeaderContainer name="" />
+    <!-- <HeaderContainer name="" /> -->
     <UserInfo name="user-info" />
     <TestPainter name="test-painter" />
     <CanvasContainer name=" pixels" />

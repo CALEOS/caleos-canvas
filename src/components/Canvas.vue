@@ -7,8 +7,11 @@
       id="place-canvasse"
       class="place-canvas"
     />
-
-    <canvas id="zoom-canvas" />
+    <canvas
+      id="zoom-canvas"
+      width="1000"
+      height="1000"
+    />
   </div>
 </template>
 
@@ -170,12 +173,9 @@ export default {
 
     createZoomCanvas () {
       let state = this.$store.state
-      var canvas = document.getElementById('zoom-canvas')
+      let canvas = document.getElementById('zoom-canvas')
+      let ctx = canvas.getContext('2d')
 
-      canvas.width = 1000; canvas.height = 1000
-      var ctx = canvas.getContext('2d')
-
-      // disable browser "smoothing" on scaling as workaround for image-rendering
       ctx.mozImageSmoothingEnabled = false
       ctx.webkitImageSmoothingEnabled = false
       ctx.msImageSmoothingEnabled = false
@@ -222,25 +222,27 @@ export default {
       canvas.addEventListener('mousedown', mouseDownfunction, false)
 
       let mouseMoveFunction = (evt) => {
+        if (!dragStart) return
+        canvas.className = ' grabbable'
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragged = true
-        if (dragStart) {
-          let currentTool = this.$store.state.activeTool
-          if (currentTool === 'paint-brush') {
-            paintZoom(evt)
-          } else if (currentTool === 'hand-grab-o') {
-            var pt = ctx.transformedPoint(lastX, lastY)
-            ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y)
-            redraw()
-          }
-        }
+        var pt = ctx.transformedPoint(lastX, lastY)
+        let moveX = pt.x - dragStart.x
+        let moveY = pt.y - dragStart.y
+        let top = window.getComputedStyle(canvas).getPropertyValue('top')
+        let left = window.getComputedStyle(canvas).getPropertyValue('left')
+        canvas.style.left = parseInt(left, 10) + moveX + 'px'
+        canvas.style.top = parseInt(top, 10) + moveY + 'px'
+        redraw()
       }
+
       canvas.removeEventListener('mousemove', mouseMoveFunction)
       canvas.addEventListener('mousemove', mouseMoveFunction, false)
 
       let mouseUpFunction = (evt) => {
         dragStart = null
+        canvas.className = ''
         if (!dragged) paintZoom(evt)
       }
       canvas.removeEventListener('mouseup', mouseUpFunction)
@@ -258,15 +260,19 @@ export default {
       }
 
       let paintZoom = (event) => {
+        debugger;
         let currentTool = this.$store.state.activeTool
-        if (currentTool === 'paint-brush' || currentTool === 'eraser') {
+        if (this.$store.state.activeColorInt === null) {
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
+        }
           let canvasElement = document.getElementById('zoom-canvas')
           let rect = canvasElement.getBoundingClientRect()
           let pixelObj = {
             x: Math.floor(event.clientX - rect.left),
             y: Math.floor(event.clientY - rect.top)
           }
-          if (currentTool === 'paint-brush') {
             this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
             setTransactionButton()
             // temporarily display selected pixel on zoom canvas, it's redrawn on transform
@@ -281,12 +287,6 @@ export default {
             ctxZoom.fillStyle = this.$store.state.activeColorName
             ctxZoom.fillRect(pt.x, pt.y, 1, 1)
             paintTempPixels(pixelObj, state.activeColorName)
-          } else {
-            this.removePixelFromPaintSession(pixelObj)
-          }
-        } else {
-
-        }
       }
 
       var scaleFactor = 1.1
@@ -294,9 +294,14 @@ export default {
         var pt = ctx.transformedPoint(lastX, lastY)
         ctx.translate(pt.x, pt.y)
         var factor = Math.pow(scaleFactor, clicks)
+        canvas.width *= factor ;
+        canvas.height *= factor
         ctx.scale(factor, factor)
-        ctx.translate(-pt.x, -pt.y)
+        debugger
+        // ctx.translate(-pt.x, -pt.y)
+
         redraw()
+
       }
       this.$root.$on('zoom-out', () => {
         zoom(-1)
