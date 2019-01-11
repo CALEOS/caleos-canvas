@@ -19,7 +19,7 @@
     </section>
     <section class="cooldown-div">
       <span v-if="myScatter && account">
-        Lifetime pixels: {{ lifetimePixels }}
+        Lifetime paint actions: {{ lifetimePixels }}
       </span>
       <section>
         <span v-if="cooldownMessage && myScatter && account">

@@ -18,7 +18,7 @@
 <script>
 
 import Canvasse from '../js/Canvasse'
-import { RpcError } from 'eosjs'
+// import { RpcError } from 'eosjs'
 import { Actions } from '../actions'
 import { mapState } from 'vuex'
 import moment from 'moment'
@@ -205,7 +205,7 @@ export default {
       canvas.addEventListener('mouseup', mouseUpFunction, false)
 
       let setTransactionButton = () => {
-        let cooldownExpires = moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown)
+        let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
         if (cooldownExpires.isBefore()) {
           if (this.$store.state.pixelCoordArray.length) {
             this.$root.$emit('cooldown', false)
