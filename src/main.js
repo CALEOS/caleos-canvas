@@ -8,6 +8,7 @@ import 'vue-awesome/icons/flag'
 import { store } from './store'
 
 Vue.use(Vuex)
+Vue.use(require('vue-shortkey'))
 
 /* eslint-disable-next-line no-new */
 new Vue({

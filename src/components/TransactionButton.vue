@@ -38,6 +38,12 @@ export default {
     }
 
   },
+  mounted () {
+    this.$root.$on('trigger-transaction', () => {
+      this.sendTransaction()
+    })
+  },
+
   methods: {
     async sendTransaction () {
       this.$root.$emit('send-transaction')

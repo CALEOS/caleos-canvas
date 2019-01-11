@@ -3,6 +3,18 @@
     <UserInfo name="user-info" />
     <CanvasContainer name=" pixels" />
     <FooterContainer name="" />
+    <button
+      v-shortkey.once="['-']"
+      @shortkey="zoomOut()"
+    />
+    <button
+      v-shortkey.once="['+']"
+      @shortkey="zoomIn()"
+    />
+    <button
+      v-shortkey.once="['enter']"
+      @shortkey="sendTransaction()"
+    />
   </div>
 </template>
 
@@ -71,6 +83,15 @@ export default {
       if (configResponse.rows.length) {
         this.$store.dispatch(Actions.SET_CONTRACT_CONFIG, configResponse.rows[0])
       }
+    },
+    zoomOut () {
+      this.$root.$emit('zoom-out')
+    },
+    zoomIn () {
+      this.$root.$emit('zoom-in')
+    },
+    sendTransaction () {
+      this.$root.$emit('trigger-transaction')
     }
   }
 
