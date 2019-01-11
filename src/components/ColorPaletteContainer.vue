@@ -80,49 +80,48 @@
       hex="#820080"
       colorint="15"
     />
-    <ToolboxButton name="share-square" />
-
+    <TransactionButton name="share-square" />
   </div>
-
 </template>
 
 <script>
 import ColorButton from './ColorButton.vue'
-import ToolboxButton from './ToolboxButton.vue'
+import TransactionButton from './TransactionButton.vue'
 import { Actions } from '../actions.js'
 
 export default {
   components: {
     ColorButton,
-    ToolboxButton
+    TransactionButton
   },
   props: {
     name: {
       type: String,
       required: true
     }
-  },  mounted () {
-      this.$root.$on('cooldown', (active) => {
-        let transactionButton = document.getElementsByName('share-square')
-        if (active) {
-          transactionButton[0].classList.remove('green-button')
-          transactionButton[0].className += ' red-button'
-        } else if (active === false) {
-          transactionButton[0].classList.remove('red-button')
+  },
+  mounted () {
+    this.$root.$on('cooldown', (active) => {
+      let transactionButton = document.getElementsByName('share-square')
+      if (active) {
+        transactionButton[0].classList.remove('green-button')
+        transactionButton[0].className += ' red-button'
+      } else if (active === false) {
+        transactionButton[0].classList.remove('red-button')
 
-          transactionButton[0].className += ' green-button'
-        } else {
-          transactionButton[0].classList.remove('red-button')
-          transactionButton[0].classList.remove('green-button')
-        }
-      })
-    },
-    methods: {
-      triggerEvent: function (e) {
-        this.$store.dispatch(Actions.INCREMENT)
-        console.log(this.$store.state.count)
+        transactionButton[0].className += ' green-button'
+      } else {
+        transactionButton[0].classList.remove('red-button')
+        transactionButton[0].classList.remove('green-button')
       }
-}
+    })
+  },
+  methods: {
+    triggerEvent: function (e) {
+      this.$store.dispatch(Actions.INCREMENT)
+      console.log(this.$store.state.count)
+    }
+  }
 }
 </script>
 <style lang="stylus" scoped>

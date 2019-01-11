@@ -1,27 +1,31 @@
 <template>
   <div
-    v-if="myScatter && account"
-    class="test-painter"
+    class="toolbox-button"
+    :name="name"
+    @click="sendTransaction()"
   >
-    <Coordinates />
+    <Icon
+      :name="name"
+      :scale="2"
+    />
   </div>
 </template>
 
 <script>
-/* eslint-disable no-debugger */
 
-import { mapState } from 'vuex'
+import 'vue-awesome/icons/share-square'
+import Icon from 'vue-awesome/components/Icon.vue'
 import {Actions} from '../actions'
-import Coordinates from './Coordinates.vue'
+import { mapState } from 'vuex'
 
 export default {
   components: {
-    Coordinates
+    Icon
   },
-  data: function () {
-    return {
-      x: null,
-      y: null
+  props: {
+    name: {
+      type: String,
+      required: true
     }
   },
   computed: {
@@ -34,13 +38,9 @@ export default {
     }
 
   },
-  mounted () {
-    this.$root.$on('send-transaction', () => {
-      this.paintMultiplePixels()
-    })
-  },
   methods: {
-    async paintMultiplePixels () {
+    async sendTransaction () {
+      this.$root.$emit('send-transaction')
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
       await this.$store.state.api.transact({
         actions: [{
@@ -67,7 +67,29 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
+<style lang="stylus" scoped>
+.toolbox-button
+  box-shadow #999 3px 3px 5px
+  border-radius 4px
+  border-style solid
+  display inline-block
+  height 36px
+  width 36px
+  text-align center
+  margin 2px
+  &:hover
+  &.active
+   border 1px #777
+   border-style solid
+   color #777
+   box-shadow black 3px 3px 5px
+   cursor pointer
+svg
+  fill #999
+  margin-top 2px
+  text-align center
+  &:hover
+  &.active
+   -webkit-filter: invert(100%)
+   filter invert(100%)
 </style>

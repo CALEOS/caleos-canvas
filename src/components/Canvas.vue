@@ -260,33 +260,31 @@ export default {
       }
 
       let paintZoom = (event) => {
-        debugger;
-        let currentTool = this.$store.state.activeTool
         if (this.$store.state.activeColorInt === null) {
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
         }
-          let canvasElement = document.getElementById('zoom-canvas')
-          let rect = canvasElement.getBoundingClientRect()
-          let pixelObj = {
-            x: Math.floor(event.clientX - rect.left),
-            y: Math.floor(event.clientY - rect.top)
-          }
-            this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
-            setTransactionButton()
-            // temporarily display selected pixel on zoom canvas, it's redrawn on transform
-            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-            var pt = svg.createSVGPoint()
-            pt.x = pixelObj.x; pt.y = pixelObj.y
-            let xform = ctx.getTransform() // get current transform for point
-            pt = pt.matrixTransform(xform.inverse())
-            pt.x = Math.floor(pt.x)
-            pt.y = Math.floor(pt.y)
-            let ctxZoom = canvasElement.getContext('2d')
-            ctxZoom.fillStyle = this.$store.state.activeColorName
-            ctxZoom.fillRect(pt.x, pt.y, 1, 1)
-            paintTempPixels(pixelObj, state.activeColorName)
+        let canvasElement = document.getElementById('zoom-canvas')
+        let rect = canvasElement.getBoundingClientRect()
+        let pixelObj = {
+          x: Math.floor(event.clientX - rect.left),
+          y: Math.floor(event.clientY - rect.top)
+        }
+        this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+        setTransactionButton()
+        // temporarily display selected pixel on zoom canvas, it's redrawn on transform
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        var pt = svg.createSVGPoint()
+        pt.x = pixelObj.x; pt.y = pixelObj.y
+        let xform = ctx.getTransform() // get current transform for point
+        pt = pt.matrixTransform(xform.inverse())
+        pt.x = Math.floor(pt.x)
+        pt.y = Math.floor(pt.y)
+        let ctxZoom = canvasElement.getContext('2d')
+        ctxZoom.fillStyle = this.$store.state.activeColorName
+        ctxZoom.fillRect(pt.x, pt.y, 1, 1)
+        paintTempPixels(pixelObj, state.activeColorName)
       }
 
       var scaleFactor = 1.1
@@ -294,14 +292,12 @@ export default {
         var pt = ctx.transformedPoint(lastX, lastY)
         ctx.translate(pt.x, pt.y)
         var factor = Math.pow(scaleFactor, clicks)
-        canvas.width *= factor ;
+        canvas.width *= factor
         canvas.height *= factor
         ctx.scale(factor, factor)
-        debugger
         // ctx.translate(-pt.x, -pt.y)
 
         redraw()
-
       }
       this.$root.$on('zoom-out', () => {
         zoom(-1)

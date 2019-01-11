@@ -1,14 +1,17 @@
 <template>
   <div id="footer">
+    <Coordinates />
     <ColorPaletteContainer name="color palette container" />
   </div>
 </template>
 
 <script>
+import Coordinates from './Coordinates.vue'
 import ColorPaletteContainer from './ColorPaletteContainer.vue'
 
 export default {
   components: {
+    Coordinates,
     ColorPaletteContainer
   },
   props: {
