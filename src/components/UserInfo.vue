@@ -12,7 +12,6 @@
       class="user-info"
     >
       <span>Account: <b>{{ account.name }}</b></span>
-
       <button @click="logout">
         Logout
       </button>

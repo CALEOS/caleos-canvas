@@ -155,13 +155,9 @@ export default {
       }
 
       let redraw = () => {
-        var p1 = ctx.transformedPoint(0, 0)
-        var p2 = ctx.transformedPoint(canvas.width, canvas.height)
-        ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y)
-        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
       }
-
-      // redraw()
 
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
@@ -190,7 +186,6 @@ export default {
         let left = window.getComputedStyle(canvas).getPropertyValue('left')
         canvas.style.left = parseInt(left, 10) + moveX + 'px'
         canvas.style.top = parseInt(top, 10) + moveY + 'px'
-        // redraw()
       }
 
       canvas.removeEventListener('mousemove', mouseMoveFunction)
@@ -251,8 +246,6 @@ export default {
         canvas.width *= factor
         canvas.height *= factor
         ctx.scale(factor, factor)
-        // ctx.translate(-pt.x, -pt.y)
-
         redraw()
       }
       this.$root.$on('zoom-out', () => {
@@ -263,7 +256,7 @@ export default {
       })
 
       var handleScroll = function (evt) {
-        var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0
+        var delta = evt.wheelDelta ? evt.wheelDelta / 120 : evt.detail ? -evt.detail : 0
         if (delta) zoom(delta)
         return evt.preventDefault() && false
       }

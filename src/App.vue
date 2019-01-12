@@ -5,14 +5,17 @@
     <FooterContainer name="" />
     <button
       v-shortkey.once="['-']"
+      class="hotkey"
       @shortkey="zoomOut()"
     />
     <button
       v-shortkey.once="['+']"
+      class="hotkey"
       @shortkey="zoomIn()"
     />
     <button
       v-shortkey.once="['enter']"
+      class="hotkey"
       @shortkey="sendTransaction()"
     />
   </div>

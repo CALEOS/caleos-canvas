@@ -94,8 +94,4 @@ svg
   fill #999
   margin-top 2px
   text-align center
-  &:hover
-  &.active
-   -webkit-filter: invert(100%)
-   filter invert(100%)
 </style>
