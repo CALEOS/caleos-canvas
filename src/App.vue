@@ -70,7 +70,7 @@ export default {
   methods: {
     setApiInstance () {
       if (this.account) {
-        this.$store.dispatch(Actions.SET_API, this.$store.state.scatter.eos(this.$store.state.network, Api, {rpc: this.$store.state.rpc}))
+        this.$store.dispatch(Actions.SET_API, this.$store.state.scatter.eos(this.$store.state.network, Api, { rpc: this.$store.state.rpc, beta3: true }))
       } else {
         this.$store.dispatch(Actions.SET_API, new Api({ rpc: this.$store.state.rpc }))
       }
