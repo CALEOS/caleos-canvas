@@ -156,6 +156,7 @@ export default {
 
       let redraw = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.imageSmoothingEnabled = false
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
       }
 
