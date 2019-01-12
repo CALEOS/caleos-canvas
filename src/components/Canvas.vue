@@ -240,7 +240,9 @@ export default {
       }
 
       var scaleFactor = 1.1
+      let maxCanvasWidth = 10808
       var zoom = function (clicks) {
+        if (canvas.width >= maxCanvasWidth && clicks > 0) return
         var pt = ctx.transformedPoint(lastX, lastY)
         ctx.translate(pt.x, pt.y)
         var factor = Math.pow(scaleFactor, clicks)
