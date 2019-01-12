@@ -144,10 +144,6 @@ export default {
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         var pt = svg.createSVGPoint()
         pt.x = pixelObj.x; pt.y = pixelObj.y
-        let xform = ctx.getTransform() // get current transform for point
-        pt = pt.matrixTransform(xform.inverse())
-        pt.x = Math.floor(pt.x)
-        pt.y = Math.floor(pt.y)
         let zoomCanvas = document.getElementById('place-canvasse')
         let ctxZoom = zoomCanvas.getContext('2d')
         ctxZoom.fillStyle = color
@@ -223,19 +219,24 @@ export default {
           x: Math.floor(event.clientX - rect.left),
           y: Math.floor(event.clientY - rect.top)
         }
-        this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
-        setTransactionButton()
         // temporarily display selected pixel on zoom canvas, it's redrawn on transform
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         var pt = svg.createSVGPoint()
         pt.x = pixelObj.x; pt.y = pixelObj.y
-        let xform = ctx.getTransform() // get current transform for point
-        pt = pt.matrixTransform(xform.inverse())
-        pt.x = Math.floor(pt.x)
-        pt.y = Math.floor(pt.y)
+
+        let scale = canvasElement.width / 1000.0
+        let indexOffset = -1
+        pt.x = Math.floor(pt.x / scale) * scale
+        pt.y = Math.floor(pt.y / scale) * scale
         let ctxZoom = canvasElement.getContext('2d')
         ctxZoom.fillStyle = this.$store.state.activeColorName
-        ctxZoom.fillRect(pt.x, pt.y, 1, 1)
+        ctxZoom.fillRect(pt.x, pt.y, scale, scale)
+
+        pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
+        pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
+        this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+        setTransactionButton()
+
         paintTempPixels(pixelObj, state.activeColorName)
       }
 
