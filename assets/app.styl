@@ -6,6 +6,12 @@ body
   height 100%
   margin 0
   background-color lightgray
+  z-index -10
+  button
+    display none
+
+canvas
+  z-index -10
 
 #zoom-canvas
   position absolute
@@ -22,7 +28,7 @@ body
   box-sizing border-box
   border 1px #999
   width 100%
-  background-color lightgray
+  // background-color lightgray
   height 43px
 
 #place
@@ -30,10 +36,7 @@ body
   text-align: center;
   background-color lightgray
   margin-top -40px
-
-.app-container
-  button
-    display none
+  z-index -10
 
 .cooldown-div
   width 300px
