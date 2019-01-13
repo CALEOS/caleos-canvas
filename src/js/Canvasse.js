@@ -4,20 +4,20 @@ class Canvasse {
     let height = 1000
     this.palleteHex = [
       '#FFFFFF', // white
-      '#E4E4E4', // light grey
-      '#888888', // grey
+      '#D3D3D3', // light grey
+      '#808080', // grey
       '#222222', // black
-      '#FFA7D1', // pink
-      '#E50000', // red
-      '#E59500', // orange
-      '#A06A42', // brown
-      '#E5D900', // yellow
-      '#94E044', // lime
-      '#02BE01', // green
-      '#00D3DD', // cyan
-      '#0083C7', // blue
-      '#0000EA', // dark blue
-      '#CF6EE4', // magenta
+      '#FFC0CB', // pink
+      '#FF0000', // red
+      '#FFA500', // orange
+      '#A52A2A', // brown
+      '#FFFF00', // yellow
+      '#00FF00', // lime
+      '#008000', // green
+      '#00FFFF', // cyan
+      '#0000FF', // blue
+      '#00008B', // dark blue
+      '#FF00FF', // magenta
       '#820080' // purple
     ]
 

@@ -6,13 +6,13 @@
       colorint="0"
     />
     <ColorButton
-      color="light-grey"
-      hex="#E4E4E4"
+      color="lightgrey"
+      hex="#D3D3D3"
       colorint="1"
     />
     <ColorButton
       color="grey"
-      hex="#888888"
+      hex="#808080"
       colorint="2"
     />
     <ColorButton
@@ -22,62 +22,62 @@
     />
     <ColorButton
       color="pink"
-      hex="#FFA7D1"
+      hex="#FFC0CB"
       colorint="4"
     />
     <ColorButton
       color="red"
-      hex="#E50000"
+      hex="#FF0000"
       colorint="5"
     />
     <ColorButton
       color="orange"
-      hex="#E59500"
+      hex="#FFA500"
       colorint="6"
     />
     <ColorButton
       color="brown"
-      hex="#A06A42"
+      hex="#A52A2A"
       colorint="7"
     />
     <ColorButton
       color="yellow"
-      hex="#E5D900"
+      hex="#FFFF00"
       colorint="8"
     />
     <ColorButton
       color="lime"
-      hex="#94E044"
+      hex="#00FF00"
       colorint="9"
     />
     <ColorButton
       color="green"
-      hex="#02BE01"
+      hex="#008000"
       colorint="10"
     />
     <ColorButton
       color="cyan"
-      hex="#00D3DD"
+      hex="#00FFFF"
       colorint="11"
     />
     <ColorButton
       color="blue"
-      hex="#0083C7"
+      hex="#0000FF"
       colorint="12"
     />
     <ColorButton
-      color="dark-blue"
-      hex="#0000EA"
+      color="darkblue"
+      hex="#00008B"
       colorint="13"
     />
     <ColorButton
       color="magenta"
-      hex="#CF6EE4"
+      hex="#FF00FF"
       colorint="14"
     />
     <ColorButton
       color="purple"
-      hex="#820080"
+      hex="#800080"
       colorint="15"
     />
     <TransactionButton name="share-square" />
@@ -132,35 +132,35 @@ export default {
   max-width 550px
 .white
   background-color #FFFFFF
-.light-grey
-  background-color #E4E4E4
+.lightgrey
+  background-color #D3D3D3
 .grey
-  background-color #888888
+  background-color #808080
 .black
   background-color #222222
 .pink
-  background-color #FFA7D1
+  background-color #FFC0CB
 .red
-  background-color #E50000
+  background-color #FF0000
 .orange
-  background-color #E59500
+  background-color #FFA500
 .brown
-  background-color #A06A42
+  background-color #A52A2A
 .yellow
-  background-color #E5D900
+  background-color #FFFF00
 .lime
-  background-color #94E044
+  background-color #00FF00
 .green
-  background-color #02BE01
+  background-color #008000
 .cyan
-  background-color #00D3DD
+  background-color #00FFFF
 .blue
-  background-color #0083C7
-.dark-blue
-  background-color #0000EA
+  background-color #0000FF
+.darkblue
+  background-color #00008B
 .magenta
-  background-color #CF6EE4
+  background-color #FF00FF
 .purple
-  background-color #820080
+  background-color #800080
 
 </style>
