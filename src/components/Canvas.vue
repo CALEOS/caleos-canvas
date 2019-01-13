@@ -121,7 +121,7 @@ export default {
       let state = this.$store.state
       let canvas = document.getElementById('zoom-canvas')
       let ctx = canvas.getContext('2d')
-
+      canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px'
       ctx.mozImageSmoothingEnabled = false
       ctx.webkitImageSmoothingEnabled = false
       ctx.msImageSmoothingEnabled = false
