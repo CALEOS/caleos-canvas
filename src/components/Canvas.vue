@@ -41,8 +41,8 @@ export default {
   },
 
   watch: {
-    pixelCoordArray () {
-      this.$root.$emit('update-canvas')
+    pixelCoordArray (pixelArray) {
+      this.$root.$emit('update-canvas', pixelArray)
     }
   },
   mounted () {
@@ -159,7 +159,7 @@ export default {
 
       let paintZoom = (event) => {
         if (this.$store.state.pixelCoordArray.length === this.$store.state.config.pixels_per_paint) {
-          alert('You have painted the maximum amount of pixels, click the green arrow button below to set the pixels and begin a new session.')
+          alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
           return
         }
         if (this.$store.state.activeColorInt === null) {
@@ -233,12 +233,12 @@ export default {
       })
       this.$root.$on('undo-last', async () => {
         await this.getPixelsRaw().then((pixelArray) => {
+          this.$store.state.intColorArray.pop()
           let lastPixelCoord = this.$store.state.pixelCoordArray.pop()
+          let lastPixelObj = this.$store.state.pixelObjArray.pop()
           let colorInt = pixelArray[lastPixelCoord]
           let colorName = this.$store.state.canvasse.palleteNames[colorInt]
-          let lastPixelObj = this.$store.state.pixelObjArray.pop()
           paintTempPixels(lastPixelObj, colorName)
-          this.$store.dispatch(Actions.UNDO_LAST_PAINT)
         })
       })
 

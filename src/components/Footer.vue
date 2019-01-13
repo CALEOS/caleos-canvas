@@ -3,6 +3,11 @@
     <UserInfo name="user-info" />
     <Coordinates />
     <ColorPaletteContainer name="color palette container" />
+    <span id="pixels-remaining">
+      Remaining Session Pixels:<b :class="countColor">
+        {{ pixelsRemaining }}
+      </b>
+    </span>
   </div>
 </template>
 
@@ -22,11 +27,36 @@ export default {
       type: String,
       required: true
     }
+  },
+  data: function () {
+    return {
+      pixelsRemaining: 10,
+      countColor: 'black-text'
+    }
+  },
+  mounted () {
+    this.$root.$on('update-canvas', (pixelArray) => {
+      this.getRemaining(pixelArray.length)
+    })
+  },
+  methods: {
+    getRemaining: function (pixelCount) {
+      this.pixelsRemaining = this.$store.state.config.pixels_per_paint - pixelCount
+      if (this.pixelsRemaining === 0) {
+        this.countColor = 'red-text'
+      }
+    }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-#footer
-  // border-top 1px solid #999
+#pixels-remaining
+  float right
+  margin-top -26px
+  margin-right 12px
+.black-text
+  color black
+.red-text
+  color red
 </style>
