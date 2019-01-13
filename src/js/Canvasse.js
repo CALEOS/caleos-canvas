@@ -6,7 +6,7 @@ class Canvasse {
       '#FFFFFF', // white
       '#D3D3D3', // light grey
       '#808080', // grey
-      '#222222', // black
+      '#000000', // black
       '#FFC0CB', // pink
       '#FF0000', // red
       '#FFA500', // orange

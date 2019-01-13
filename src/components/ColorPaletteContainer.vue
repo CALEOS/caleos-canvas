@@ -17,7 +17,7 @@
     />
     <ColorButton
       color="black"
-      hex="#222222"
+      hex="#000000"
       colorint="3"
     />
     <ColorButton
@@ -137,7 +137,7 @@ export default {
 .grey
   background-color #808080
 .black
-  background-color #222222
+  background-color #000000
 .pink
   background-color #FFC0CB
 .red

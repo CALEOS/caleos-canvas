@@ -49,13 +49,10 @@ export default {
   },
 
   methods: {
-
     async refreshCanvas () {
       if (this.$store.state.reloading) {
-        console.log('Skipping reload')
         return
       }
-      console.log('Reloading Canvas')
       this.$store.dispatch(Actions.SET_LOADING_STATUS, true)
       try {
         let canvas = await this.getPixelsRaw()
@@ -65,7 +62,6 @@ export default {
         this.createZoomCanvas()
       }
     },
-
     removePixelFromPaintSession (pixelObj) {
       this.$store.dispatch(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
       console.dir(this.$store.state.pixelCoordArray)
@@ -73,7 +69,6 @@ export default {
         this.$root.$emit('cooldown')
       }
     },
-
     async getPixelsRaw () {
       var size = this.myWidth * this.myHeight
       var canvas = new Uint8Array(size)
@@ -86,21 +81,17 @@ export default {
           let startPos = row.id * 1000
           let firstPos = startPos + (b * 2)
           let secondPos = startPos + (b * 2) + 1
-
           canvas[firstPos] = byte >> 4
           canvas[secondPos] = byte & 15
         }
       }
       return canvas
     },
-
     async getRows (fromIndex) {
       let response = {
         more: true
       }
-
       let rows = []
-
       while (response.more) {
         response = await this.myRpc.get_table_rows({
           json: true,
@@ -113,7 +104,6 @@ export default {
         })
         rows = rows.concat(response.rows)
       }
-
       return rows
     },
 
@@ -121,70 +111,29 @@ export default {
       let state = this.$store.state
       let canvas = document.getElementById('zoom-canvas')
       let ctx = canvas.getContext('2d')
-      // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
+      let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
+      let scaleFactor = 1.1
+      let maxCanvasWidth = 9000
+      let minCanvasWidth = 1100
+      let lastX = canvas.width / 2
+      let lastY = canvas.height / 2
+      let dragStart, dragged
       ctx.mozImageSmoothingEnabled = false
       ctx.webkitImageSmoothingEnabled = false
       ctx.msImageSmoothingEnabled = false
       ctx.imageSmoothingEnabled = false
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
-      let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
-      var scaleFactor = 1.1
-      let maxCanvasWidth = 9000
-      let minCanvasWidth = 1100
-
+      // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
       var zoom = function (clicks) {
         if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
         var factor = scaleFactor ** clicks
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.scale(factor, factor)
+        ctx.scale(ctx, factor, factor)
         canvas.width *= factor
         canvas.height *= factor
         ctx.imageSmoothingEnabled = false
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
       }
-
-      zoom(initialZoom)
-      trackTransforms(ctx)
-
-      let lastX = canvas.width / 2
-      let lastY = canvas.height / 2
-      let dragStart, dragged
-
-      let mouseDownfunction = (evt) => {
-        document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
-        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
-        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
-        dragStart = { x: lastX, y: lastY }
-        dragged = false
-      }
-
-      canvas.removeEventListener('mousedown', mouseDownfunction)
-      canvas.addEventListener('mousedown', mouseDownfunction, false)
-
-      let mouseMoveFunction = (evt) => {
-        if (!dragStart) return
-        canvas.className = ' grabbable'
-        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
-        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
-        dragged = true
-        let moveX = lastX - dragStart.x
-        let moveY = lastY - dragStart.y
-        let top = window.getComputedStyle(canvas).getPropertyValue('top')
-        let left = window.getComputedStyle(canvas).getPropertyValue('left')
-        canvas.style.left = parseInt(left, 10) + moveX + 'px'
-        canvas.style.top = parseInt(top, 10) + moveY + 'px'
-      }
-
-      canvas.removeEventListener('mousemove', mouseMoveFunction)
-      canvas.addEventListener('mousemove', mouseMoveFunction, false)
-
-      let mouseUpFunction = (evt) => {
-        dragStart = null
-        canvas.className = ''
-        if (!dragged) paintZoom(evt)
-      }
-      canvas.removeEventListener('mouseup', mouseUpFunction)
-      canvas.addEventListener('mouseup', mouseUpFunction, false)
 
       let setTransactionButton = () => {
         let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
@@ -205,9 +154,13 @@ export default {
       }
 
       let paintZoom = (event) => {
+        if (this.$store.state.pixelCoordArray.length === this.$store.state.config.pixels_per_paint) {
+          alert('You have painted the maximum amount of pixels, click the green arrow button below to set the pixels and begin a new session.')
+          return
+        }
         if (this.$store.state.activeColorInt === null) {
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#222222')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#000000')
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
         }
         let canvasElement = document.getElementById('zoom-canvas')
@@ -217,21 +170,52 @@ export default {
           y: Math.floor(event.clientY - rect.top)
         }
         // temporarily display selected pixel on zoom canvas, it's redrawn on transform
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-        var pt = svg.createSVGPoint()
-        pt.x = pixelObj.x; pt.y = pixelObj.y
         let scale = canvasElement.width / 1000.0
         let indexOffset = -1
-        pt.x = Math.floor(pt.x / scale) * scale
-        pt.y = Math.floor(pt.y / scale) * scale
+        let scaledX = Math.floor(pixelObj.x / scale) * scale
+        let scaledY = Math.floor(pixelObj.y / scale) * scale
         let ctxZoom = canvasElement.getContext('2d')
         ctxZoom.fillStyle = this.$store.state.activeColorName
-        ctxZoom.fillRect(pt.x, pt.y, scale, scale)
+        ctxZoom.fillRect(scaledX, scaledY, scale, scale)
         pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
         pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
         this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
         setTransactionButton()
         paintTempPixels(pixelObj, state.activeColorName)
+      }
+
+      let mouseDownfunction = (evt) => {
+        document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
+        dragStart = { x: lastX, y: lastY }
+        dragged = false
+      }
+
+      let mouseMoveFunction = (evt) => {
+        if (!dragStart) return
+        canvas.className = ' grabbable'
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
+        dragged = true
+        let moveX = lastX - dragStart.x
+        let moveY = lastY - dragStart.y
+        let top = window.getComputedStyle(canvas).getPropertyValue('top')
+        let left = window.getComputedStyle(canvas).getPropertyValue('left')
+        canvas.style.left = parseInt(left, 10) + moveX + 'px'
+        canvas.style.top = parseInt(top, 10) + moveY + 'px'
+      }
+
+      let mouseUpFunction = (evt) => {
+        dragStart = null
+        canvas.className = ''
+        if (!dragged) paintZoom(evt)
+      }
+
+      var handleScroll = function (evt) {
+        var delta = evt.wheelDelta ? evt.wheelDelta / 120 : evt.detail ? -evt.detail : 0
+        if (delta) zoom(delta)
+        return evt.preventDefault() && false
       }
 
       this.$root.$on('zoom-out', () => {
@@ -241,20 +225,16 @@ export default {
         zoom(1)
       })
 
-      var handleScroll = function (evt) {
-        var delta = evt.wheelDelta ? evt.wheelDelta / 120 : evt.detail ? -evt.detail : 0
-        if (delta) zoom(delta)
-        return evt.preventDefault() && false
-      }
+      canvas.removeEventListener('mousedown', mouseDownfunction)
+      canvas.addEventListener('mousedown', mouseDownfunction, false)
+      canvas.removeEventListener('mousemove', mouseMoveFunction)
+      canvas.addEventListener('mousemove', mouseMoveFunction, false)
+      canvas.removeEventListener('mouseup', mouseUpFunction)
+      canvas.addEventListener('mouseup', mouseUpFunction, false)
       canvas.addEventListener('DOMMouseScroll', handleScroll, false)
       canvas.addEventListener('mousewheel', handleScroll, false)
 
-      function trackTransforms (ctx) {
-        var scale = ctx.scale
-        ctx.scale = function (sx, sy) {
-          return scale.call(ctx, sx, sy)
-        }
-      }
+      zoom(initialZoom)
     }
   }
 }
