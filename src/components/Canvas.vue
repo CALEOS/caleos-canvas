@@ -121,13 +121,28 @@ export default {
       let state = this.$store.state
       let canvas = document.getElementById('zoom-canvas')
       let ctx = canvas.getContext('2d')
-      canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px'
+      // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
       ctx.mozImageSmoothingEnabled = false
       ctx.webkitImageSmoothingEnabled = false
       ctx.msImageSmoothingEnabled = false
       ctx.imageSmoothingEnabled = false
-      ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)
+      // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
+      let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
+      var scaleFactor = 1.1
+      let maxCanvasWidth = 10808
 
+      var zoom = function (clicks) {
+        if (canvas.width >= maxCanvasWidth && clicks > 0) return
+        var factor = Math.pow(scaleFactor, clicks)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.scale(factor, factor)
+        canvas.width *= factor
+        canvas.height *= factor
+        ctx.imageSmoothingEnabled = false
+        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+      }
+
+      zoom(initialZoom)
       trackTransforms(ctx)
 
       let paintTempPixels = (pixelObj, color) => {
@@ -225,19 +240,19 @@ export default {
         paintTempPixels(pixelObj, state.activeColorName)
       }
 
-      var scaleFactor = 1.1
-      let maxCanvasWidth = 10808
+      // var scaleFactor = 1.1
+      // let maxCanvasWidth = 10808
 
-      var zoom = function (clicks) {
-        if (canvas.width >= maxCanvasWidth && clicks > 0) return
-        var factor = Math.pow(scaleFactor, clicks)
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.scale(factor, factor)
-        canvas.width *= factor
-        canvas.height *= factor
-        ctx.imageSmoothingEnabled = false
-        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
-      }
+      // var zoom = function (clicks) {
+      //   if (canvas.width >= maxCanvasWidth && clicks > 0) return
+      //   var factor = Math.pow(scaleFactor, clicks)
+      //   ctx.clearRect(0, 0, canvas.width, canvas.height)
+      //   ctx.scale(factor, factor)
+      //   canvas.width *= factor
+      //   canvas.height *= factor
+      //   ctx.imageSmoothingEnabled = false
+      //   ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+      // }
 
       this.$root.$on('zoom-out', () => {
         zoom(-1)
