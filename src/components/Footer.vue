@@ -1,16 +1,19 @@
 <template>
   <div id="footer">
+    <UserInfo name="user-info" />
     <Coordinates />
     <ColorPaletteContainer name="color palette container" />
   </div>
 </template>
 
 <script>
+import UserInfo from './UserInfo.vue'
 import Coordinates from './Coordinates.vue'
 import ColorPaletteContainer from './ColorPaletteContainer.vue'
 
 export default {
   components: {
+    UserInfo,
     Coordinates,
     ColorPaletteContainer
   },

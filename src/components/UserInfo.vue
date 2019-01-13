@@ -7,7 +7,7 @@
     >
       Login with Scatter
     </button>
-    <section
+    <span
       v-if="myScatter && account"
       class="user-info"
     >
@@ -15,18 +15,24 @@
       <button @click="logout">
         Logout
       </button>
-    </section>
-    <section class="cooldown-div">
+    </span>
+    <!-- commenting out for now, can add back later -->
+    <!-- <span class="cooldown-div">
       <span v-if="myScatter && account">
         Lifetime paint actions: {{ lifetimePixels }}
       </span>
-      <section>
-        <span v-if="cooldownMessage && myScatter && account">
-          {{ cooldownMessage }}
-        </span>
-      </section>
-    </section>
-    <span v-if="mySendingTransaction">
+
+    </span> -->
+    <span
+      v-if="cooldownMessage && myScatter && account && !mySendingTransaction"
+      class="message-span"
+    >
+      {{ cooldownMessage }}
+    </span>
+    <span
+      v-if="mySendingTransaction"
+      class="message-span"
+    >
       Sending transaction...
     </span>
   </div>
@@ -119,7 +125,7 @@ export default {
           this.$root.$emit('cooldown')
         }
         this.cooldownInterval = null
-        this.cooldownMessage = 'Cooldown complete, time to paint!'
+        this.cooldownMessage = 'Ready to paint!'
       } else {
         this.$root.$emit('cooldown', true)
         this.cooldownMessage = `Paint again in ${cooldownExpires.countdown().toString()}...`
@@ -171,13 +177,9 @@ button
   color:white
   background-color #4fc8fb
   box-shadow #777 3px 3px 5px
-
   &:hover
     border 1px #32b2fb
     color white
     background-color #32b2fb
     cursor pointer
-.info-block
-  font 400 16px Arial
-  margin-left 12px
  </style>

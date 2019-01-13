@@ -8,6 +8,7 @@ body
   background-color lightgray
   z-index -10
   overflow hidden
+  font 400 16px Arial
 
 canvas
   z-index -10
@@ -19,16 +20,17 @@ canvas
   top 1px
 
 #coordinates
-  margin-left 12px
-  width 200px
+  margin-left 10px
+  width 130px
   float left
+  margin-top 12px
+  font-size medium
 
 #footer
 #header
   box-sizing border-box
   border 1px #999
   width 100%
-  // background-color lightgray
   height 43px
 
 #place
@@ -40,7 +42,6 @@ canvas
 
 .cooldown-div
   width 300px
-  float left
 
 .grabbable
   cursor: move;
@@ -71,9 +72,14 @@ canvas
   display:none
 
 .info-block
-  width 300px
+  width 500px
   float left
   z-index 999
+  margin-top 8px
+  margin-left 12px
+
+.message-span
+  margin-left 10px
 
 .place-canvas
   image-rendering:optimizeSpeed;             /* Legal fallback */

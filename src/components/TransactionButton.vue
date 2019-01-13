@@ -6,7 +6,7 @@
   >
     <Icon
       :name="name"
-      :scale="2"
+      :scale="1.8"
     />
   </div>
 </template>
@@ -79,8 +79,8 @@ export default {
   border-radius 4px
   border-style solid
   display inline-block
-  height 36px
-  width 36px
+  height 30px
+  width 30px
   text-align center
   margin 2px
   &:hover
@@ -92,6 +92,6 @@ export default {
    cursor pointer
 svg
   fill #999
-  margin-top 2px
+  margin-bottom 2px
   text-align center
 </style>

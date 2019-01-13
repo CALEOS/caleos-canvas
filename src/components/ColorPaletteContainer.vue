@@ -127,9 +127,9 @@ export default {
 <style lang="stylus" scoped>
 #color-palette-container
   margin auto
+  margin-top 2px
   min-width 600px
   max-width 550px
-  margin-top 4px
 .white
   background-color #FFFFFF
 .light-grey
