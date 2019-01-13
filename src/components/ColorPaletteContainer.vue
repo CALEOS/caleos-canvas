@@ -1,5 +1,6 @@
 <template>
   <div id="color-palette-container">
+    <Undo name="undo" />
     <ColorButton
       color="white"
       hex="#FFFFFF"
@@ -85,6 +86,7 @@
 </template>
 
 <script>
+import Undo from './Undo.vue'
 import ColorButton from './ColorButton.vue'
 import TransactionButton from './TransactionButton.vue'
 import { Actions } from '../actions.js'
@@ -92,7 +94,8 @@ import { Actions } from '../actions.js'
 export default {
   components: {
     ColorButton,
-    TransactionButton
+    TransactionButton,
+    Undo
   },
   props: {
     name: {
@@ -128,8 +131,7 @@ export default {
 #color-palette-container
   margin auto
   margin-top 2px
-  min-width 600px
-  max-width 550px
+  min-width 630px
 .white
   background-color #FFFFFF
 .lightgrey

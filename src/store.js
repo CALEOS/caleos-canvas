@@ -87,6 +87,9 @@ const actions = {
   [Actions.REMOVE_PIXEL_FROM_ARRAY] ({ commit }, pixelObj) {
     commit(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
   },
+  [Actions.UNDO_LAST_PAINT] ({ commit }, pixelObj) {
+    commit(Actions.UNDO_LAST_PAINT, pixelObj)
+  },
   [Actions.CLEAR_PIXEL_ARRAY] ({ commit }) {
     commit(Actions.CLEAR_PIXEL_ARRAY)
   },
@@ -152,6 +155,11 @@ const mutations = {
       state.intColorArray.splice(index, 1)
       state.pixelObjArray.splice(index, 1)
     }
+  },
+  [Actions.UNDO_LAST_PAINT] (state, pixelObj) {
+    state.pixelCoordArray.pop()
+    state.intColorArray.pop()
+    state.pixelObjArray.pop()
   },
   [Actions.CLEAR_PIXEL_ARRAY] (state) {
     state.pixelCoordArray = []

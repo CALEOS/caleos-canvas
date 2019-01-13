@@ -35,11 +35,15 @@ export default {
       myHeight: 'height',
       myWidth: 'width',
       myRpc: 'rpc',
-      myContract: 'contract'
+      myContract: 'contract',
+      pixelCoordArray: 'pixelCoordArray'
     })
   },
 
   watch: {
+    pixelCoordArray () {
+      this.$root.$emit('update-canvas')
+    }
   },
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
@@ -223,6 +227,19 @@ export default {
       })
       this.$root.$on('zoom-in', () => {
         zoom(1)
+      })
+      this.$root.$on('update-canvas', () => {
+        zoom(0)
+      })
+      this.$root.$on('undo-last', async () => {
+        await this.getPixelsRaw().then((pixelArray) => {
+          let lastPixelCoord = this.$store.state.pixelCoordArray.pop()
+          let colorInt = pixelArray[lastPixelCoord]
+          let colorName = this.$store.state.canvasse.palleteNames[colorInt]
+          let lastPixelObj = this.$store.state.pixelObjArray.pop()
+          paintTempPixels(lastPixelObj, colorName)
+          this.$store.dispatch(Actions.UNDO_LAST_PAINT)
+        })
       })
 
       canvas.removeEventListener('mousedown', mouseDownfunction)
