@@ -129,11 +129,12 @@ export default {
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
       let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
       var scaleFactor = 1.1
-      let maxCanvasWidth = 10808
+      let maxCanvasWidth = 9000
+      let minCanvasWidth = 1100
 
       var zoom = function (clicks) {
-        if (canvas.width >= maxCanvasWidth && clicks > 0) return
-        var factor = Math.pow(scaleFactor, clicks)
+        if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
+        var factor = scaleFactor ** clicks
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.scale(factor, factor)
         canvas.width *= factor
@@ -145,16 +146,6 @@ export default {
       zoom(initialZoom)
       trackTransforms(ctx)
 
-      let paintTempPixels = (pixelObj, color) => {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-        var pt = svg.createSVGPoint()
-        pt.x = pixelObj.x; pt.y = pixelObj.y
-        let zoomCanvas = document.getElementById('place-canvasse')
-        let ctxZoom = zoomCanvas.getContext('2d')
-        ctxZoom.fillStyle = color
-        ctxZoom.fillRect(pt.x, pt.y, 1, 1)
-      }
-
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
@@ -163,7 +154,7 @@ export default {
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
-        dragStart = ctx.transformedPoint(lastX, lastY)
+        dragStart = { x: lastX, y: lastY }
         dragged = false
       }
 
@@ -176,9 +167,8 @@ export default {
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
         dragged = true
-        var pt = ctx.transformedPoint(lastX, lastY)
-        let moveX = pt.x - dragStart.x
-        let moveY = pt.y - dragStart.y
+        let moveX = lastX - dragStart.x
+        let moveY = lastY - dragStart.y
         let top = window.getComputedStyle(canvas).getPropertyValue('top')
         let left = window.getComputedStyle(canvas).getPropertyValue('left')
         canvas.style.left = parseInt(left, 10) + moveX + 'px'
@@ -207,6 +197,13 @@ export default {
         }
       }
 
+      let paintTempPixels = (pixelObj, color) => {
+        let zoomCanvas = document.getElementById('place-canvasse')
+        let ctxZoom = zoomCanvas.getContext('2d')
+        ctxZoom.fillStyle = color
+        ctxZoom.fillRect(pixelObj.x, pixelObj.y, 1, 1)
+      }
+
       let paintZoom = (event) => {
         if (this.$store.state.activeColorInt === null) {
           this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
@@ -223,7 +220,6 @@ export default {
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         var pt = svg.createSVGPoint()
         pt.x = pixelObj.x; pt.y = pixelObj.y
-
         let scale = canvasElement.width / 1000.0
         let indexOffset = -1
         pt.x = Math.floor(pt.x / scale) * scale
@@ -231,28 +227,12 @@ export default {
         let ctxZoom = canvasElement.getContext('2d')
         ctxZoom.fillStyle = this.$store.state.activeColorName
         ctxZoom.fillRect(pt.x, pt.y, scale, scale)
-
         pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
         pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
         this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
         setTransactionButton()
-
         paintTempPixels(pixelObj, state.activeColorName)
       }
-
-      // var scaleFactor = 1.1
-      // let maxCanvasWidth = 10808
-
-      // var zoom = function (clicks) {
-      //   if (canvas.width >= maxCanvasWidth && clicks > 0) return
-      //   var factor = Math.pow(scaleFactor, clicks)
-      //   ctx.clearRect(0, 0, canvas.width, canvas.height)
-      //   ctx.scale(factor, factor)
-      //   canvas.width *= factor
-      //   canvas.height *= factor
-      //   ctx.imageSmoothingEnabled = false
-      //   ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
-      // }
 
       this.$root.$on('zoom-out', () => {
         zoom(-1)
@@ -270,25 +250,9 @@ export default {
       canvas.addEventListener('mousewheel', handleScroll, false)
 
       function trackTransforms (ctx) {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-        var xform = svg.createSVGMatrix()
-
         var scale = ctx.scale
         ctx.scale = function (sx, sy) {
-          xform = xform.scaleNonUniform(sx, sy)
           return scale.call(ctx, sx, sy)
-        }
-
-        var translate = ctx.translate
-        ctx.translate = function (dx, dy) {
-          xform = xform.translate(dx, dy)
-          return translate.call(ctx, dx, dy)
-        }
-
-        var pt = svg.createSVGPoint()
-        ctx.transformedPoint = function (x, y) {
-          pt.x = x; pt.y = y
-          return pt.matrixTransform(xform.inverse())
         }
       }
     }
