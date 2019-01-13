@@ -46,6 +46,10 @@ export default {
 
   methods: {
     async sendTransaction () {
+      if (!this.$store.state.pixelCoordArray.length) {
+        alert('You have not painted any pixels! Select a color and click on the canvas to start painting.')
+        return
+      }
       this.$root.$emit('send-transaction')
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
       await this.$store.state.api.transact({
@@ -74,22 +78,6 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.toolbox-button
-  box-shadow #999 3px 3px 5px
-  border-radius 4px
-  border-style solid
-  display inline-block
-  height 30px
-  width 30px
-  text-align center
-  margin 2px
-  &:hover
-  &.active
-   border 1px #777
-   border-style solid
-   color #777
-   box-shadow black 3px 3px 5px
-   cursor pointer
 svg
   fill #999
   margin-bottom 2px
