@@ -149,12 +149,6 @@ export default {
         ctxZoom.fillRect(pt.x, pt.y, 1, 1)
       }
 
-      let redraw = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.imageSmoothingEnabled = false
-        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
-      }
-
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
@@ -166,6 +160,7 @@ export default {
         dragStart = ctx.transformedPoint(lastX, lastY)
         dragged = false
       }
+
       canvas.removeEventListener('mousedown', mouseDownfunction)
       canvas.addEventListener('mousedown', mouseDownfunction, false)
 
@@ -241,16 +236,18 @@ export default {
 
       var scaleFactor = 1.1
       let maxCanvasWidth = 10808
+
       var zoom = function (clicks) {
         if (canvas.width >= maxCanvasWidth && clicks > 0) return
-        var pt = ctx.transformedPoint(lastX, lastY)
-        ctx.translate(pt.x, pt.y)
         var factor = Math.pow(scaleFactor, clicks)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.scale(factor, factor)
         canvas.width *= factor
         canvas.height *= factor
-        ctx.scale(factor, factor)
-        redraw()
+        ctx.imageSmoothingEnabled = false
+        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
       }
+
       this.$root.$on('zoom-out', () => {
         zoom(-1)
       })
