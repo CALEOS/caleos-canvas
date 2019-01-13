@@ -42,9 +42,7 @@ export default {
   methods: {
     getRemaining: function (pixelCount) {
       this.pixelsRemaining = this.$store.state.config.pixels_per_paint - pixelCount
-      if (this.pixelsRemaining === 0) {
-        this.countColor = 'red-text'
-      }
+      this.pixelsRemaining === 0 ? this.countColor = 'red-text' : this.countColor = 'black-text'
     }
   }
 }
