@@ -35,26 +35,17 @@ export default {
       myHeight: 'height',
       myWidth: 'width',
       myRpc: 'rpc',
-      myContract: 'contract',
-      myLastRefresh: 'lastRefresh'
+      myContract: 'contract'
     })
   },
 
   watch: {
-    myLastRefresh () {
-      this.refreshCanvas()
-    }
   },
   mounted () {
     let canvasElement = document.getElementById('place-canvasse')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
-    this.$root.$on('fit-screen', (clearSession) => {
-      if (clearSession) {
-        this.refreshCanvas()
-      }
-      this.createZoomCanvas()
-    })
+    this.refreshCanvas()
   },
 
   methods: {
