@@ -22,7 +22,9 @@
 </template>
 
 <script>
-import ScatterJS from 'scatterjs-core'
+  /* eslint-disable no-debugger */
+
+  import ScatterJS from 'scatterjs-core'
 import ScatterEOS from 'scatterjs-plugin-eosjs2'
 import { Actions } from './actions'
 import 'babel-polyfill'
@@ -56,6 +58,7 @@ export default {
   mounted () {
     this.setApiInstance()
     this.loadContractConfig()
+    this.setupWebSocket()
     let _this = this
     ScatterJS.scatter.connect(this.$store.state.scatterAppName).then(connected => {
       if (!connected) {
@@ -95,6 +98,18 @@ export default {
     },
     sendTransaction () {
       this.$root.$emit('trigger-transaction')
+    },
+    setupWebSocket () {
+      let wsUrl = 'ws://localhost:8081'
+      this.ws = new WebSocket(wsUrl)
+      debugger
+
+      this.ws.onmessage = function (ev) {
+        debugger
+        console.log('GOT MESSAGE: ' + ev.data)
+        let dataObj = JSON.parse(ev.data)
+        console.log(dataObj)
+      }
     }
   }
 
