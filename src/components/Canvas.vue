@@ -117,7 +117,7 @@ export default {
       let ctx = canvas.getContext('2d')
       let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
       let scaleFactor = 1.1
-      let maxCanvasWidth = 9000
+      let maxCanvasWidth = 8000
       let minCanvasWidth = 1100
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
