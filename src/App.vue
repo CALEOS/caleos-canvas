@@ -22,9 +22,9 @@
 </template>
 
 <script>
-  /* eslint-disable no-debugger */
+/* eslint-disable no-debugger */
 
-  import ScatterJS from 'scatterjs-core'
+import ScatterJS from 'scatterjs-core'
 import ScatterEOS from 'scatterjs-plugin-eosjs2'
 import { Actions } from './actions'
 import 'babel-polyfill'
