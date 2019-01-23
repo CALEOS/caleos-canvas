@@ -42,5 +42,6 @@ const actionWatcher = new BaseActionWatcher(
   250
 )
 
+console.log('Starting watcher')
 actionWatcher.watch()
-
+console.log('Watcher started')

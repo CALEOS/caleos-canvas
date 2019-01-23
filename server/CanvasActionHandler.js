@@ -23,6 +23,12 @@ server.on('connection', function connection (ws) {
   // ws.send(getStateMessage())
 })
 
+function sendPing () {
+  server.broadcast(JSON.stringify({'action': 'ping'}))
+}
+
+setInterval(sendPing, 30000)
+
 function handleIncoming (webSocket, data) {
   console.log('Unknown incoming websocket message: ' + JSON.stringify((data)))
 }

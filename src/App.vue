@@ -105,6 +105,7 @@ export default {
       debugger
 
       this.ws.onmessage = function (ev) {
+        // TODO: Check for ping messages and ignore, they're {"action":"ping"}
         debugger
         console.log('GOT MESSAGE: ' + ev.data)
         let dataObj = JSON.parse(ev.data)
