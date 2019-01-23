@@ -100,7 +100,7 @@ export default {
       this.$root.$emit('trigger-transaction')
     },
     setupWebSocket () {
-      let wsUrl = 'ws://localhost:8081'
+      let wsUrl = 'wss://canvas.caleos.io/ws'
       this.ws = new WebSocket(wsUrl)
       debugger
 
