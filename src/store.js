@@ -39,7 +39,8 @@ const state = {
   pixelObjArray: [], // contains array of session { x: , y: , color: <string>}
   zoomLevel: null,
   paintHistory: [],
-  historyLength: 500
+  historyLength: 500,
+  leaderboard: null
 }
 
 state.paintHistory.push = function () {
@@ -106,6 +107,9 @@ const actions = {
   },
   [Actions.PUSH_PAINT_HISTORY] ({ commit }, historyObj) {
     commit(Actions.PUSH_PAINT_HISTORY, historyObj)
+  },
+  [Actions.SET_LEADERBOARD] ({ commit }, leaderboard) {
+    commit(Actions.SET_LEADERBOARD, leaderboard)
   }
 }
 
@@ -178,6 +182,9 @@ const mutations = {
   },
   [Actions.PUSH_PAINT_HISTORY] (state, paintHistory) {
     state.paintHistory.push(paintHistory)
+  },
+  [Actions.SET_LEADERBOARD] (state, leaderboard) {
+    state.leaderboard = leaderboard
   }
 }
 
