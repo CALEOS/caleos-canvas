@@ -37,7 +37,18 @@ const state = {
   pixelCoordArray: [], // contains absolute pixel position ( y * 1000 + x)
   intColorArray: [],
   pixelObjArray: [], // contains array of session { x: , y: , color: <string>}
-  zoomLevel: null
+  zoomLevel: null,
+  paintHistory: [],
+  historyLength: 500
+}
+
+state.paintHistory.push = function () {
+  let max = state.historyLength
+  Array.prototype.push.apply(this, arguments)
+
+  if (this.length < max) { return }
+
+  Array.prototype.splice.call(this, max, (this.length - max))
 }
 
 const actions = {
@@ -92,6 +103,9 @@ const actions = {
   },
   [Actions.SET_ZOOM_LEVEL] ({ commit }) {
     commit(Actions.SET_ZOOM_LEVEL)
+  },
+  [Actions.PUSH_PAINT_HISTORY] ({ commit }, historyObj) {
+    commit(Actions.PUSH_PAINT_HISTORY, historyObj)
   }
 }
 
@@ -161,6 +175,9 @@ const mutations = {
   },
   [Actions.SET_ZOOM_LEVEL] (state, zoomLevel) {
     state.zoomLevel = zoomLevel
+  },
+  [Actions.PUSH_PAINT_HISTORY] (state, paintHistory) {
+    state.paintHistory.push(paintHistory)
   }
 }
 

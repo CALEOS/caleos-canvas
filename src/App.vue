@@ -102,13 +102,13 @@ export default {
     setupWebSocket () {
       let wsUrl = 'wss://canvas.caleos.io/ws'
       this.ws = new WebSocket(wsUrl)
-      debugger
 
+      let _this = this
       this.ws.onmessage = function (ev) {
         // TODO: Check for ping messages and ignore, they're {"action":"ping"}
-        debugger
         console.log('GOT MESSAGE: ' + ev.data)
         let dataObj = JSON.parse(ev.data)
+        if (ev.data.action === 'paintAction') { _this.$store.dispatch(Actions.PUSH_PAINT_HISTORY, ev.data) }
         console.log(dataObj)
       }
     }
