@@ -107,9 +107,9 @@ export default {
       this.ws.onmessage = function (ev) {
         // TODO: Check for ping messages and ignore, they're {"action":"ping"}
         console.log('GOT MESSAGE: ' + ev.data)
-        let dataObj = JSON.parse(ev.data)
-        if (ev.data.action === 'paintAction') { _this.$store.dispatch(Actions.PUSH_PAINT_HISTORY, ev.data) }
-        console.log(dataObj)
+        let eventObj = JSON.parse(ev.data)
+        if (eventObj.action === 'paintAction') { _this.$store.dispatch(Actions.PUSH_PAINT_HISTORY, eventObj.data) }
+        console.log(eventObj)
       }
     }
   }
