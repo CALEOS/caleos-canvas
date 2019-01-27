@@ -30,9 +30,9 @@
 */
 
 function handleSetPixels (state, payload, blockInfo, context) {
-  let payloadDataString = JSON.stringify(Object.assign(payload.data, {'indexState': state.indexState}))
+  let payloadDataString = JSON.stringify({'action': 'paintAction', 'data': Object.assign(payload.data, {'indexState': state.indexState})})
   context.stateCopy = JSON.parse(JSON.stringify(state)) // Deep copy state to de-reference
-  state.websocketServer.broadcast({'action': 'paintAction', 'data': payloadDataString})
+  state.websocketServer.broadcast(payloadDataString)
 }
 
 const updaters = [
