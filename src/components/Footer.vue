@@ -49,6 +49,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+#footer
+  background-color blue
 #pixels-remaining
   float right
   margin-top -26px

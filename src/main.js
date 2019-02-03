@@ -1,9 +1,12 @@
 import Vue from 'vue'
+import './plugins/vuetify'
 import Vuex from 'vuex'
 import App from './App.vue'
 import '../assets/app.styl'
 import 'babel-polyfill'
 import 'vue-awesome/icons/flag'
+import 'vuetify/src/stylus/app.styl'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import { store } from './store'
 
