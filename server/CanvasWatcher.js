@@ -24,9 +24,11 @@ const actionHandler = new CanvasActionHandler([handlerVersion])
  * More information can be found on the main demux-eos repository:
  * https://github.com/EOSIO/demux-js-eos
  */
+
+
 const actionReader = new NodeosActionReader(
   'http://testnet.telos.caleos.io', // Thanks EOS Calgary!
-  0
+  actionHandler.getStartAtBlock()
 )
 
 /* BaseActionWatcher

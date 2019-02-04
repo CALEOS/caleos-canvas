@@ -3,6 +3,47 @@ const { AbstractActionHandler } = require('demux')
 
 const WebSocket = require('ws')
 const server = new WebSocket.Server({port: 8081})
+const fs = require('fs')
+const stateJson = './state.json'
+const MAX_PAINT_HISTORY = 10000
+const MAX_CHAT_HISTORY = 10000
+
+// Initial state
+let state = {
+  websocketServer: server,
+  paintHistory: [],
+  chatHistory: [],
+  indexState: {
+    blockNumber: 0,
+    blockHash: '',
+    isReplay: false,
+    handlerVersionName: 'v1'
+  }
+}
+
+if (fs.existsSync(stateJson)) {
+  let oldState = fs.readFileSync(stateJson)
+  state = JSON.parse(oldState)
+  supplementState(state)
+}
+
+function supplementState (state) {
+  state.websocketServer = server
+  pushPrototype(state.paintHistory, MAX_PAINT_HISTORY)
+  pushPrototype(state.chatHistory, MAX_CHAT_HISTORY)
+}
+
+function pushPrototype (arrayInstance, max) {
+  arrayInstance.push = function () {
+    Array.prototype.push.apply(this, arguments)
+
+    if (this.length < max) {
+      return
+    }
+
+    Array.prototype.splice.call(this, max, (this.length - max))
+  }
+}
 
 // Broadcast to all.
 server.broadcast = function broadcast (data) {
@@ -27,20 +68,29 @@ function sendPing () {
   server.broadcast(JSON.stringify({'action': 'ping'}))
 }
 
-setInterval(sendPing, 30000)
+function saveState () {
+  fs.writeFile(stateJson, JSON.stringify(state, (k, v) => {
+    return k === 'websocketServer' ? undefined : v
+  }), function (err) {
+    if (err) {
+      return console.log(err)
+    }
 
-function handleIncoming (webSocket, data) {
-  console.log('Unknown incoming websocket message: ' + JSON.stringify((data)))
+    console.log('Saved state')
+  })
 }
 
-// Initial state
-let state = {
-  websocketServer: server,
-  indexState: {
-    blockNumber: 0,
-    blockHash: '',
-    isReplay: false,
-    handlerVersionName: 'v1'
+// send ping every 30 seconds for nginx
+setInterval(sendPing, 30000)
+
+// write state every 10 seconds
+setInterval(saveState, 10000)
+
+function handleIncoming (webSocket, data) {
+  let message = JSON.parse(data)
+  if (message && message.action && message.action === 'chat') {
+    server.broadcast(JSON.stringify(message))
+    state.chatHistory.push(message)
   }
 }
 
@@ -55,6 +105,10 @@ class CanvasActionHandler extends AbstractActionHandler {
     if (blockNumber > stateHistoryMaxLength && stateHistory[blockNumber - stateHistoryMaxLength]) {
       delete stateHistory[blockNumber - stateHistoryMaxLength]
     }
+  }
+
+  getStartAtBlock () {
+    return state.indexState.blockNumber
   }
 
   async loadIndexState () {
@@ -75,6 +129,7 @@ class CanvasActionHandler extends AbstractActionHandler {
       delete stateHistory[n]
     }
     state = stateHistory[blockNumber]
+    supplementState(state)
   }
 }
 
