@@ -1,14 +1,17 @@
 <template>
   <div id="header">
-    <Leaderboard />
+    <Leaderboard align="left" />
+    <PaintHistory align="right" />
   </div>
 </template>
 <script>
 
 import Leaderboard from './Leaderboard'
+import PaintHistory from './PaintHistory'
 export default {
   components: {
-    Leaderboard
+    Leaderboard,
+    PaintHistory
   },
   props: {
     name: {
