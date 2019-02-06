@@ -87,10 +87,14 @@ setInterval(sendPing, 30000)
 setInterval(saveState, 10000)
 
 function handleIncoming (webSocket, data) {
-  let message = JSON.parse(data)
-  if (message && message.action && message.action === 'chat') {
-    server.broadcast(JSON.stringify(message))
-    state.chatHistory.push(message)
+  try {
+    let message = JSON.parse(data)
+    if (message && message.action && message.action === 'chat') {
+      server.broadcast(JSON.stringify(message))
+      state.chatHistory.push(message)
+    }
+  } catch (e) {
+    console.error('Error on incoming websocket message: ' + e)
   }
 }
 
