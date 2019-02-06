@@ -27,10 +27,10 @@ if (fs.existsSync(stateJson)) {
   supplementState(state)
 }
 
-function supplementState (state) {
-  state.websocketServer = server
-  pushPrototype(state.paintHistory, MAX_PAINT_HISTORY)
-  pushPrototype(state.chatHistory, MAX_CHAT_HISTORY)
+function supplementState (s) {
+  s.websocketServer = server
+  pushPrototype(s.paintHistory, MAX_PAINT_HISTORY)
+  pushPrototype(s.chatHistory, MAX_CHAT_HISTORY)
 }
 
 function pushPrototype (arrayInstance, max) {
@@ -132,7 +132,7 @@ class CanvasActionHandler extends AbstractActionHandler {
     for (const n of toDelete) {
       delete stateHistory[n]
     }
-    state = stateHistory[blockNumber]
+    state = stateHistory[blockNumber] ? stateHistory[blockNumber] : state
     supplementState(state)
   }
 }
