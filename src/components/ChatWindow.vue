@@ -1,7 +1,6 @@
 <template>
   <div>
     <VDialog
-      id="chat-window"
       width="500"
     >
       <VBtn slot="activator">

@@ -1,8 +1,8 @@
 <template>
   <div id="header">
-    <Leaderboard align="left" />
-    <ChatWindow align="center" />
-    <PaintHistory align="right" />
+    <Leaderboard class="header-item header-left" />
+    <ChatWindow class="header-item header-center" />
+    <PaintHistory class="header-item header-right" />
   </div>
 </template>
 <script>
@@ -27,4 +27,11 @@ export default {
 <style lang="stylus" scoped>
 #header
   background-color blue
+  white-space nowrap
+.header-item
+  display inline-block
+.header-left
+  float left
+.header-right
+  float right
 </style>
