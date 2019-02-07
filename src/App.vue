@@ -126,8 +126,13 @@ export default {
         console.log('GOT MESSAGE: ' + ev.data)
         let eventObj = JSON.parse(ev.data)
         if (eventObj.action === 'paintAction') { _this.$store.dispatch(Actions.PUSH_PAINT_HISTORY, eventObj.data) }
+        if (eventObj.action === 'chat') { _this.$store.dispatch(Actions.PUSH_CHAT_HISTORY, eventObj.data) }
         console.log(eventObj)
       }
+
+      this.$root.$on('sendMessage', (data) => {
+        this.ws.send(data)
+      })
     }
   }
 

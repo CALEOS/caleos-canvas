@@ -39,17 +39,15 @@ const state = {
   pixelObjArray: [], // contains array of session { x: , y: , color: <string>}
   zoomLevel: null,
   paintHistory: [],
-  historyLength: 500,
-  leaderboard: null
+  paintHistoryLength: 500,
+  leaderboard: [],
+  chatHistory: [],
+  chatHistoryLength: 1000
 }
 
-state.paintHistory.push = function () {
-  let max = state.historyLength
-  Array.prototype.push.apply(this, arguments)
-
-  if (this.length < max) { return }
-
-  Array.prototype.splice.call(this, max, (this.length - max))
+function limitArrayLength (a, l) {
+  if (a.length < l) return
+  a.splice(l, (a.length - l))
 }
 
 const actions = {
@@ -104,6 +102,9 @@ const actions = {
   },
   [Actions.SET_ZOOM_LEVEL] ({ commit }) {
     commit(Actions.SET_ZOOM_LEVEL)
+  },
+  [Actions.PUSH_CHAT_HISTORY] ({ commit }, historyObj) {
+    commit(Actions.PUSH_CHAT_HISTORY, historyObj)
   },
   [Actions.PUSH_PAINT_HISTORY] ({ commit }, historyObj) {
     commit(Actions.PUSH_PAINT_HISTORY, historyObj)
@@ -180,8 +181,13 @@ const mutations = {
   [Actions.SET_ZOOM_LEVEL] (state, zoomLevel) {
     state.zoomLevel = zoomLevel
   },
-  [Actions.PUSH_PAINT_HISTORY] (state, paintHistory) {
-    state.paintHistory.push(paintHistory)
+  [Actions.PUSH_CHAT_HISTORY] (state, chat) {
+    Vue.set(state.chatHistory, state.chatHistory.length, chat)
+    limitArrayLength(state.chatHistory, state.chatHistoryLength)
+  },
+  [Actions.PUSH_PAINT_HISTORY] (state, paint) {
+    state.paintHistory.push(paint)
+    limitArrayLength(state.paintHistory, state.paintHistoryLength)
   },
   [Actions.SET_LEADERBOARD] (state, leaderboard) {
     state.leaderboard = leaderboard

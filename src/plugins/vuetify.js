@@ -4,7 +4,9 @@ import Vuetify, {
   VIcon,
   VBtn,
   VDialog,
-  VDataTable
+  VDataTable,
+  VList,
+  VTextField
 } from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 
@@ -14,7 +16,9 @@ Vue.use(Vuetify, {
     VIcon,
     VBtn,
     VDialog,
-    VDataTable
+    VDataTable,
+    VList,
+    VTextField
   },
   iconfont: 'md'
 })
