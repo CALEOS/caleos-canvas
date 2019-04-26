@@ -15,6 +15,7 @@
 import UserInfo from './UserInfo.vue'
 import Coordinates from './Coordinates.vue'
 import ColorPaletteContainer from './ColorPaletteContainer.vue'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -30,21 +31,12 @@ export default {
   },
   data: function () {
     return {
-      pixelsRemaining: 10,
       countColor: 'black-text'
     }
   },
-  mounted () {
-    this.$root.$on('update-canvas', (pixelArray) => {
-      this.getRemaining(pixelArray.length)
-    })
-  },
-  methods: {
-    getRemaining: function (pixelCount) {
-      this.pixelsRemaining = this.$store.state.config.pixels_per_paint - pixelCount
-      this.pixelsRemaining === 0 ? this.countColor = 'red-text' : this.countColor = 'black-text'
-    }
-  }
+  computed: mapState([
+    'pixelsRemaining'
+  ])
 }
 </script>
 

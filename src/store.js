@@ -40,7 +40,9 @@ const state = {
   zoomLevel: null,
   paintHistory: [],
   paintHistoryLength: 500,
+  pixelsRemaining: null,
   leaderboard: [],
+  cooldownExpire: -1,
   chatHistory: [],
   chatHistoryLength: 1000
 }
@@ -111,6 +113,12 @@ const actions = {
   },
   [Actions.SET_LEADERBOARD] ({ commit }, leaderboard) {
     commit(Actions.SET_LEADERBOARD, leaderboard)
+  },
+  [Actions.SET_PIXELS_REMAINING] ({ commit }, pixels) {
+    commit(Actions.SET_PIXELS_REMAINING, pixels)
+  },
+  [Actions.SET_COOLDOWN_EXPIRES] ({ commit }, expires) {
+    commit(Actions.SET_COOLDOWN_EXPIRES, expires)
   }
 }
 
@@ -191,6 +199,12 @@ const mutations = {
   },
   [Actions.SET_LEADERBOARD] (state, leaderboard) {
     state.leaderboard = leaderboard
+  },
+  [Actions.SET_PIXELS_REMAINING] (state, pixels) {
+    state.pixelsRemaining = pixels
+  },
+  [Actions.SET_COOLDOWN_EXPIRES] (state, expires) {
+    state.cooldownExpire = expires
   }
 }
 

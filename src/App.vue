@@ -32,6 +32,8 @@ import HeaderContainer from './components/Header'
 import CanvasContainer from './components/Canvas.vue'
 import FooterContainer from './components/Footer.vue'
 import {Api} from 'eosjs'
+import moment from 'moment'
+import { setInterval } from 'timers'
 
 ScatterJS.plugins(new ScatterEOS())
 
@@ -69,6 +71,7 @@ export default {
       _this.$store.dispatch(Actions.SET_SCATTER, ScatterJS.scatter)
       window.ScatterJS = null
     })
+    this.startWatcher()
   },
 
   methods: {
@@ -133,6 +136,33 @@ export default {
       this.$root.$on('sendMessage', (data) => {
         this.ws.send(data)
       })
+    },
+    startWatcher () {
+      if (!this.intervalId) {
+        this.intervalId = setInterval(this.doWatcher, 500)
+      }
+    },
+    doWatcher () {
+      this.updateCooldown()
+      this.updatePixelsRemaining()
+    },
+    updateCooldown () {
+      let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
+      this.$store.dispatch(Actions.SET_COOLDOWN_EXPIRES, cooldownExpires)
+    },
+    updatePixelsRemaining () {
+      let pixelsRemaining = 0
+      var store = this.$store.state.cooldownExpire
+      var now = moment()
+
+      debugger
+      if (this.$store.state.cooldownExpire.isAfter && this.$store.state.cooldownExpire.isAfter(moment.unix())) {
+        pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.contractAccount.session_paint_count - this.$store.state.pixelObjArray.length
+      } else {
+        pixelsRemaining = this.$store.state.config.pixels_per_paint
+      }
+
+      this.$store.dispatch(Actions.SET_PIXELS_REMAINING, pixelsRemaining)
     }
   }
 

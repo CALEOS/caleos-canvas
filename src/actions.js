@@ -19,5 +19,7 @@ export const Actions = {
   SET_ZOOM_LEVEL: 'SetZoomLevel',
   PUSH_PAINT_HISTORY: 'PushPaintHistory',
   PUSH_CHAT_HISTORY: 'PushChatHistory',
-  SET_LEADERBOARD: 'SetLeaderboard'
+  SET_LEADERBOARD: 'SetLeaderboard',
+  SET_COOLDOWN_EXPIRES: 'SetCooldownExpires',
+  SET_PIXELS_REMAINING: 'SetPixelsRemaining'
 }
