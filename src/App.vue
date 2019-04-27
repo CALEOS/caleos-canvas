@@ -159,7 +159,7 @@ export default {
       if (this.$store.state.cooldownExpire.isAfter && this.$store.state.cooldownExpire.isAfter(moment.unix())) {
         pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.contractAccount.session_paint_count - this.$store.state.pixelObjArray.length
       } else {
-        pixelsRemaining = this.$store.state.config.pixels_per_paint
+        pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.pixelObjArray.length
       }
 
       this.$store.dispatch(Actions.SET_PIXELS_REMAINING, pixelsRemaining)
