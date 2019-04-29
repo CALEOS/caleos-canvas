@@ -158,7 +158,7 @@ export default {
       }
 
       let paintZoom = (event) => {
-        if (this.$store.state.pixelCoordArray.length === this.$store.state.config.pixels_per_paint) {
+        if (this.$store.state.pixelsRemaining === 0) {
           alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
           return
         }
