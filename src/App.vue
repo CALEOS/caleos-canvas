@@ -152,11 +152,8 @@ export default {
     },
     updatePixelsRemaining () {
       let pixelsRemaining = 0
-      var store = this.$store.state.cooldownExpire
-      var now = moment()
-
-      debugger
-      if (this.$store.state.cooldownExpire.isAfter && this.$store.state.cooldownExpire.isAfter(moment.unix())) {
+      let inCooldown = this.$store.state.cooldownExpire.isAfter && this.$store.state.cooldownExpire.isAfter()
+      if (inCooldown) {
         pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.contractAccount.session_paint_count - this.$store.state.pixelObjArray.length
       } else {
         pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.pixelObjArray.length
