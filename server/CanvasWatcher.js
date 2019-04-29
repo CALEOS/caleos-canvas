@@ -25,11 +25,10 @@ const actionHandler = new CanvasActionHandler([handlerVersion])
  * https://github.com/EOSIO/demux-js-eos
  */
 
-
-const actionReader = new NodeosActionReader(
-  'http://testnet.telos.caleos.io', // Thanks EOS Calgary!
-  actionHandler.getStartAtBlock()
-)
+const actionReader = new NodeosActionReader({
+  nodeosEndpoint: 'http://testnet.telos.caleos.io',
+  startAtBlock: actionHandler.getStartAtBlock()
+})
 
 /* BaseActionWatcher
  * This ready-to-use base class helps coordinate the Action Reader and Action Handler, passing through block information

@@ -102,6 +102,8 @@ const stateHistory = {}
 const stateHistoryMaxLength = 300
 
 class CanvasActionHandler extends AbstractActionHandler {
+  setup () { }
+
   async handleWithState (handle) {
     await handle(state)
     const { blockNumber } = state.indexState
