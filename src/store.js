@@ -11,7 +11,7 @@ const network = Network.fromJson({
   protocol: 'https',
   host: 'testnet.telos.caleos.io',
   port: 443,
-  chainId: 'e17615decaecd202a365f4c029f206eee98511979de8a5756317e2469f2289e3'
+  chainId: '1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f'
 })
 
 const state = {
@@ -19,8 +19,8 @@ const state = {
   contractAccount: null,
   width: 1000,
   height: 1000,
-  contract: 'caleoscanvas',
-  scatterAppName: 'caleoscanvas',
+  contract: 'canvascanvas',
+  scatterAppName: 'CalEOS Canvas',
   canvasse: null,
   scatter: null,
   identity: null,
