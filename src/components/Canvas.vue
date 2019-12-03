@@ -53,6 +53,80 @@ export default {
   },
 
   methods: {
+    mZoom () {
+      let canvas = document.getElementById('zoom-canvas')
+      let context = canvas.getContext('2d')
+      //context.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+
+// var canvas = document.getElementById("canvas");
+// var canvas2 = document.getElementById("canvas2");
+// var context = canvas.getContext("2d");
+// var context2 = canvas2.getContext("2d");
+      var zoomIntensity = 0.2;
+var width = 200;
+var height = 200;
+
+var scale = 1;
+var originx = 0;
+var originy = 0;
+
+var offset = {x:0, y:0};
+      //draw the larger canvas
+      function draw()
+      {
+          context.imageSmoothingEnabled = false;
+          
+          // Clear screen to white.
+          context.fillStyle = "red";
+          // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
+          //context.drawImage(canvas2, 0,0, width, height);
+          context.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+          //console.log(canvas.width)
+      }
+
+      // Draw loop at 60FPS.
+      setInterval(draw, 1000/60);
+
+      canvas.onmousewheel = function (event){
+        event.preventDefault();
+        
+        // Get mouse offset.
+        var mousex = event.clientX - canvas.offsetLeft;
+        var mousey = event.clientY - canvas.offsetTop;
+        
+        // Normalize wheel to +1 or -1.
+        var wheel = event.wheelDelta/120;
+
+        // Compute zoom factor.
+        var zoom = Math.exp(wheel*zoomIntensity);
+        
+        // Translate so the visible origin is at the context's origin.
+        context.translate(originx - offset.x, originy - offset.y); //offset is panning
+        
+        //make sure we don't zoom out further than normal scale
+        var resultingScale = scale * zoom;
+        if(resultingScale < 1)
+          zoom = 1/scale;
+      
+        // Compute the new visible origin. Originally the mouse is at a
+        // distance mouse/scale from the corner, we want the point under
+        // the mouse to remain in the same place after the zoom, but this
+        // is at mouse/new_scale away from the corner. Therefore we need to
+        // shift the origin (coordinates of the corner) to account for this.
+        originx -= mousex/(scale*zoom) - mousex/scale;
+        originy -= mousey/(scale*zoom) - mousey/scale;
+        
+        // Scale it (centered around the origin due to the trasnslate above).
+        context.scale(zoom, zoom);
+        
+        // Offset the visible origin to it's proper position.
+        context.translate(-originx + offset.x, -originy + offset.y); //offset is panning
+
+        // Update scale and others.
+        scale *= zoom;
+      }
+
+    },
     async refreshCanvas () {
       if (this.$store.state.reloading) {
         return
@@ -64,6 +138,7 @@ export default {
       } finally {
         this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
         this.createZoomCanvas()
+        //this.mZoom()
       }
     },
     removePixelFromPaintSession (pixelObj) {
@@ -122,13 +197,29 @@ export default {
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
-      ctx.mozImageSmoothingEnabled = false
-      ctx.webkitImageSmoothingEnabled = false
-      ctx.msImageSmoothingEnabled = false
-      ctx.imageSmoothingEnabled = false
+      // ctx.mozImageSmoothingEnabled = false
+      // ctx.webkitImageSmoothingEnabled = false
+      // ctx.msImageSmoothingEnabled = false
+      // ctx.imageSmoothingEnabled = false
+
+      ///New vars
+      var zoomIntensity = 0.2
+      var width = 200
+      var height = 200
+
+      var scale = 1
+      var originx = 0
+      var originy = 0
+
+      var offset = {x:0, y:0}
+
+      // Draw loop at 60FPS.
+      setInterval(zoom2, 1000/60)
+
+
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
       // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
-      var zoom = function (clicks) {
+      function zoom (clicks) {
         if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
         var factor = scaleFactor ** clicks
         ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -136,6 +227,16 @@ export default {
         canvas.width *= factor
         canvas.height *= factor
         ctx.imageSmoothingEnabled = false
+        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+      }
+
+      function zoom2 () {
+        ctx.imageSmoothingEnabled = false;
+          
+          // Clear screen to white.
+        ctx.fillStyle = "red";
+          // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
+          //context.drawImage(canvas2, 0,0, width, height);
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
       }
 
@@ -223,13 +324,13 @@ export default {
       }
 
       this.$root.$on('zoom-out', () => {
-        zoom(-1)
+        //zoom(-1)
       })
       this.$root.$on('zoom-in', () => {
-        zoom(1)
+        //zoom(1)
       })
       this.$root.$on('update-canvas', () => {
-        zoom(0)
+        //zoom(0)
       })
       this.$root.$on('undo-last', async () => {
         await this.getPixelsRaw().then((pixelArray) => {
@@ -248,10 +349,49 @@ export default {
       canvas.addEventListener('mousemove', mouseMoveFunction, false)
       canvas.removeEventListener('mouseup', mouseUpFunction)
       canvas.addEventListener('mouseup', mouseUpFunction, false)
-      canvas.addEventListener('DOMMouseScroll', handleScroll, false)
-      canvas.addEventListener('mousewheel', handleScroll, false)
+      //canvas.addEventListener('DOMMouseScroll', handleScroll, false)
+      //canvas.addEventListener('mousewheel', handleScroll, false)
+      // canvas.addEventListener('mousewheel', mwheel, false)
+      zoom(0)
 
-      zoom(initialZoom)
+      canvas.onmousewheel = function (event){
+        event.preventDefault();
+        
+        // Get mouse offset.
+        var mousex = event.clientX - canvas.offsetLeft;
+        var mousey = event.clientY - canvas.offsetTop;
+        
+        // Normalize wheel to +1 or -1.
+        var wheel = event.wheelDelta/120;
+
+        // Compute zoom factor.
+        var zoom = Math.exp(wheel*zoomIntensity);
+        
+        // Translate so the visible origin is at the context's origin.
+        ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
+        
+        //make sure we don't zoom out further than normal scale
+        var resultingScale = scale * zoom;
+        if(resultingScale < 1)
+          zoom = 1/scale;
+      
+        // Compute the new visible origin. Originally the mouse is at a
+        // distance mouse/scale from the corner, we want the point under
+        // the mouse to remain in the same place after the zoom, but this
+        // is at mouse/new_scale away from the corner. Therefore we need to
+        // shift the origin (coordinates of the corner) to account for this.
+        originx -= mousex/(scale*zoom) - mousex/scale;
+        originy -= mousey/(scale*zoom) - mousey/scale;
+        
+        // Scale it (centered around the origin due to the trasnslate above).
+        ctx.scale(zoom, zoom);
+        
+        // Offset the visible origin to it's proper position.
+        ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
+
+        // Update scale and others.
+        scale *= zoom;
+      }
     }
   }
 }
