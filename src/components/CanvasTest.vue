@@ -6,13 +6,11 @@
     <canvas
       id="place-canvasse"
       class="place-canvas"
-      width="500"
-      height="500"
     />
     <canvas
       id="zoom-canvas"
-      width="600"
-      height="600"
+      width="1000"
+      height="1000"
     />
   </div>
 </template>
@@ -421,6 +419,7 @@ export default {
   }
   }
 </script>
+
 <style lang="stylus" scoped>
 
 </style>
