@@ -313,23 +313,44 @@ export default {
       //canvas.addEventListener('DOMMouseScroll', handleScroll, false)
       //canvas.addEventListener('mousewheel', handleScroll, false)
       // canvas.addEventListener('mousewheel', mwheel, false)
-      zoom(0)
+      // zoom(0)
 
       canvas.onmousewheel = function (event){
         event.preventDefault();
         
-        // Get mouse offset.
-        var mousex = event.clientX - canvas.offsetLeft;
-        var mousey = event.clientY - canvas.offsetTop;
         
         // Normalize wheel to +1 or -1.
-        var wheel = event.wheelDelta/120;
+        var wheel = event.wheelDelta/120
+        
+        //Is Zoom Out
+        var isZoomOut = false
+        if ( wheel < 0) {
+          isZoomOut = true
+        }
+
+        // Get mouse offset.
+        if(isZoomOut){
+          var mousex = event.clientX - canvas.offsetLeft
+          var mousey = event.clientY - canvas.offsetTop
+        } else {
+          var mousex = event.clientX - canvas.offsetLeft
+          var mousey = event.clientY - canvas.offsetTop
+        }
+
+        console.log('isZoomOut', isZoomOut)
+        console.log('scale', scale)
 
         // Compute zoom factor.
         var zoom = Math.exp(wheel*zoomIntensity);
         
         // Translate so the visible origin is at the context's origin.
-        ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
+        if(isZoomOut){
+          ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
+          if(scale === 1) {
+            ctx.translate(-1, -1); //offset is panning
+            console.log('try to move 1')
+          }
+        } else ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
         
         //make sure we don't zoom out further than normal scale
         var resultingScale = scale * zoom;
@@ -348,8 +369,13 @@ export default {
         ctx.scale(zoom, zoom);
         
         // Offset the visible origin to it's proper position.
-        ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
-
+        if(isZoomOut) {
+          ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
+          if(scale === 1) {
+            ctx.translate(-offset.x, -offset.y); //offset is panning
+            console.log('try to move 2')
+          }
+        } else ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
         // Update scale and others.
         scale *= zoom;
       }
