@@ -14,9 +14,6 @@
       width="600"
       height="600"
     />
-
-     <canvas id="canvas" width="200" height="200"></canvas>
-    <canvas id="canvas2" width="100" height="100"></canvas>
   </div>
 </template>
 
@@ -119,14 +116,14 @@ export default {
 
     createZoomCanvas () {
       let state = this.$store.state
-      let canvass = document.getElementById('place-canvasse')
-      let ctxs = canvass.getContext('2d')
+      //let canvass = document.getElementById('place-canvasse')
+      //let ctxs = canvass.getContext('2d')
 
       requestAnimationFrame(draw)
 
       var zoomIntensity = 0.2
 
-      var canvas = document.getElementById("canvas")
+      var canvas = document.getElementById("zoom-canvas")
       var canvas2 = document.getElementById("place-canvasse")
       var context = canvas.getContext("2d")
       var context2 = canvas2.getContext("2d")
@@ -312,7 +309,7 @@ export default {
 
         function mouseEvent (event){
             mouse.overId = event.target.id;
-            if(event.target.id === "canvas" || mouse.dragging){ // only interested in canvas mouse events including drag event started on the canvas.
+            if(event.target.id === "zoom-canvas" || mouse.dragging){ // only interested in canvas mouse events including drag event started on the canvas.
 
                 mouse.posLast.x = mouse.pos.x;
                 mouse.posLast.y = mouse.pos.y;    
