@@ -3,14 +3,14 @@
     id="place"
     class="place"
   >
-    <canvas
+    <!-- <canvas
       id="place-canvasse"
       class="place-canvas"
-    />
+    /> -->
     <canvas
       id="zoom-canvas"
-      width="1000"
-      height="1000"
+      width="500"
+      height="500"
     />
   </div>
 </template>
@@ -71,17 +71,19 @@ var originx = 0;
 var originy = 0;
 
 var offset = {x:0, y:0};
+
+   
       //draw the larger canvas
       function draw()
       {
           context.imageSmoothingEnabled = false;
-          
           // Clear screen to white.
           context.fillStyle = "red";
           // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
           //context.drawImage(canvas2, 0,0, width, height);
           context.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
           //console.log(canvas.width)
+          contornoCanvas()
       }
 
       // Draw loop at 60FPS.
@@ -216,6 +218,20 @@ var offset = {x:0, y:0};
       // Draw loop at 60FPS.
       setInterval(zoom2, 1000/60)
 
+      //
+      function contornoCanvas(){
+        //console.log('contorno')
+        for(var i=0; i<=canvas.width; i+=10){
+            for(var j=0; j<=canvas.height; j+=10){
+              if(i == 0 || j == 0 || i == canvas.width || j == canvas.height){
+                ctx.strokeStyle = '#FF0000'
+                ctx.strokeRect(i,j,5,5)
+              }
+              // console.log('pintando')
+            }
+        }
+      }
+
 
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
       // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
@@ -234,10 +250,13 @@ var offset = {x:0, y:0};
         ctx.imageSmoothingEnabled = false;
           
           // Clear screen to white.
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "#ff0000";
           // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
           //context.drawImage(canvas2, 0,0, width, height);
+        ctx.restore()
+        ctx.clearRect(0,0,canvas.width,canvas.height)
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+        contornoCanvas()
       }
 
       let setTransactionButton = () => {
@@ -259,6 +278,7 @@ var offset = {x:0, y:0};
       }
 
       let paintZoom = (event) => {
+        console.log('paintZoom')
         if (this.$store.state.pixelsRemaining < 1) {
           alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
           return
@@ -274,8 +294,16 @@ var offset = {x:0, y:0};
           x: Math.floor(event.clientX - rect.left),
           y: Math.floor(event.clientY - rect.top)
         }
+        var mousex = event.clientX - canvas.offsetLeft;
+        var mousey = event.clientY - canvas.offsetTop;
+
+        // let pixelObj = {
+        //   x: Math.floor(mousex),
+        //   y: Math.floor(mousey)
+        // }
         // temporarily display selected pixel on zoom canvas, it's redrawn on transform
-        let scale = canvasElement.width / 1000.0
+        // let scale = canvasElement.width / 1000.0
+        // let scale = canvasElement.width / 1000.0
         let indexOffset = -1
         let scaledX = Math.floor(pixelObj.x / scale) * scale
         let scaledY = Math.floor(pixelObj.y / scale) * scale
@@ -307,8 +335,15 @@ var offset = {x:0, y:0};
         let moveY = lastY - dragStart.y
         let top = window.getComputedStyle(canvas).getPropertyValue('top')
         let left = window.getComputedStyle(canvas).getPropertyValue('left')
-        canvas.style.left = parseInt(left, 10) + moveX + 'px'
-        canvas.style.top = parseInt(top, 10) + moveY + 'px'
+        //canvas.style.left = parseInt(left, 10) + moveX + 'px'
+        //canvas.style.top = parseInt(top, 10) + moveY + 'px'
+        ctx.moveTo(moveX, moveY)
+        
+        // Scale it (centered around the origin due to the trasnslate above).
+        // ctx.scale(zoom, zoom);
+        
+        // Offset the visible origin to it's proper position.
+        // ctx.translate(moveX/100,moveY/100); //offset is panning
       }
 
       let mouseUpFunction = (evt) => {

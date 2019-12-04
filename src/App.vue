@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <HeaderContainer name="header" />
-    <CanvasContainer name="pixels" />
+    <CanvasContainer name="pixels"/>
     <FooterContainer name="" />
     <button
       v-shortkey.once="['-']"
