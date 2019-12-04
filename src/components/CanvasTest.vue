@@ -192,6 +192,7 @@ export default {
           console.log('dragging', mouse.dragging)
           if (!mouse.dragging) 
             paintZoom(evt)
+            mouse.dragging = false
         }
       ///
       var zoomIntensity = 0.2
@@ -391,13 +392,14 @@ export default {
                 view.toWorld(mouse.pos, mouse.worldPos); // gets the world coords (where on canvas 2 the mouse is)
                 if (event.type === "mousemove"){
                     if(mouse.button){
+                        mouse.dragging = true
                         view.move(
                           mouse.pos.x - mouse.posLast.x,
                           mouse.pos.y - mouse.posLast.y
                         )
                     }
-                } else if (event.type === "mousedown") { mouse.button = true; mouse.dragging = true }        
-                else if (event.type === "mouseup") { mouse.button = false; mouse.dragging = false; mouseUpFunction(event) }
+                } else if (event.type === "mousedown") { mouse.button = true; mouse.dragging = false }        
+                else if (event.type === "mouseup") { mouse.button = false; mouseUpFunction(event) }
                 else if(event.type === "mousewheel" && (mouse.whichWheel === 1 || mouse.whichWheel === -1)){
                     mouse.whichWheel = 1;
                     mouse.wheel = event.wheelDelta;
