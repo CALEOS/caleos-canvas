@@ -121,6 +121,73 @@ export default {
 
       requestAnimationFrame(draw)
 
+      ///OLD
+        let setTransactionButton = () => {
+          let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
+          if (cooldownExpires.isBefore()) {
+            if (this.$store.state.pixelCoordArray.length) {
+              this.$root.$emit('cooldown', false)
+            } else {
+              this.$root.$emit('cooldown')
+            }
+          }
+        }
+
+        let paintZoom = (event) => {
+          console.log('paintZoom')
+          if (this.$store.state.pixelsRemaining < 1) {
+            alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
+            return
+          }
+          if (this.$store.state.activeColorInt === null) {
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#000000')
+            this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
+          }
+          let canvasElement = document.getElementById('zoom-canvas')
+          let rect = canvasElement.getBoundingClientRect()
+          let pixelObj = {
+            x: Math.floor(event.clientX - rect.left),
+            y: Math.floor(event.clientY - rect.top)
+          }
+          var mousex = event.clientX - canvas.offsetLeft;
+          var mousey = event.clientY - canvas.offsetTop;
+
+          // let pixelObj = {
+          //   x: Math.floor(mousex),
+          //   y: Math.floor(mousey)
+          // }
+          // temporarily display selected pixel on zoom canvas, it's redrawn on transform
+          // let scale = canvasElement.width / 1000.0
+          var scale = 2
+          // let scale = canvasElement.width / 1000.0
+          let indexOffset = -1
+          let scaledX = Math.floor(pixelObj.x / scale) * scale
+          let scaledY = Math.floor(pixelObj.y / scale) * scale
+          let ctxZoom = canvasElement.getContext('2d')
+          ctxZoom.fillStyle = this.$store.state.activeColorName
+          ctxZoom.fillRect(scaledX, scaledY, scale, scale)
+          pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
+          pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
+          this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
+          setTransactionButton()
+          paintTempPixels(pixelObj, state.activeColorName)
+        }
+
+        let paintTempPixels = (pixelObj, color) => {
+          let zoomCanvas = document.getElementById('place-canvasse')
+          let ctxZoom = zoomCanvas.getContext('2d')
+          ctxZoom.fillStyle = color
+          ctxZoom.fillRect(pixelObj.x, pixelObj.y, 1, 1)
+        }
+
+        let mouseUpFunction = (evt) => {
+          //dragStart = null
+          //canvas.className = ''
+          //if (!dragged) 
+            paintZoom(evt)
+        }
+      ///
       var zoomIntensity = 0.2
 
       var canvas = document.getElementById("zoom-canvas")
@@ -324,7 +391,7 @@ export default {
                         )
                     }
                 } else if (event.type === "mousedown") { mouse.button = true; mouse.dragging = true }        
-                else if (event.type === "mouseup") { mouse.button = false; mouse.dragging = false }
+                else if (event.type === "mouseup") { mouse.button = false; mouse.dragging = false; mouseUpFunction(event) }
                 else if(event.type === "mousewheel" && (mouse.whichWheel === 1 || mouse.whichWheel === -1)){
                     mouse.whichWheel = 1;
                     mouse.wheel = event.wheelDelta;
