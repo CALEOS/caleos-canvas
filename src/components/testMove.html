@@ -1,14 +1,14 @@
 <html>
+
     <div>
         <canvas id="canvas" width="200" height="200"></canvas>
         <canvas id="canvas2" width="100" height="100"></canvas>
         <p>Mouse wheel to zoom. Mouse click drag to pan.</p>
         <p>Zoomed image constrained to canvas</p>
     </div>
-</html>
 
-<script>
-    // use requestAnimationFrame when doing any form of animation via javascript
+    <script>
+        // use requestAnimationFrame when doing any form of animation via javascript
 requestAnimationFrame(draw);
 
 var zoomIntensity = 0.2;
@@ -31,6 +31,7 @@ for(var x = 0; x < 100; x++){
         context2.fillStyle = "#FF0000";
     }else{
         context2.fillStyle = "#" + val + val + val;
+    
     }
     context2.fillRect(x,y,1,1);
   }
@@ -50,8 +51,8 @@ var mouse = {
 
 // View handles zoom and pan (can also handle rotate but have taken that out as rotate can not be contrained without losing some of the image or seeing some of the background.
 const view = (()=>{
-    const matrix = [0,0,0,0,0,0]; // current view transform
-    const invMatrix = [0,0,0,0,0,0]; // current inverse view transform
+    const matrix = [1,0,0,1,0,0]; // current view transform
+    const invMatrix = [1,0,0,1,0,0]; // current inverse view transform
     var m = matrix;  // alias
     var im = invMatrix; // alias
     var scale = 1;   // current scale
@@ -231,4 +232,5 @@ function mouseEvent (event){
         }
     }
 }
-</script>
+    </script>
+</html>
