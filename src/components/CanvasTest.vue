@@ -159,7 +159,9 @@ export default {
           // }
           // temporarily display selected pixel on zoom canvas, it's redrawn on transform
           // let scale = canvasElement.width / 1000.0
-          var scale = 2
+          var scale = view.getScale()
+          //var scale = 1
+          console.log('scale',scale)
           // let scale = canvasElement.width / 1000.0
           let indexOffset = -1
           let scaledX = Math.floor(pixelObj.x / scale) * scale
@@ -167,8 +169,10 @@ export default {
           let ctxZoom = canvasElement.getContext('2d')
           ctxZoom.fillStyle = this.$store.state.activeColorName
           ctxZoom.fillRect(scaledX, scaledY, scale, scale)
-          pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
-          pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
+          //pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
+          //pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
+          pixelObj.x = Math.ceil(mouse.worldPos.x) + indexOffset
+          pixelObj.y = Math.ceil(mouse.worldPos.y) + indexOffset
           this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
           setTransactionButton()
           paintTempPixels(pixelObj, state.activeColorName)
@@ -178,13 +182,15 @@ export default {
           let zoomCanvas = document.getElementById('place-canvasse')
           let ctxZoom = zoomCanvas.getContext('2d')
           ctxZoom.fillStyle = color
+          console.log('pixelObj',pixelObj)
           ctxZoom.fillRect(pixelObj.x, pixelObj.y, 1, 1)
         }
 
         let mouseUpFunction = (evt) => {
           //dragStart = null
           //canvas.className = ''
-          //if (!dragged) 
+          console.log('dragging', mouse.dragging)
+          if (!mouse.dragging) 
             paintZoom(evt)
         }
       ///
@@ -200,19 +206,19 @@ export default {
       context.textAlign = "center"
       context.lineJoin = "round" // to prevent miter spurs on strokeText 
       //fill smaller canvas with random pixels
-      for(var x = 0; x < 100; x++){
-        for(var y = 0; y < 100; y++) {
-          var rando = function(){return Math.floor(Math.random() * 9)};
-          var val = rando();
-          if(x === 0 || y === 0 || x === 99 || y === 99){
-              //context2.fillStyle = "#FF0000";
-          }else{
-              //context2.fillStyle = "#" + val + val + val;
+      // for(var x = 0; x < 100; x++){
+      //   for(var y = 0; y < 100; y++) {
+      //     var rando = function(){return Math.floor(Math.random() * 9)};
+      //     var val = rando();
+      //     if(x === 0 || y === 0 || x === 99 || y === 99){
+      //         //context2.fillStyle = "#FF0000";
+      //     }else{
+      //         //context2.fillStyle = "#" + val + val + val;
           
-          }
-          //context2.fillRect(x,y,1,1);
-        }
-      }
+      //     }
+      //     //context2.fillRect(x,y,1,1);
+      //   }
+      // }
 
       // mouse holds mouse position button state, and if mouse over canvas with overid
       var mouse = {
@@ -362,7 +368,7 @@ export default {
               context.fillText("Max scale.",context.canvas.width / 2,24);
             }
             requestAnimationFrame(draw);
-            if(mouse.overId === "canvas"){
+            if(mouse.overId === "zoom-canv_as"){
                 canvas.style.cursor = mouse.button ? "none" : "move";
             }else{
                 canvas.style.cursor = "default";
