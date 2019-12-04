@@ -14,6 +14,9 @@
       width="600"
       height="600"
     />
+
+     <canvas id="canvas" width="200" height="200"></canvas>
+    <canvas id="canvas2" width="100" height="100"></canvas>
   </div>
 </template>
 
@@ -116,274 +119,235 @@ export default {
 
     createZoomCanvas () {
       let state = this.$store.state
-      let canvas = document.getElementById('zoom-canvas')
-      let ctx = canvas.getContext('2d')
-      let initialZoom = Math.log(screen.width / 1000) / Math.log(1.1)
-      let scaleFactor = 1.1
-      let maxCanvasWidth = 8000
-      let minCanvasWidth = 1100
-      let lastX = canvas.width / 2
-      let lastY = canvas.height / 2
-      let dragStart, dragged
-      // ctx.mozImageSmoothingEnabled = false
-      // ctx.webkitImageSmoothingEnabled = false
-      // ctx.msImageSmoothingEnabled = false
-      // ctx.imageSmoothingEnabled = false
+      let canvass = document.getElementById('place-canvasse')
+      let ctxs = canvass.getContext('2d')
 
-      ///New vars
+      requestAnimationFrame(draw)
+
       var zoomIntensity = 0.2
+
+      var canvas = document.getElementById("canvas")
+      var canvas2 = document.getElementById("place-canvasse")
+      var context = canvas.getContext("2d")
+      var context2 = canvas2.getContext("2d")
       var width = 200
       var height = 200
+      context.font = "24px arial"
+      context.textAlign = "center"
+      context.lineJoin = "round" // to prevent miter spurs on strokeText 
+      //fill smaller canvas with random pixels
+      for(var x = 0; x < 100; x++){
+        for(var y = 0; y < 100; y++) {
+          var rando = function(){return Math.floor(Math.random() * 9)};
+          var val = rando();
+          if(x === 0 || y === 0 || x === 99 || y === 99){
+              //context2.fillStyle = "#FF0000";
+          }else{
+              //context2.fillStyle = "#" + val + val + val;
+          
+          }
+          //context2.fillRect(x,y,1,1);
+        }
+      }
 
-      var scale = 1
-      var originx = 0
-      var originy = 0
+      // mouse holds mouse position button state, and if mouse over canvas with overid
+      var mouse = {
+          pos : {x : 0, y : 0},
+          worldPos : {x : 0, y : 0},
+          posLast : {x : 0, y : 0},
+          button : false,
+          overId : "",  // id of element mouse is over
+          dragging : false,
+          whichWheel : -1, // first wheel event will get the wheel
+          wheel : 0,
+      }
 
-      var offset = {x:0, y:0}
+      // View handles zoom and pan (can also handle rotate but have taken that out as rotate can not be contrained without losing some of the image or seeing some of the background.
+      const view = (()=>{
+          const matrix = [1,0,0,1,0,0]; // current view transform
+          const invMatrix = [1,0,0,1,0,0]; // current inverse view transform
+          var m = matrix;  // alias
+          var im = invMatrix; // alias
+          var scale = 1;   // current scale
+          const bounds = {
+              topLeft : 0,
+              left : 0,
+              right : 200,
+              bottom : 200,
+          }
+          var useConstraint = true; // if true then limit pan and zoom to 
+                                    // keep bounds within the current context
+          
+          var maxScale = 1;
+          const workPoint1 = {x :0, y : 0};
+          const workPoint2 = {x :0, y : 0};
+          const wp1 = workPoint1; // alias
+          const wp2 = workPoint2; // alias
+          var ctx;
+          const pos = {      // current position of origin
+              x : 0,
+              y : 0,
+          }
+          var dirty = true;
+          const API = {
+            canvasDefault () { ctx.setTransform(1,0,0,1,0,0) },
+            apply(){
+                if(dirty){ this.update() }
+                ctx.setTransform(m[0],m[1],m[2],m[3],m[4],m[5]);
+            },
+            getScale () { return scale },
+            getMaxScale () { return maxScale },
+            matrix,  // expose the matrix
+            invMatrix, // expose the inverse matrix
+            update(){ // call to update transforms
+                dirty = false;
+                m[3] = m[0] = scale;
+                m[1] = m[2] = 0;
+                m[4] = pos.x;
+                m[5] = pos.y;
+                if(useConstraint){
+                    this.constrain();
+                }
+                this.invScale = 1 / scale;
+                // calculate the inverse transformation
+                var cross = m[0] * m[3] - m[1] * m[2];
+                im[0] =  m[3] / cross;
+                im[1] = -m[1] / cross;
+                im[2] = -m[2] / cross;
+                im[3] =  m[0] / cross;
+            },
+            constrain(){
+                maxScale = Math.min(
+                    ctx.canvas.width / (bounds.right - bounds.left) ,
+                    ctx.canvas.height / (bounds.bottom - bounds.top)
+                );
+                if (scale < maxScale) {  m[0] = m[3] = scale = maxScale }
+                wp1.x = bounds.left;
+                wp1.y = bounds.top;
+                this.toScreen(wp1,wp2);
+                if (wp2.x > 0) { m[4] = pos.x -= wp2.x }
+                if (wp2.y > 0) { m[5] = pos.y -= wp2.y }
+                wp1.x = bounds.right;
+                wp1.y = bounds.bottom;
+                this.toScreen(wp1,wp2);
+                if (wp2.x < ctx.canvas.width) { m[4] = (pos.x -= wp2.x -  ctx.canvas.width) }
+                if (wp2.y < ctx.canvas.height) { m[5] = (pos.y -= wp2.y -  ctx.canvas.height) }
+            
+            },
+            toWorld(from,point = {}){  // convert screen to world coords
+                var xx, yy;
+                if(dirty){ this.update() }
+                xx = from.x - m[4];     
+                yy = from.y - m[5];     
+                point.x = xx * im[0] + yy * im[2]; 
+                point.y = xx * im[1] + yy * im[3];
+                return point;
+            },        
+            toScreen(from,point = {}){  // convert world coords to screen coords
+                if(dirty){ this.update() }
+                point.x =  from.x * m[0] + from.y * m[2] + m[4]; 
+                point.y = from.x * m[1] + from.y * m[3] + m[5];
+                return point;
+            },        
+            scaleAt(at, amount){ // at in screen coords
+                if(dirty){ this.update() }
+                scale *= amount;
+                pos.x = at.x - (at.x - pos.x) * amount;
+                pos.y = at.y - (at.y - pos.y) * amount;            
+                dirty = true;
+            },
+            move(x,y){  // move is in screen coords
+                pos.x += x;
+                pos.y += y;
+                dirty = true;
+            },
+            setContext(context){
+                ctx = context;
+                dirty = true;
+            },
+            setBounds(top,left,right,bottom){
+                bounds.top = top;
+                bounds.left = left;
+                bounds.right = right;
+                bounds.bottom = bottom;
+                useConstraint = true;
+                dirty = true;
+            }
+        };
+        return API;
+        })();
+        view.setBounds(0,0,canvas2.width,canvas2.height);
+        view.setContext(context); 
 
-      // Draw loop at 60FPS.
-      setInterval(zoom2, 1000/60)
 
-      //
-      function contornoCanvas(){
-        //console.log('contorno')
-        for(var i=0; i<=canvas.width; i+=10){
-            for(var j=0; j<=canvas.height; j+=10){
-              if(i == 0 || j == 0 || i == canvas.width || j == canvas.height){
-                ctx.strokeStyle = '#FF0000'
-                ctx.strokeRect(i,j,5,5)
-              }
-              // console.log('pintando')
+
+        //draw the larger canvas
+        function draw(){
+            view.canvasDefault(); // se default transform to clear screen
+            context.imageSmoothingEnabled = false;
+            context.fillStyle = "white";
+            context.fillRect(0, 0, width, height);
+            view.apply();  // set the current view
+            context.drawImage(canvas2, 0,0);
+            view.canvasDefault();
+            if(view.getScale() === view.getMaxScale()){
+              context.fillStyle = "black";
+              context.strokeStyle = "white";
+              context.lineWidth = 2.5;
+              context.strokeText("Max scale.",context.canvas.width / 2,24);
+              context.fillText("Max scale.",context.canvas.width / 2,24);
+            }
+            requestAnimationFrame(draw);
+            if(mouse.overId === "canvas"){
+                canvas.style.cursor = mouse.button ? "none" : "move";
+            }else{
+                canvas.style.cursor = "default";
             }
         }
-      }
+        // add events to document so that mouse is captured when down on canvas
+        // This allows the mouseup event to be heard no matter where the mouse has
+        // moved to.
+        "mousemove,mousedown,mouseup,mousewheel,wheel,DOMMouseScroll".split(",")
+            .forEach(eventName=>document.addEventListener(eventName,mouseEvent));
 
+        function mouseEvent (event){
+            mouse.overId = event.target.id;
+            if(event.target.id === "canvas" || mouse.dragging){ // only interested in canvas mouse events including drag event started on the canvas.
 
-      // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
-      // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
-      function zoom (clicks) {
-        if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
-        var factor = scaleFactor ** clicks
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.scale(ctx, factor, factor)
-        canvas.width *= factor
-        canvas.height *= factor
-        ctx.imageSmoothingEnabled = false
-        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
-      }
-
-      function zoom2 () {
-        ctx.imageSmoothingEnabled = false;
-          
-          // Clear screen to white.
-        ctx.fillStyle = "#ff0000";
-          // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
-          //context.drawImage(canvas2, 0,0, width, height);
-        ctx.restore()
-        ctx.clearRect(0,0,canvas.width,canvas.height)
-        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
-        contornoCanvas()
-      }
-
-      let setTransactionButton = () => {
-        let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
-        if (cooldownExpires.isBefore()) {
-          if (this.$store.state.pixelCoordArray.length) {
-            this.$root.$emit('cooldown', false)
-          } else {
-            this.$root.$emit('cooldown')
-          }
+                mouse.posLast.x = mouse.pos.x;
+                mouse.posLast.y = mouse.pos.y;    
+                mouse.pos.x = event.clientX - canvas.offsetLeft;
+                mouse.pos.y = event.clientY - canvas.offsetTop;    
+                view.toWorld(mouse.pos, mouse.worldPos); // gets the world coords (where on canvas 2 the mouse is)
+                if (event.type === "mousemove"){
+                    if(mouse.button){
+                        view.move(
+                          mouse.pos.x - mouse.posLast.x,
+                          mouse.pos.y - mouse.posLast.y
+                        )
+                    }
+                } else if (event.type === "mousedown") { mouse.button = true; mouse.dragging = true }        
+                else if (event.type === "mouseup") { mouse.button = false; mouse.dragging = false }
+                else if(event.type === "mousewheel" && (mouse.whichWheel === 1 || mouse.whichWheel === -1)){
+                    mouse.whichWheel = 1;
+                    mouse.wheel = event.wheelDelta;
+                }else if(event.type === "wheel" && (mouse.whichWheel === 2 || mouse.whichWheel === -1)){
+                    mouse.whichWheel = 2;
+                    mouse.wheel = -event.deltaY;
+                }else if(event.type === "DOMMouseScroll" && (mouse.whichWheel === 3 || mouse.whichWheel === -1)){
+                    mouse.whichWheel = 3;
+                    mouse.wheel = -event.detail;
+                }
+                if(mouse.wheel !== 0){
+                    event.preventDefault();
+                    view.scaleAt(mouse.pos, Math.exp((mouse.wheel / 120) *zoomIntensity));
+                    mouse.wheel = 0;
+                }
+            }
         }
-      }
-
-      let paintTempPixels = (pixelObj, color) => {
-        let zoomCanvas = document.getElementById('place-canvasse')
-        let ctxZoom = zoomCanvas.getContext('2d')
-        ctxZoom.fillStyle = color
-        ctxZoom.fillRect(pixelObj.x, pixelObj.y, 1, 1)
-      }
-
-      let paintZoom = (event) => {
-        console.log('paintZoom')
-        if (this.$store.state.pixelsRemaining < 1) {
-          alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
-          return
-        }
-        if (this.$store.state.activeColorInt === null) {
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#000000')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
-        }
-        let canvasElement = document.getElementById('zoom-canvas')
-        let rect = canvasElement.getBoundingClientRect()
-        let pixelObj = {
-          x: Math.floor(event.clientX - rect.left),
-          y: Math.floor(event.clientY - rect.top)
-        }
-        var mousex = event.clientX - canvas.offsetLeft;
-        var mousey = event.clientY - canvas.offsetTop;
-
-        // let pixelObj = {
-        //   x: Math.floor(mousex),
-        //   y: Math.floor(mousey)
-        // }
-        // temporarily display selected pixel on zoom canvas, it's redrawn on transform
-        // let scale = canvasElement.width / 1000.0
-        // let scale = canvasElement.width / 1000.0
-        let indexOffset = -1
-        let scaledX = Math.floor(pixelObj.x / scale) * scale
-        let scaledY = Math.floor(pixelObj.y / scale) * scale
-        let ctxZoom = canvasElement.getContext('2d')
-        ctxZoom.fillStyle = this.$store.state.activeColorName
-        ctxZoom.fillRect(scaledX, scaledY, scale, scale)
-        pixelObj.x = Math.ceil(pixelObj.x / scale) + indexOffset
-        pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
-        this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
-        setTransactionButton()
-        paintTempPixels(pixelObj, state.activeColorName)
-      }
-
-      let mouseDownfunction = (evt) => {
-        document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none'
-        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
-        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
-        dragStart = { x: lastX, y: lastY }
-        dragged = false
-      }
-
-      let mouseMoveFunction = (evt) => {
-        if (!dragStart) return
-        canvas.className = ' grabbable'
-        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft)
-        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop)
-        dragged = true
-        let moveX = lastX - dragStart.x
-        let moveY = lastY - dragStart.y
-        let top = window.getComputedStyle(canvas).getPropertyValue('top')
-        let left = window.getComputedStyle(canvas).getPropertyValue('left')
-        //canvas.style.left = parseInt(left, 10) + moveX + 'px'
-        //canvas.style.top = parseInt(top, 10) + moveY + 'px'
-        ctx.moveTo(moveX, moveY)
-        
-        // Scale it (centered around the origin due to the trasnslate above).
-        // ctx.scale(zoom, zoom);
-        
-        // Offset the visible origin to it's proper position.
-        // ctx.translate(moveX/100,moveY/100); //offset is panning
-      }
-
-      let mouseUpFunction = (evt) => {
-        dragStart = null
-        canvas.className = ''
-        if (!dragged) paintZoom(evt)
-      }
-
-      var handleScroll = function (evt) {
-        var delta = evt.wheelDelta ? evt.wheelDelta / 120 : evt.detail ? -evt.detail : 0
-        if (delta) zoom(delta)
-        return evt.preventDefault() && false
-      }
-
-      this.$root.$on('zoom-out', () => {
-        //zoom(-1)
-      })
-      this.$root.$on('zoom-in', () => {
-        //zoom(1)
-      })
-      this.$root.$on('update-canvas', () => {
-        //zoom(0)
-      })
-      this.$root.$on('undo-last', async () => {
-        await this.getPixelsRaw().then((pixelArray) => {
-          this.$store.state.intColorArray.pop()
-          let lastPixelCoord = this.$store.state.pixelCoordArray.pop()
-          let lastPixelObj = this.$store.state.pixelObjArray.pop()
-          let colorInt = pixelArray[lastPixelCoord]
-          let colorName = this.$store.state.canvasse.palleteNames[colorInt]
-          paintTempPixels(lastPixelObj, colorName)
-        })
-      })
-
-      canvas.removeEventListener('mousedown', mouseDownfunction)
-      canvas.addEventListener('mousedown', mouseDownfunction, false)
-      canvas.removeEventListener('mousemove', mouseMoveFunction)
-      canvas.addEventListener('mousemove', mouseMoveFunction, false)
-      canvas.removeEventListener('mouseup', mouseUpFunction)
-      canvas.addEventListener('mouseup', mouseUpFunction, false)
-      //canvas.addEventListener('DOMMouseScroll', handleScroll, false)
-      //canvas.addEventListener('mousewheel', handleScroll, false)
-      // canvas.addEventListener('mousewheel', mwheel, false)
-      // zoom(0)
-
-      canvas.onmousewheel = function (event){
-        event.preventDefault();
-        
-        
-        // Normalize wheel to +1 or -1.
-        var wheel = event.wheelDelta/120
-        
-        //Is Zoom Out
-        var isZoomOut = false
-        if ( wheel < 0) {
-          isZoomOut = true
-        }
-
-        // Get mouse offset.
-        if(isZoomOut){
-          var mousex = event.clientX - canvas.offsetLeft
-          var mousey = event.clientY - canvas.offsetTop
-        } else {
-          var mousex = event.clientX - canvas.offsetLeft
-          var mousey = event.clientY - canvas.offsetTop
-        }
-
-        console.log('isZoomOut', isZoomOut)
-        console.log('scale', scale)
-
-        // Compute zoom factor.
-        var zoom = Math.exp(wheel*zoomIntensity);
-        
-        // Translate so the visible origin is at the context's origin.
-        if(isZoomOut){
-          ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
-          if(scale === 1) {
-            //ctx.moveTo(0, 0) //offset is panning
-            ctx.setTransform(1, 0, 0, 1, 0, 0)
-            console.log('try to move 1')
-          }
-        } else ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
-        
-        //make sure we don't zoom out further than normal scale
-        var resultingScale = scale * zoom;
-        if(resultingScale < 1)
-          zoom = 1/scale;
-      
-        // Compute the new visible origin. Originally the mouse is at a
-        // distance mouse/scale from the corner, we want the point under
-        // the mouse to remain in the same place after the zoom, but this
-        // is at mouse/new_scale away from the corner. Therefore we need to
-        // shift the origin (coordinates of the corner) to account for this.
-        originx -= mousex/(scale*zoom) - mousex/scale;
-        originy -= mousey/(scale*zoom) - mousey/scale;
-        
-        // Scale it (centered around the origin due to the trasnslate above).
-        ctx.scale(zoom, zoom);
-        
-        // Offset the visible origin to it's proper position.
-        if(isZoomOut) {
-          ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
-          if(scale === 1) {
-            //ctx.moveTo(0, 0); //offset is panning
-            ctx.setTransform(1, 0, 0, 1, 0.5, 0.5)
-            console.log('try to move 2')
-          }
-        } else ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
-        // Update scale and others.
-        scale *= zoom;
-      }
     }
   }
-}
+  }
 </script>
 <style lang="stylus" scoped>
 
