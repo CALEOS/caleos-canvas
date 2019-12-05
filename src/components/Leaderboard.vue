@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     viewAccount (accountName) {
-      window.open('https://telos.eosx.io/account/' + accountName)
+      window.open(`https://${process.env.VUE_APP_BLOKS}/account/${accountName}`)
     }
   }
 }

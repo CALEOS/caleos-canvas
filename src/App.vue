@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <HeaderContainer name="header" />
-    <CanvasContainer name="pixels"/>
+    <CanvasContainer name="pixels" />
     <FooterContainer name="" />
     <button
       v-shortkey.once="['-']"
@@ -128,7 +128,6 @@ export default {
         // TODO: Check for ping messages and ignore, they're {"action":"ping"}
         console.log('GOT MESSAGE: ' + ev.data)
         let eventObj = JSON.parse(ev.data)
-        if (eventObj.action === 'paintAction') { _this.$store.dispatch(Actions.PUSH_PAINT_HISTORY, eventObj.data) }
         if (eventObj.action === 'chat') { _this.$store.dispatch(Actions.PUSH_CHAT_HISTORY, eventObj.data) }
         console.log(eventObj)
       }

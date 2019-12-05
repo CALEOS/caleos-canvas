@@ -19,17 +19,22 @@
             class="text-xs-left"
           >
             <VIcon
-              @click="viewAccount(props.item.account)"
+              @click="viewAccount(props.item.act.data.account)"
             >
               pageview
             </VIcon>
-            {{ props.item.account }}
+            {{ props.item.act.data.account }}
           </td>
           <td class="text-xs-left">
-            {{ props.item.pixels }}
+            {{ props.item.act.data.pixels.length }}
           </td>
           <td class="text-xs-left">
-            {{ props.item.indexState.blockNumber }}
+            <VIcon
+              @click="viewTrx(props.item.trx_id)"
+            >
+              pageview
+            </VIcon>
+            {{ props.item.block_num }}
           </td>
         </template>
       </VDataTable>
@@ -38,6 +43,8 @@
 </template>
 
 <script>
+import { Actions } from '../actions'
+
 export default {
   name: 'PaintHistory',
   data () {
@@ -51,11 +58,11 @@ export default {
         value: 'pixels'
       }, {
         text: 'Block',
-        value: 'indexState.blockNum'
+        value: 'block_num'
       }],
       pagination: {
         descending: true,
-        sortBy: 'indexState.blockNum',
+        sortBy: 'block',
         rowsPerPage: -1
       }
     }
@@ -65,9 +72,15 @@ export default {
       return this.$store.state.paintHistory
     }
   },
+  mounted () {
+    this.$store.dispatch(Actions.LOAD_PAINT_HISTORY)
+  },
   methods: {
     viewAccount (accountName) {
-      window.open('https://telos.eosx.io/account/' + accountName)
+      window.open(`https://${process.env.VUE_APP_BLOKS}/account/${accountName}`)
+    },
+    viewTrx (trxId) {
+      window.open(`https://${process.env.VUE_APP_BLOKS}/transaction/${trxId}`)
     }
   }
 }

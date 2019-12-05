@@ -17,7 +17,7 @@ export const Actions = {
   SET_CONTRACT_CONFIG: 'SetContractConfig',
   SET_CONTRACT_ACCOUNT: 'SetContractAccount',
   SET_ZOOM_LEVEL: 'SetZoomLevel',
-  PUSH_PAINT_HISTORY: 'PushPaintHistory',
+  LOAD_PAINT_HISTORY: 'LoadPaintHistory',
   PUSH_CHAT_HISTORY: 'PushChatHistory',
   SET_LEADERBOARD: 'SetLeaderboard',
   SET_COOLDOWN_EXPIRES: 'SetCooldownExpires',

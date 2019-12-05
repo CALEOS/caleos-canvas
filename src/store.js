@@ -1,17 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {Actions} from './actions'
-import {Network} from 'scatterjs-core'
-import {JsonRpc} from 'eosjs'
+import { Actions } from './actions'
+import { Network } from 'scatterjs-core'
+import { JsonRpc } from 'eosjs'
+import axios from 'axios'
 
 Vue.use(Vuex)
+
+const hyperion = axios.create({
+  baseURL: `https://${process.env.VUE_APP_HYPERION}/`
+})
 
 const network = Network.fromJson({
   blockchain: 'eos',
   protocol: 'https',
-  host: 'testnet.telos.caleos.io',
+  host: process.env.VUE_APP_ENDPOINT,
   port: 443,
-  chainId: '1eaa0824707c8c16bd25145493bf062aecddfeb56c736f6ba6397f3195f33c9f'
+  chainId: process.env.VUE_APP_CHAIN_ID
 })
 
 const state = {
@@ -19,14 +24,14 @@ const state = {
   contractAccount: null,
   width: 1000,
   height: 1000,
-  contract: 'canvascanvas',
+  contract: process.env.VUE_APP_CONTRACT,
   scatterAppName: 'CalEOS Canvas',
   canvasse: null,
   scatter: null,
   identity: null,
   count: 0,
   network: network,
-  rpc: new JsonRpc(network.fullhost(), {fetch}),
+  rpc: new JsonRpc(network.fullhost(), { fetch }),
   api: null,
   lastRefresh: null,
   activeColorInt: null,
@@ -108,8 +113,8 @@ const actions = {
   [Actions.PUSH_CHAT_HISTORY] ({ commit }, historyObj) {
     commit(Actions.PUSH_CHAT_HISTORY, historyObj)
   },
-  [Actions.PUSH_PAINT_HISTORY] ({ commit }, historyObj) {
-    commit(Actions.PUSH_PAINT_HISTORY, historyObj)
+  [Actions.LOAD_PAINT_HISTORY] ({ commit }) {
+    commit(Actions.LOAD_PAINT_HISTORY)
   },
   [Actions.SET_LEADERBOARD] ({ commit }, leaderboard) {
     commit(Actions.SET_LEADERBOARD, leaderboard)
@@ -168,7 +173,7 @@ const mutations = {
     if (index < 0) {
       state.pixelCoordArray.push((pixelObj.y * 1000) + pixelObj.x)
       state.intColorArray.push(state.activeColorInt)
-      state.pixelObjArray.push({x: pixelObj.x, y: pixelObj.y, color: state.activeColorName})
+      state.pixelObjArray.push({ x: pixelObj.x, y: pixelObj.y, color: state.activeColorName })
       console.dir(state.pixelCoordArray)
     }
   },
@@ -193,9 +198,10 @@ const mutations = {
     Vue.set(state.chatHistory, state.chatHistory.length, chat)
     limitArrayLength(state.chatHistory, state.chatHistoryLength)
   },
-  [Actions.PUSH_PAINT_HISTORY] (state, paint) {
-    state.paintHistory.push(paint)
-    limitArrayLength(state.paintHistory, state.paintHistoryLength)
+  [Actions.LOAD_PAINT_HISTORY] (state, paint) {
+    hyperion.get(`v2/history/get_actions?track=50&filter=${process.env.VUE_APP_CONTRACT}%3Asetpixels&sort=desc`).then(response => {
+      state.paintHistory = response.data.actions
+    })
   },
   [Actions.SET_LEADERBOARD] (state, leaderboard) {
     state.leaderboard = leaderboard
