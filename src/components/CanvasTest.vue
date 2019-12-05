@@ -159,7 +159,7 @@ export default {
           // let scale = canvasElement.width / 1000.0
           var scale = view.getScale()
           //var scale = 1
-          console.log('scale',scale)
+          //console.log('scale',scale)
           // let scale = canvasElement.width / 1000.0
           let indexOffset = -1
           let scaledX = Math.floor(pixelObj.x / scale) * scale
@@ -180,14 +180,14 @@ export default {
           let zoomCanvas = document.getElementById('place-canvasse')
           let ctxZoom = zoomCanvas.getContext('2d')
           ctxZoom.fillStyle = color
-          console.log('pixelObj',pixelObj)
+          //console.log('pixelObj',pixelObj)
           ctxZoom.fillRect(pixelObj.x, pixelObj.y, 1, 1)
         }
 
         let mouseUpFunction = (evt) => {
           //dragStart = null
           //canvas.className = ''
-          console.log('dragging', mouse.dragging)
+          //console.log('dragging', mouse.dragging)
           if (!mouse.dragging) 
             paintZoom(evt)
             mouse.dragging = false
@@ -266,6 +266,7 @@ export default {
             },
             getScale () { return scale },
             getMaxScale () { return maxScale },
+            getMaxZoom () { return 46 },
             matrix,  // expose the matrix
             invMatrix, // expose the inverse matrix
             update(){ // call to update transforms
@@ -331,40 +332,40 @@ export default {
                 dirty = true;
             },
             setContext(context){
-                ctx = context;
-                dirty = true;
+                ctx = context
+                dirty = true
             },
             setBounds(top,left,right,bottom){
-                bounds.top = top;
-                bounds.left = left;
-                bounds.right = right;
-                bounds.bottom = bottom;
-                useConstraint = true;
-                dirty = true;
+                bounds.top = top
+                bounds.left = left
+                bounds.right = right
+                bounds.bottom = bottom
+                useConstraint = true
+                dirty = true
             }
         };
-        return API;
+        return API
         })();
-        view.setBounds(0,0,canvas2.width,canvas2.height);
-        view.setContext(context); 
+        view.setBounds(0,0,canvas2.width,canvas2.height)
+        view.setContext(context)
 
 
 
         //draw the larger canvas
         function draw(){
             view.canvasDefault(); // se default transform to clear screen
-            context.imageSmoothingEnabled = false;
-            context.fillStyle = "white";
-            context.fillRect(0, 0, width, height);
-            view.apply();  // set the current view
-            context.drawImage(canvas2, 0,0);
-            view.canvasDefault();
+            context.imageSmoothingEnabled = false
+            context.fillStyle = "white"
+            context.fillRect(0, 0, width, height)
+            view.apply()  // set the current view
+            context.drawImage(canvas2, 0,0)
+            view.canvasDefault()
             if(view.getScale() === view.getMaxScale()){
-              context.fillStyle = "black";
-              context.strokeStyle = "white";
-              context.lineWidth = 2.5;
-              context.strokeText("Max scale.",context.canvas.width / 2,24);
-              context.fillText("Max scale.",context.canvas.width / 2,24);
+              context.fillStyle = "black"
+              context.strokeStyle = "white"
+              context.lineWidth = 2.5
+              context.strokeText("Max scale.",context.canvas.width / 2,24)
+              context.fillText("Max scale.",context.canvas.width / 2,24)
             }
             requestAnimationFrame(draw);
             if(mouse.overId === "zoom-canv_as"){
@@ -377,17 +378,17 @@ export default {
         // This allows the mouseup event to be heard no matter where the mouse has
         // moved to.
         "mousemove,mousedown,mouseup,mousewheel,wheel,DOMMouseScroll".split(",")
-            .forEach(eventName=>document.addEventListener(eventName,mouseEvent));
+            .forEach(eventName=>document.addEventListener(eventName,mouseEvent))
 
         function mouseEvent (event){
-            mouse.overId = event.target.id;
+            mouse.overId = event.target.id
             if(event.target.id === "zoom-canvas" || mouse.dragging){ // only interested in canvas mouse events including drag event started on the canvas.
 
-                mouse.posLast.x = mouse.pos.x;
-                mouse.posLast.y = mouse.pos.y;    
-                mouse.pos.x = event.clientX - canvas.offsetLeft;
-                mouse.pos.y = event.clientY - canvas.offsetTop;    
-                view.toWorld(mouse.pos, mouse.worldPos); // gets the world coords (where on canvas 2 the mouse is)
+                mouse.posLast.x = mouse.pos.x
+                mouse.posLast.y = mouse.pos.y    
+                mouse.pos.x = event.clientX - canvas.offsetLeft
+                mouse.pos.y = event.clientY - canvas.offsetTop   
+                view.toWorld(mouse.pos, mouse.worldPos) // gets the world coords (where on canvas 2 the mouse is)
                 if (event.type === "mousemove"){
                     if(mouse.button){
                         mouse.dragging = true
@@ -399,22 +400,34 @@ export default {
                 } else if (event.type === "mousedown") { mouse.button = true; mouse.dragging = false }        
                 else if (event.type === "mouseup") { mouse.button = false; mouseUpFunction(event) }
                 else if(event.type === "mousewheel" && (mouse.whichWheel === 1 || mouse.whichWheel === -1)){
-                    mouse.whichWheel = 1;
-                    mouse.wheel = event.wheelDelta;
+                    mouse.whichWheel = 1
+                    mouse.wheel = event.wheelDelta
                 }else if(event.type === "wheel" && (mouse.whichWheel === 2 || mouse.whichWheel === -1)){
-                    mouse.whichWheel = 2;
-                    mouse.wheel = -event.deltaY;
+                    mouse.whichWheel = 2
+                    mouse.wheel = -event.deltaY
                 }else if(event.type === "DOMMouseScroll" && (mouse.whichWheel === 3 || mouse.whichWheel === -1)){
-                    mouse.whichWheel = 3;
-                    mouse.wheel = -event.detail;
+                    mouse.whichWheel = 3
+                    mouse.wheel = -event.detail
                 }
                 if(mouse.wheel !== 0){
                     event.preventDefault();
-                    view.scaleAt(mouse.pos, Math.exp((mouse.wheel / 120) *zoomIntensity));
-                    mouse.wheel = 0;
+                    if(view.getScale() < view.getMaxZoom() || mouse.wheel<0)
+                      view.scaleAt(mouse.pos, Math.exp((mouse.wheel / 120) *zoomIntensity))
+                    mouse.wheel = 0
                 }
             }
         }
+
+        this.$root.$on('undo-last', async () => {
+          await this.getPixelsRaw().then((pixelArray) => {
+            this.$store.state.intColorArray.pop()
+            let lastPixelCoord = this.$store.state.pixelCoordArray.pop()
+            let lastPixelObj = this.$store.state.pixelObjArray.pop()
+            let colorInt = pixelArray[lastPixelCoord]
+            let colorName = this.$store.state.canvasse.palleteNames[colorInt]
+            paintTempPixels(lastPixelObj, colorName)
+          })
+        })
     }
   }
   }
