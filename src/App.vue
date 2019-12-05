@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <HeaderContainer name="header" />
-    <CanvasContainer name="pixels" />
+    <CanvasContainer name="pixels"/>
     <FooterContainer name="" />
     <button
       v-shortkey.once="['-']"
@@ -29,7 +29,7 @@ import ScatterEOS from 'scatterjs-plugin-eosjs2'
 import { Actions } from './actions'
 import 'babel-polyfill'
 import HeaderContainer from './components/Header'
-import CanvasContainer from './components/Canvas.vue'
+import CanvasContainer from './components/CanvasTest.vue'
 import FooterContainer from './components/Footer.vue'
 import {Api} from 'eosjs'
 import moment from 'moment'

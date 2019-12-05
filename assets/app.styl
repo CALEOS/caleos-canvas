@@ -15,9 +15,9 @@ canvas
 
 #zoom-canvas
   box-shadow darkgray 10px 10px 10px
-  position absolute
+  position block
   left 1px
-  top 1px
+  top 0px
 
 #coordinates
   margin-left 10px
@@ -27,6 +27,10 @@ canvas
   font-size medium
 
 #footer
+  position absolute
+  bottom: 0
+  width: 100%
+
 #header
   box-sizing border-box
   border 1px #999
@@ -34,11 +38,11 @@ canvas
   height 43px
 
 #place
-  flex 2
-  text-align: center;
-  background-color lightgray
-  margin-top -40px
-  z-index -10
+  flex 1
+  text-align: center
+  background-color: lightgray
+  margin-top: 0px
+  z-index: -10
 
 .cooldown-div
   width 300px
@@ -90,6 +94,7 @@ canvas
   image-rendering:pixelated;                 /* CSS4 Proposed  */
   -ms-interpolation-mode:nearest-neighbor;   /* IE8+           */
   display:none
+  margin-top: 100px
 
 .toolbox-button
   box-shadow #999 3px 3px 5px

@@ -6,11 +6,13 @@
     <canvas
       id="place-canvasse"
       class="place-canvas"
+      width="500"
+      height="500"
     />
     <canvas
       id="zoom-canvas"
-      width="1000"
-      height="1000"
+      width="500"
+      height="500"
     />
   </div>
 </template>
@@ -64,6 +66,7 @@ export default {
       } finally {
         this.$store.dispatch(Actions.SET_LOADING_STATUS, false)
         this.createZoomCanvas()
+        //this.mZoom()
       }
     },
     removePixelFromPaintSession (pixelObj) {
@@ -122,13 +125,43 @@ export default {
       let lastX = canvas.width / 2
       let lastY = canvas.height / 2
       let dragStart, dragged
-      ctx.mozImageSmoothingEnabled = false
-      ctx.webkitImageSmoothingEnabled = false
-      ctx.msImageSmoothingEnabled = false
-      ctx.imageSmoothingEnabled = false
+      // ctx.mozImageSmoothingEnabled = false
+      // ctx.webkitImageSmoothingEnabled = false
+      // ctx.msImageSmoothingEnabled = false
+      // ctx.imageSmoothingEnabled = false
+
+      ///New vars
+      var zoomIntensity = 0.2
+      var width = 200
+      var height = 200
+
+      var scale = 1
+      var originx = 0
+      var originy = 0
+
+      var offset = {x:0, y:0}
+
+      // Draw loop at 60FPS.
+      setInterval(zoom2, 1000/60)
+
+      //
+      function contornoCanvas(){
+        //console.log('contorno')
+        for(var i=0; i<=canvas.width; i+=10){
+            for(var j=0; j<=canvas.height; j+=10){
+              if(i == 0 || j == 0 || i == canvas.width || j == canvas.height){
+                ctx.strokeStyle = '#FF0000'
+                ctx.strokeRect(i,j,5,5)
+              }
+              // console.log('pintando')
+            }
+        }
+      }
+
+
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
       // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
-      var zoom = function (clicks) {
+      function zoom (clicks) {
         if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
         var factor = scaleFactor ** clicks
         ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -137,6 +170,19 @@ export default {
         canvas.height *= factor
         ctx.imageSmoothingEnabled = false
         ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+      }
+
+      function zoom2 () {
+        ctx.imageSmoothingEnabled = false;
+          
+          // Clear screen to white.
+        ctx.fillStyle = "#ff0000";
+          // context.fillRect(originx - offset.x, originy - offset.y, width/scale, height/scale);
+          //context.drawImage(canvas2, 0,0, width, height);
+        ctx.restore()
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.drawImage(document.getElementById('place-canvasse'), 0, 0, canvas.width, canvas.height)
+        contornoCanvas()
       }
 
       let setTransactionButton = () => {
@@ -158,6 +204,7 @@ export default {
       }
 
       let paintZoom = (event) => {
+        console.log('paintZoom')
         if (this.$store.state.pixelsRemaining < 1) {
           alert('You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.')
           return
@@ -173,8 +220,16 @@ export default {
           x: Math.floor(event.clientX - rect.left),
           y: Math.floor(event.clientY - rect.top)
         }
+        var mousex = event.clientX - canvas.offsetLeft;
+        var mousey = event.clientY - canvas.offsetTop;
+
+        // let pixelObj = {
+        //   x: Math.floor(mousex),
+        //   y: Math.floor(mousey)
+        // }
         // temporarily display selected pixel on zoom canvas, it's redrawn on transform
-        let scale = canvasElement.width / 1000.0
+        // let scale = canvasElement.width / 1000.0
+        // let scale = canvasElement.width / 1000.0
         let indexOffset = -1
         let scaledX = Math.floor(pixelObj.x / scale) * scale
         let scaledY = Math.floor(pixelObj.y / scale) * scale
@@ -206,8 +261,15 @@ export default {
         let moveY = lastY - dragStart.y
         let top = window.getComputedStyle(canvas).getPropertyValue('top')
         let left = window.getComputedStyle(canvas).getPropertyValue('left')
-        canvas.style.left = parseInt(left, 10) + moveX + 'px'
-        canvas.style.top = parseInt(top, 10) + moveY + 'px'
+        //canvas.style.left = parseInt(left, 10) + moveX + 'px'
+        //canvas.style.top = parseInt(top, 10) + moveY + 'px'
+        ctx.moveTo(moveX, moveY)
+        
+        // Scale it (centered around the origin due to the trasnslate above).
+        // ctx.scale(zoom, zoom);
+        
+        // Offset the visible origin to it's proper position.
+        // ctx.translate(moveX/100,moveY/100); //offset is panning
       }
 
       let mouseUpFunction = (evt) => {
@@ -223,13 +285,13 @@ export default {
       }
 
       this.$root.$on('zoom-out', () => {
-        zoom(-1)
+        //zoom(-1)
       })
       this.$root.$on('zoom-in', () => {
-        zoom(1)
+        //zoom(1)
       })
       this.$root.$on('update-canvas', () => {
-        zoom(0)
+        //zoom(0)
       })
       this.$root.$on('undo-last', async () => {
         await this.getPixelsRaw().then((pixelArray) => {
@@ -248,10 +310,75 @@ export default {
       canvas.addEventListener('mousemove', mouseMoveFunction, false)
       canvas.removeEventListener('mouseup', mouseUpFunction)
       canvas.addEventListener('mouseup', mouseUpFunction, false)
-      canvas.addEventListener('DOMMouseScroll', handleScroll, false)
-      canvas.addEventListener('mousewheel', handleScroll, false)
+      //canvas.addEventListener('DOMMouseScroll', handleScroll, false)
+      //canvas.addEventListener('mousewheel', handleScroll, false)
+      // canvas.addEventListener('mousewheel', mwheel, false)
+      // zoom(0)
 
-      zoom(initialZoom)
+      canvas.onmousewheel = function (event){
+        event.preventDefault();
+        
+        
+        // Normalize wheel to +1 or -1.
+        var wheel = event.wheelDelta/120
+        
+        //Is Zoom Out
+        var isZoomOut = false
+        if ( wheel < 0) {
+          isZoomOut = true
+        }
+
+        // Get mouse offset.
+        if(isZoomOut){
+          var mousex = event.clientX - canvas.offsetLeft
+          var mousey = event.clientY - canvas.offsetTop
+        } else {
+          var mousex = event.clientX - canvas.offsetLeft
+          var mousey = event.clientY - canvas.offsetTop
+        }
+
+        console.log('isZoomOut', isZoomOut)
+        console.log('scale', scale)
+
+        // Compute zoom factor.
+        var zoom = Math.exp(wheel*zoomIntensity);
+        
+        // Translate so the visible origin is at the context's origin.
+        if(isZoomOut){
+          ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
+          if(scale === 1) {
+            ctx.translate(-1, -1); //offset is panning
+            console.log('try to move 1')
+          }
+        } else ctx.translate(originx - offset.x, originy - offset.y); //offset is panning
+        
+        //make sure we don't zoom out further than normal scale
+        var resultingScale = scale * zoom;
+        if(resultingScale < 1)
+          zoom = 1/scale;
+      
+        // Compute the new visible origin. Originally the mouse is at a
+        // distance mouse/scale from the corner, we want the point under
+        // the mouse to remain in the same place after the zoom, but this
+        // is at mouse/new_scale away from the corner. Therefore we need to
+        // shift the origin (coordinates of the corner) to account for this.
+        originx -= mousex/(scale*zoom) - mousex/scale;
+        originy -= mousey/(scale*zoom) - mousey/scale;
+        
+        // Scale it (centered around the origin due to the trasnslate above).
+        ctx.scale(zoom, zoom);
+        
+        // Offset the visible origin to it's proper position.
+        if(isZoomOut) {
+          ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
+          if(scale === 1) {
+            ctx.translate(-offset.x, -offset.y); //offset is panning
+            console.log('try to move 2')
+          }
+        } else ctx.translate(-originx + offset.x, -originy + offset.y); //offset is panning
+        // Update scale and others.
+        scale *= zoom;
+      }
     }
   }
 }
