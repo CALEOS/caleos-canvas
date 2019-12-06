@@ -26,8 +26,9 @@ export default {
 </script>
 <style lang="stylus" scoped>
 #header
-  background-color blue
+  background-color #4f2ef5
   white-space nowrap
+  height 45px
 .header-item
   display inline-block
 .header-left
