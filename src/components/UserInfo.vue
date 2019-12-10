@@ -1,11 +1,24 @@
 <template>
   <div class="info-block">
-    <VBtn v-if="myScatter && !account" class="login" @click="login">
-      <img height="40px" src="../assets/sqrl.png" />
+    <VBtn
+      v-if="myScatter && !account"
+      class="login"
+      @click="login"
+    >
+      <img
+        height="40px"
+        src="../assets/sqrl.png"
+      >
       <div>or</div>
-      <img height="40px" src="../assets/scatter.png" />
+      <img
+        height="40px"
+        src="../assets/scatter.png"
+      >
     </VBtn>
-    <span v-if="myScatter && account" class="user-info">
+    <span
+      v-if="myScatter && account"
+      class="user-info"
+    >
       <VBtn @click="logout">Logout {{ account.name }}</VBtn>
     </span>
     <!-- commenting out for now, can add back later -->
@@ -19,152 +32,151 @@
       v-if="cooldownMessage && myScatter && account && !mySendingTransaction"
       class="message-span"
     >{{ cooldownMessage }}</span>
-    <span v-if="mySendingTransaction" class="message-span">Sending transaction...</span>
+    <span
+      v-if="mySendingTransaction"
+      class="message-span"
+    >Sending transaction...</span>
   </div>
 </template>
 
 <script>
 /* eslint-disable no-debugger */
 
-import { mapState } from "vuex";
-import { Actions } from "../actions";
-import moment from "moment";
-import "moment-countdown";
+import { mapState } from 'vuex'
+import { Actions } from '../actions'
+import moment from 'moment'
+import 'moment-countdown'
 
 export default {
-  data() {
+  data () {
     return {
       lifetimePixels: null,
       cooldownMessage: null,
       cooldownCountdown: null,
       cooldownInterval: null
-    };
+    }
   },
   computed: {
     ...mapState({
-      myScatter: "scatter",
-      myLastRefresh: "lastRefresh",
-      myIdentity: "identity",
-      mySendingTransaction: "sendingTransaction",
-      myContractConfig: "config"
+      myScatter: 'scatter',
+      myLastRefresh: 'lastRefresh',
+      myIdentity: 'identity',
+      mySendingTransaction: 'sendingTransaction',
+      myContractConfig: 'config'
     }),
-    account() {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity)
-        return null;
-      return this.$store.state.scatter.identity.accounts[0];
+    account () {
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
+      return this.$store.state.scatter.identity.accounts[0]
     }
   },
   watch: {
-    myLastRefresh() {
-      this.loadAccount();
+    myLastRefresh () {
+      this.loadAccount()
     },
-    myIdentity() {
-      this.loadAccount();
+    myIdentity () {
+      this.loadAccount()
     }
   },
-  mounted() {
-    this.loadAccount();
+  mounted () {
+    this.loadAccount()
   },
   methods: {
-    async login() {
+    async login () {
       await this.$store.state.scatter
         .getIdentity({ accounts: [this.$store.state.network] })
         .catch(async err => {
-          if (err.code === 402 && err.type === "no_network") {
+          if (err.code === 402 && err.type === 'no_network') {
             await this.$store.state.scatter.suggestNetwork(
               this.$store.state.network
-            );
+            )
           }
-          this.loadIdentity();
-        });
+          this.loadIdentity()
+        })
     },
 
-    async logout() {
-      await this.$store.state.scatter.forgetIdentity();
-      this.loadIdentity();
+    async logout () {
+      await this.$store.state.scatter.forgetIdentity()
+      this.loadIdentity()
     },
 
-    loadIdentity() {
+    loadIdentity () {
       this.$store.dispatch(
         Actions.SET_IDENTITY,
         this.$store.state.scatter.identity
-      );
-      this.loadAccount();
+      )
+      this.loadAccount()
     },
 
-    setCooldownMessage() {
+    setCooldownMessage () {
       if (!this.$store.state.config) {
-        return;
+        return
       }
 
-      let cooldown = this.$store.state.config.cooldown;
+      let cooldown = this.$store.state.config.cooldown
       if (cooldown === 0) {
-        this.cooldownInterval = null;
-        this.cooldownMessage = "No cooldown, party mode 🎉";
-        return;
+        this.cooldownInterval = null
+        this.cooldownMessage = 'No cooldown, party mode 🎉'
+        return
       }
 
-      let friendlyCooldown = this.makeFriendlyDuration(cooldown);
+      let friendlyCooldown = this.makeFriendlyDuration(cooldown)
 
       if (!this.$store.state.contractAccount) {
-        this.cooldownInterval = null;
-        this.cooldownMessage = `The cooldown is ${friendlyCooldown}`;
-        return;
+        this.cooldownInterval = null
+        this.cooldownMessage = `The cooldown is ${friendlyCooldown}`
+        return
       }
 
       let cooldownExpires = moment.unix(
         this.$store.state.contractAccount.last_access +
           this.$store.state.config.cooldown
-      );
+      )
       if (cooldownExpires.isBefore()) {
         if (this.$store.state.pixelCoordArray.length) {
-          this.$root.$emit("cooldown", false);
+          this.$root.$emit('cooldown', false)
         } else {
-          this.$root.$emit("cooldown");
+          this.$root.$emit('cooldown')
         }
-        this.cooldownInterval = null;
-        this.cooldownMessage = "Ready to paint!";
+        this.cooldownInterval = null
+        this.cooldownMessage = 'Ready to paint!'
       } else {
-        this.$root.$emit("cooldown", true);
+        this.$root.$emit('cooldown', true)
         this.cooldownMessage = `Cooldown expires in ${cooldownExpires
           .countdown()
-          .toString()}...`;
+          .toString()}...`
         if (!this.cooldownInterval) {
-          this.cooldownInterval = setInterval(this.setCooldownMessage, 1000);
+          this.cooldownInterval = setInterval(this.setCooldownMessage, 1000)
         }
       }
     },
 
-    makeFriendlyDuration(seconds) {
+    makeFriendlyDuration (seconds) {
       return seconds > 60
-        ? Math.floor(seconds / 60) + " min " + (seconds % 60) + " sec"
-        : seconds + " sec ";
+        ? Math.floor(seconds / 60) + ' min ' + (seconds % 60) + ' sec'
+        : seconds + ' sec '
     },
 
-    async loadAccount() {
+    async loadAccount () {
       if (!this.account) {
-        return;
+        return
       }
 
-      let contract = this.$store.state.contract;
+      let contract = this.$store.state.contract
       let acctResponse = await this.$store.state.rpc.get_table_rows({
         code: contract,
         scope: contract,
-        table: "accounts",
+        table: 'accounts',
         lower_bound: this.account.name,
         limit: 1
-      });
+      })
       if (acctResponse.rows.length) {
-        this.$store.dispatch(
-          Actions.SET_CONTRACT_ACCOUNT,
-          acctResponse.rows[0]
-        );
-        this.lifetimePixels = acctResponse.rows[0].total_paint_count;
-        this.setCooldownMessage();
+        this.$store.dispatch(Actions.SET_CONTRACT_ACCOUNT, acctResponse.rows[0])
+        this.lifetimePixels = acctResponse.rows[0].total_paint_count
+        this.setCooldownMessage()
       }
     }
   }
-};
+}
 </script>
 
 <style lang="stylus" scoped></style>

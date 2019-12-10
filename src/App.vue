@@ -2,7 +2,7 @@
   <div class="app-container">
     <HeaderContainer name="header" />
     <CanvasContainer name="pixels" />
-    <FooterContainer name="" />
+    <FooterContainer name />
     <button
       v-shortkey.once="['-']"
       class="hotkey"
@@ -31,7 +31,7 @@ import 'babel-polyfill'
 import HeaderContainer from './components/Header'
 import CanvasContainer from './components/CanvasTest.vue'
 import FooterContainer from './components/Footer.vue'
-import {Api} from 'eosjs'
+import { Api } from 'eosjs'
 import moment from 'moment'
 import { setInterval } from 'timers'
 
@@ -46,7 +46,7 @@ export default {
 
   computed: {
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
       return this.$store.state.scatter.identity.accounts[0]
     }
   },
@@ -63,23 +63,34 @@ export default {
     this.loadLeaderboard()
     this.setupWebSocket()
     let _this = this
-    ScatterJS.scatter.connect(this.$store.state.scatterAppName).then(connected => {
-      if (!connected) {
-        console.error('Could not connect to Scatter.')
-        return
-      }
-      _this.$store.dispatch(Actions.SET_SCATTER, ScatterJS.scatter)
-      window.ScatterJS = null
-    })
+    ScatterJS.scatter
+      .connect(this.$store.state.scatterAppName)
+      .then(connected => {
+        if (!connected) {
+          console.error('Could not connect to Scatter.')
+          return
+        }
+        _this.$store.dispatch(Actions.SET_SCATTER, ScatterJS.scatter)
+        window.ScatterJS = null
+      })
     this.startWatcher()
   },
 
   methods: {
     setApiInstance () {
       if (this.account) {
-        this.$store.dispatch(Actions.SET_API, this.$store.state.scatter.eos(this.$store.state.network, Api, { rpc: this.$store.state.rpc, beta3: true }))
+        this.$store.dispatch(
+          Actions.SET_API,
+          this.$store.state.scatter.eos(this.$store.state.network, Api, {
+            rpc: this.$store.state.rpc,
+            beta3: true
+          })
+        )
       } else {
-        this.$store.dispatch(Actions.SET_API, new Api({ rpc: this.$store.state.rpc }))
+        this.$store.dispatch(
+          Actions.SET_API,
+          new Api({ rpc: this.$store.state.rpc })
+        )
       }
     },
     async loadContractConfig () {
@@ -91,7 +102,10 @@ export default {
       })
 
       if (configResponse.rows.length) {
-        this.$store.dispatch(Actions.SET_CONTRACT_CONFIG, configResponse.rows[0])
+        this.$store.dispatch(
+          Actions.SET_CONTRACT_CONFIG,
+          configResponse.rows[0]
+        )
       }
     },
     async loadLeaderboard () {
@@ -106,7 +120,9 @@ export default {
       })
 
       if (leaderboardResponse.rows.length) {
-        leaderboardResponse.rows.sort(function (a, b) { return b.total_paint_count - a.total_paint_count })
+        leaderboardResponse.rows.sort(function (a, b) {
+          return b.total_paint_count - a.total_paint_count
+        })
         this.$store.dispatch(Actions.SET_LEADERBOARD, leaderboardResponse.rows)
       }
     },
@@ -128,11 +144,13 @@ export default {
         // TODO: Check for ping messages and ignore, they're {"action":"ping"}
         console.log('GOT MESSAGE: ' + ev.data)
         let eventObj = JSON.parse(ev.data)
-        if (eventObj.action === 'chat') { _this.$store.dispatch(Actions.PUSH_CHAT_HISTORY, eventObj.data) }
+        if (eventObj.action === 'chat') {
+          _this.$store.dispatch(Actions.PUSH_CHAT_HISTORY, eventObj.data)
+        }
         console.log(eventObj)
       }
 
-      this.$root.$on('sendMessage', (data) => {
+      this.$root.$on('sendMessage', data => {
         this.ws.send(data)
       })
     },
@@ -146,21 +164,33 @@ export default {
       this.updatePixelsRemaining()
     },
     updateCooldown () {
-      let cooldownExpires = this.$store.state.contractAccount ? moment.unix(this.$store.state.contractAccount.last_access + this.$store.state.config.cooldown) : moment.unix()
+      let cooldownExpires = this.$store.state.contractAccount
+        ? moment.unix(
+          this.$store.state.contractAccount.last_access +
+              this.$store.state.config.cooldown
+        )
+        : moment.unix()
       this.$store.dispatch(Actions.SET_COOLDOWN_EXPIRES, cooldownExpires)
     },
     updatePixelsRemaining () {
+      if (!this.$store.state.config) return
       let pixelsRemaining = 0
-      let inCooldown = this.$store.state.cooldownExpire.isAfter && this.$store.state.cooldownExpire.isAfter()
+      let inCooldown =
+        this.$store.state.cooldownExpire.isAfter &&
+        this.$store.state.cooldownExpire.isAfter()
       if (inCooldown) {
-        pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.contractAccount.session_paint_count - this.$store.state.pixelObjArray.length
+        pixelsRemaining =
+          this.$store.state.config.pixels_per_paint -
+          this.$store.state.contractAccount.session_paint_count -
+          this.$store.state.pixelObjArray.length
       } else {
-        pixelsRemaining = this.$store.state.config.pixels_per_paint - this.$store.state.pixelObjArray.length
+        pixelsRemaining =
+          this.$store.state.config.pixels_per_paint -
+          this.$store.state.pixelObjArray.length
       }
 
       this.$store.dispatch(Actions.SET_PIXELS_REMAINING, pixelsRemaining)
     }
   }
-
 }
 </script>
