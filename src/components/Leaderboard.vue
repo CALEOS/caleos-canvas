@@ -15,14 +15,12 @@
           slot="items"
           slot-scope="props"
         >
-          <td
-            class="text-xs-left"
-          >
-            <VIcon
-              @click="viewAccount(props.item.account)"
-            >
-              pageview
-            </VIcon>
+          <td class="text-xs-left">
+            <Avatar
+              :account-name="props.item.account"
+              :avatar-url="props.item.avatar"
+              @click.native="viewAccount(props.item.account)"
+            />
             {{ props.item.account }}
           </td>
           <td class="text-xs-left">
@@ -35,18 +33,23 @@
 </template>
 
 <script>
+import Avatar from './Avatar'
 export default {
   name: 'Leaderboard',
+  components: { Avatar },
   data () {
     return {
-      headers: [{
-        text: 'Account',
-        align: 'left',
-        value: 'account'
-      }, {
-        text: 'Paint Count',
-        value: 'total_paint_count'
-      }],
+      headers: [
+        {
+          text: 'Account',
+          align: 'left',
+          value: 'account'
+        },
+        {
+          text: 'Paint Count',
+          value: 'total_paint_count'
+        }
+      ],
       pagination: {
         descending: true,
         sortBy: 'total_paint_count',
@@ -67,5 +70,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

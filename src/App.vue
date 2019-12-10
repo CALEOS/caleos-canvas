@@ -46,7 +46,9 @@ export default {
 
   computed: {
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
+        return null
+      }
       return this.$store.state.scatter.identity.accounts[0]
     }
   },

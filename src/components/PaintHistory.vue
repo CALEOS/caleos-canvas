@@ -15,23 +15,19 @@
           slot="items"
           slot-scope="props"
         >
-          <td
-            class="text-xs-left"
-          >
-            <VIcon
-              @click="viewAccount(props.item.act.data.account)"
-            >
-              pageview
-            </VIcon>
+          <td class="text-xs-left">
+            <Avatar
+              :account-name="props.item.act.data.account"
+              :avatar-url="props.item.act.data.avatar"
+              @click.native="viewAccount(props.item.act.data.account)"
+            />
             {{ props.item.act.data.account }}
           </td>
           <td class="text-xs-left">
             {{ props.item.act.data.pixels.length }}
           </td>
           <td class="text-xs-left">
-            <VIcon
-              @click="viewTrx(props.item.trx_id)"
-            >
+            <VIcon @click="viewTrx(props.item.trx_id)">
               pageview
             </VIcon>
             {{ props.item.block_num }}
@@ -44,22 +40,28 @@
 
 <script>
 import { Actions } from '../actions'
+import Avatar from './Avatar'
 
 export default {
   name: 'PaintHistory',
+  components: { Avatar },
   data () {
     return {
-      headers: [{
-        text: 'Account',
-        align: 'left',
-        value: 'account'
-      }, {
-        text: 'Pixels',
-        value: 'pixels'
-      }, {
-        text: 'Block',
-        value: 'block_num'
-      }],
+      headers: [
+        {
+          text: 'Account',
+          align: 'left',
+          value: 'account'
+        },
+        {
+          text: 'Pixels',
+          value: 'pixels'
+        },
+        {
+          text: 'Block',
+          value: 'block_num'
+        }
+      ],
       pagination: {
         descending: true,
         sortBy: 'block',
@@ -86,5 +88,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
