@@ -1,7 +1,6 @@
 <template>
   <div id="header">
     <Leaderboard class="header-item header-left" />
-    <ChatWindow class="header-item header-center" />
     <PaintHistory class="header-item header-right" />
   </div>
 </template>
@@ -9,12 +8,13 @@
 
 import Leaderboard from './Leaderboard'
 import PaintHistory from './PaintHistory'
-import ChatWindow from '@/components/ChatWindow'
+// <ChatWindow class="header-item header-center" />
+// import ChatWindow from '@/components/ChatWindow'
 export default {
   components: {
     Leaderboard,
-    PaintHistory,
-    ChatWindow
+    PaintHistory/*,
+    ChatWindow*/
   },
   props: {
     name: {

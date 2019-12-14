@@ -30,11 +30,11 @@
     </span>-->
     <span
       v-if="cooldownMessage && myScatter && account && !mySendingTransaction"
-      class="message-span"
+      class="white-text message-span"
     >{{ cooldownMessage }}</span>
     <span
       v-if="mySendingTransaction"
-      class="message-span"
+      class="white-text message-span"
     >Sending transaction...</span>
   </div>
 </template>

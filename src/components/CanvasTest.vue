@@ -56,7 +56,12 @@ export default {
       myRpc: 'rpc',
       myContract: 'contract',
       pixelCoordArray: 'pixelCoordArray'
-    })
+    }),
+    account() {
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity)
+        return null;
+      return this.$store.state.scatter.identity.accounts[0];
+    }
   },
 
   watch: {
@@ -186,6 +191,9 @@ export default {
 
       let paintZoom = event => {
         console.log('paintZoom')
+        if (!this.account) {
+          return
+        }
         if (this.$store.state.pixelsRemaining < 1) {
           alert(
             'You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.'
@@ -435,6 +443,7 @@ export default {
         view.apply() // set the current view
         context.drawImage(canvas2, 0, 0)
         view.canvasDefault()
+        /*
         if (view.getScale() === view.getMaxScale()) {
           context.fillStyle = 'black'
           context.strokeStyle = 'white'
@@ -442,6 +451,7 @@ export default {
           context.strokeText('Max scale.', context.canvas.width / 2, 24)
           context.fillText('Max scale.', context.canvas.width / 2, 24)
         }
+        */
         requestAnimationFrame(draw)
         if (mouse.overId === 'zoom-canv_as') {
           canvas.style.cursor = mouse.button ? 'none' : 'move'

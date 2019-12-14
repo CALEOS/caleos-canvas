@@ -1,13 +1,14 @@
 <template>
   <div
     id="coordinates"
+    class="white-text"
   >
     X:
-    <span id="x-coord">
+    <span id="x-coord" class="white-text">
       {{ xCoord }}
     </span>
     Y:
-    <span id="y-coord">
+    <span id="y-coord" class="white-text">
       {{ yCoord }}
     </span>
   </div>

@@ -3,7 +3,7 @@
     <UserInfo name="user-info" />
     <Coordinates />
     <ColorPaletteContainer v-if="account" name="color palette container" />
-    <span id="pixels-remaining">
+    <span v-if="account" id="pixels-remaining" class="white-text" >
       Remaining Session Pixels:<b :class="countColor">
         {{ pixelsRemaining }}
       </b>
@@ -32,7 +32,7 @@ export default {
   },
   data: function () {
     return {
-      countColor: 'black-text'
+      countColor: 'white-text'
     }
   },
   computed: {
@@ -55,6 +55,8 @@ export default {
   float right
   margin-top -26px
   margin-right 12px
+.white-text
+  color white
 .black-text
   color black
 .red-text
