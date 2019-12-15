@@ -4,6 +4,17 @@
       <VBtn slot="activator">
         Leaderboard
       </VBtn>
+      <div class="scores">
+        <p
+          v-if="account"
+          class="text-md-center"
+        >
+          Your paint score - {{ currentAccount.paint_score }}
+        </p>
+        <p class="text-md-center">
+          Global paint score - {{ config.global_paint_score }}
+        </p>
+      </div>
       <VDataTable
         :must-sort="true"
         :pagination.sync="pagination"
@@ -34,6 +45,7 @@
 
 <script>
 import Avatar from './Avatar'
+import { mapState } from 'vuex'
 export default {
   name: 'Leaderboard',
   components: { Avatar },
@@ -58,8 +70,17 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      config: 'config',
+      currentAccount: 'contractAccount'
+    }),
     leaders () {
       return this.$store.state.leaderboard
+    },
+    account () {
+      return !this.$store.state.scatter || !this.$store.state.scatter.identity
+        ? null
+        : this.$store.state.scatter.identity.accounts[0]
     }
   },
   methods: {
@@ -70,4 +91,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="stylus" scoped>
+
+.scores
+  padding-top 10px
+
+</style>
