@@ -21,7 +21,7 @@
               :avatar-url="props.item.act.data.avatar"
               @click.native="viewAccount(props.item.act.data.account_name)"
             />
-            {{ props.item.act.data.account }}
+            {{ props.item.act.data.account_name }}
           </td>
           <td class="text-xs-left">
             {{ props.item.act.data.pixels.length }}
