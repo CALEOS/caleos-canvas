@@ -29,6 +29,8 @@ const state = {
   contractAccount: null,
   width: 1000,
   height: 1000,
+  mouseX: null,
+  mouseY: null,
   contract: process.env.VUE_APP_CONTRACT,
   scatterAppName: 'Telos Place',
   canvasse: null,
@@ -144,6 +146,9 @@ const actions = {
   [Actions.CLEAR_PIXEL_ARRAY] ({ commit }) {
     commit(Actions.CLEAR_PIXEL_ARRAY)
   },
+  [Actions.SET_MOUSE_COORDS] ({ commit }, pixelObj) {
+    commit(Actions.SET_MOUSE_COORDS, pixelObj)
+  },
   [Actions.SET_ZOOM_LEVEL] ({ commit }) {
     commit(Actions.SET_ZOOM_LEVEL)
   },
@@ -227,6 +232,10 @@ const mutations = {
     state.intColorArray = []
     state.pixelObjArray = []
     console.dir(state.pixelCoordArray)
+  },
+  [Actions.SET_MOUSE_COORDS] (state, coords) {
+    state.mouseX = coords.x
+    state.mouseY = coords.y
   },
   [Actions.SET_ZOOM_LEVEL] (state, zoomLevel) {
     state.zoomLevel = zoomLevel

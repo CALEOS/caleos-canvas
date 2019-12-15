@@ -16,6 +16,7 @@ export const Actions = {
   SET_CANVASSE: 'SetCanvasse',
   SET_CONTRACT_CONFIG: 'SetContractConfig',
   SET_CONTRACT_ACCOUNT: 'SetContractAccount',
+  SET_MOUSE_COORDS: 'SetMouseCoords',
   SET_ZOOM_LEVEL: 'SetZoomLevel',
   LOAD_PAINT_HISTORY: 'LoadPaintHistory',
   PUSH_CHAT_HISTORY: 'PushChatHistory',

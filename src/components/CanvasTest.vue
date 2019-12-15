@@ -57,10 +57,10 @@ export default {
       myContract: 'contract',
       pixelCoordArray: 'pixelCoordArray'
     }),
-    account() {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity)
-        return null;
-      return this.$store.state.scatter.identity.accounts[0];
+    account () {
+      return !this.$store.state.scatter || !this.$store.state.scatter.identity
+        ? null
+        : this.$store.state.scatter.identity.accounts[0]
     }
   },
 
@@ -167,8 +167,12 @@ export default {
 
     createZoomCanvas () {
       let state = this.$store.state
+      let store = this.$store
       // let canvass = document.getElementById('place-canvasse')
       // let ctxs = canvass.getContext('2d')
+
+      // let lastCoordUpdate = 0
+      // let coordUpdateInterval = 500
 
       requestAnimationFrame(draw)
 
@@ -189,22 +193,7 @@ export default {
         }
       }
 
-      let paintZoom = event => {
-        console.log('paintZoom')
-        if (!this.account) {
-          return
-        }
-        if (this.$store.state.pixelsRemaining < 1) {
-          alert(
-            'You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.'
-          )
-          return
-        }
-        if (this.$store.state.activeColorInt === null) {
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#000000')
-          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
-        }
+      let getPixelObj = event => {
         let canvasElement = document.getElementById('zoom-canvas')
         let rect = canvasElement.getBoundingClientRect()
         let pixelObj = {
@@ -234,6 +223,26 @@ export default {
         // pixelObj.y = Math.ceil(pixelObj.y / scale) + indexOffset
         pixelObj.x = Math.ceil(mouse.worldPos.x) + indexOffset
         pixelObj.y = Math.ceil(mouse.worldPos.y) + indexOffset
+        return pixelObj
+      }
+
+      let paintZoom = event => {
+        console.log('paintZoom')
+        if (!this.account) {
+          return
+        }
+        if (this.$store.state.pixelsRemaining < 1) {
+          alert(
+            'You have painted the maximum number of pixels, click the green arrow button below to set the pixels and begin a new session.'
+          )
+          return
+        }
+        if (this.$store.state.activeColorInt === null) {
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, 'black')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, '#000000')
+          this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, '3')
+        }
+        let pixelObj = getPixelObj(event)
         this.$store.dispatch(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
         setTransactionButton()
         this.paintTempPixels(pixelObj, state.activeColorName)
@@ -477,6 +486,7 @@ export default {
           mouse.pos.y = event.clientY - canvas.offsetTop
           view.toWorld(mouse.pos, mouse.worldPos) // gets the world coords (where on canvas 2 the mouse is)
           if (event.type === 'mousemove') {
+            store.dispatch(Actions.SET_MOUSE_COORDS, getPixelObj(event))
             if (mouse.button) {
               mouse.dragging = true
               view.move(
