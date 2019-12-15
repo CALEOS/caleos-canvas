@@ -17,9 +17,9 @@
         >
           <td class="text-xs-left">
             <Avatar
-              :account-name="props.item.act.data.account"
+              :account-name="props.item.act.data.account_name"
               :avatar-url="props.item.act.data.avatar"
-              @click.native="viewAccount(props.item.act.data.account)"
+              @click.native="viewAccount(props.item.act.data.account_name)"
             />
             {{ props.item.act.data.account }}
           </td>
@@ -51,7 +51,7 @@ export default {
         {
           text: 'Account',
           align: 'left',
-          value: 'account'
+          value: 'account_name'
         },
         {
           text: 'Pixels',

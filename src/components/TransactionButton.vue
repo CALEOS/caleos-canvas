@@ -61,7 +61,7 @@ export default {
             permission: 'active'
           }],
           data: {
-            account: this.account.name,
+            account_name: this.account.name,
             pixels: this.$store.state.pixelCoordArray,
             colors: this.$store.state.intColorArray
           }

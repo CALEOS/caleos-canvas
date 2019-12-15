@@ -65,7 +65,9 @@ export default {
       myContractConfig: 'config'
     }),
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
+        return null
+      }
       return this.$store.state.scatter.identity.accounts[0]
     }
   },
@@ -112,7 +114,10 @@ export default {
         return
       }
 
-      let cooldown = this.$store.state.config.cooldown
+      let cooldown = this.$store.state.config.settings.find(
+        setting => setting.key === 'cooldown'
+      ).value
+
       if (cooldown === 0) {
         this.cooldownInterval = null
         this.cooldownMessage = 'No cooldown, party mode 🎉'
@@ -127,10 +132,10 @@ export default {
         return
       }
 
-      let cooldownExpires = moment.unix(
-        this.$store.state.contractAccount.last_access +
-          this.$store.state.config.cooldown
-      )
+      const lastActivitySeconds = moment.utc(
+        this.$store.state.contractAccount.last_activity
+      ).unix()
+      let cooldownExpires = moment.unix(lastActivitySeconds + cooldown)
       if (cooldownExpires.isBefore()) {
         if (this.$store.state.pixelCoordArray.length) {
           this.$root.$emit('cooldown', false)

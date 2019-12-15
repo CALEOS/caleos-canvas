@@ -17,14 +17,14 @@
         >
           <td class="text-xs-left">
             <Avatar
-              :account-name="props.item.account"
+              :account-name="props.item.account_name"
               :avatar-url="props.item.avatar"
-              @click.native="viewAccount(props.item.account)"
+              @click.native="viewAccount(props.item.account_name)"
             />
-            {{ props.item.account }}
+            {{ props.item.account_name }}
           </td>
           <td class="text-xs-left">
-            {{ props.item.total_paint_count }}
+            {{ props.item.paint_score }}
           </td>
         </template>
       </VDataTable>
@@ -43,16 +43,16 @@ export default {
         {
           text: 'Account',
           align: 'left',
-          value: 'account'
+          value: 'account_name'
         },
         {
           text: 'Paint Count',
-          value: 'total_paint_count'
+          value: 'paint_score'
         }
       ],
       pagination: {
         descending: true,
-        sortBy: 'total_paint_count',
+        sortBy: 'paint_score',
         rowsPerPage: -1
       }
     }

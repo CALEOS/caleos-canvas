@@ -63,7 +63,7 @@ export default {
     this.setApiInstance()
     this.loadContractConfig()
     this.loadLeaderboard()
-    this.setupWebSocket()
+    // this.setupWebSocket()
     let _this = this
     ScatterJS.scatter
       .connect(this.$store.state.scatterAppName)
@@ -123,7 +123,7 @@ export default {
 
       if (leaderboardResponse.rows.length) {
         leaderboardResponse.rows.sort(function (a, b) {
-          return b.total_paint_count - a.total_paint_count
+          return b.paint_score - a.paint_score
         })
         this.$store.dispatch(Actions.SET_LEADERBOARD, leaderboardResponse.rows)
       }
@@ -166,29 +166,39 @@ export default {
       this.updatePixelsRemaining()
     },
     updateCooldown () {
+      if (!this.$store.state.config || !this.$store.state.contractAccount) return
+
+      let cooldown = this.$store.state.config.settings.find(
+        setting => setting.key === 'cooldown'
+      ).value
+
+      let lastActivitySeconds = moment
+        .utc(this.$store.state.contractAccount.last_activity)
+        .unix()
+
       let cooldownExpires = this.$store.state.contractAccount
-        ? moment.unix(
-          this.$store.state.contractAccount.last_access +
-              this.$store.state.config.cooldown
-        )
+        ? moment.unix(lastActivitySeconds + cooldown)
         : moment.unix()
       this.$store.dispatch(Actions.SET_COOLDOWN_EXPIRES, cooldownExpires)
     },
     updatePixelsRemaining () {
       if (!this.$store.state.config) return
       let pixelsRemaining = 0
+
+      let pixelsPer = this.$store.state.config.settings.find(
+        setting => setting.key === 'pixelsper'
+      ).value
+
       let inCooldown =
         this.$store.state.cooldownExpire.isAfter &&
         this.$store.state.cooldownExpire.isAfter()
       if (inCooldown) {
         pixelsRemaining =
-          this.$store.state.config.pixels_per_paint -
-          this.$store.state.contractAccount.session_paint_count -
+          pixelsPer -
+          this.$store.state.contractAccount.session_paint_score -
           this.$store.state.pixelObjArray.length
       } else {
-        pixelsRemaining =
-          this.$store.state.config.pixels_per_paint -
-          this.$store.state.pixelObjArray.length
+        pixelsRemaining = pixelsPer - this.$store.state.pixelObjArray.length
       }
 
       this.$store.dispatch(Actions.SET_PIXELS_REMAINING, pixelsRemaining)
