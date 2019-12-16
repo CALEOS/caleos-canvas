@@ -132,9 +132,9 @@ export default {
         return
       }
 
-      const lastActivitySeconds = moment.utc(
-        this.$store.state.contractAccount.last_activity
-      ).unix()
+      const lastActivitySeconds = moment
+        .utc(this.$store.state.contractAccount.last_activity)
+        .unix()
       let cooldownExpires = moment.unix(lastActivitySeconds + cooldown)
       if (cooldownExpires.isBefore()) {
         if (this.$store.state.pixelCoordArray.length) {
@@ -166,19 +166,13 @@ export default {
         return
       }
 
-      let contract = this.$store.state.contract
-      let acctResponse = await this.$store.state.rpc.get_table_rows({
-        code: contract,
-        scope: contract,
-        table: 'accounts',
-        lower_bound: this.account.name,
-        limit: 1
-      })
-      if (acctResponse.rows.length) {
-        this.$store.dispatch(Actions.SET_CONTRACT_ACCOUNT, acctResponse.rows[0])
-        this.lifetimePixels = acctResponse.rows[0].total_paint_count
-        this.setCooldownMessage()
+      await this.$store.dispatch(Actions.LOAD_CONTRACT_ACCOUNT)
+      if (!this.$store.state.contractAccount) {
+        return
       }
+
+      this.lifetimePixels = this.$store.state.contractAccount.total_paint_count
+      this.setCooldownMessage()
     }
   }
 }

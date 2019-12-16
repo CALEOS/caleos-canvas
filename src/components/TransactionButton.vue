@@ -73,6 +73,8 @@ export default {
       this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
+      this.$store.dispatch(Actions.LOAD_CONTRACT_CONFIG)
+      this.$store.dispatch(Actions.LOAD_CONTRACT_ACCOUNT)
     }
   }
 }

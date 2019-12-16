@@ -97,11 +97,11 @@ const getters = {
 }
 
 const actions = {
-  [Actions.SET_CONTRACT_CONFIG] ({ commit }, config) {
-    commit(Actions.SET_CONTRACT_CONFIG, config)
+  [Actions.LOAD_CONTRACT_CONFIG] ({ commit }) {
+    commit(Actions.LOAD_CONTRACT_CONFIG)
   },
-  [Actions.SET_CONTRACT_ACCOUNT] ({ commit }, account) {
-    commit(Actions.SET_CONTRACT_ACCOUNT, account)
+  [Actions.LOAD_CONTRACT_ACCOUNT] ({ commit }, account) {
+    commit(Actions.LOAD_CONTRACT_ACCOUNT, account)
   },
   [Actions.SET_IDENTITY] ({ commit }, identity) {
     commit(Actions.SET_IDENTITY, identity)
@@ -170,11 +170,35 @@ const actions = {
 }
 
 const mutations = {
-  [Actions.SET_CONTRACT_CONFIG] (state, config) {
-    state.config = config
+  async [Actions.LOAD_CONTRACT_CONFIG] (state) {
+    let contract = state.contract
+    let configResponse = await state.rpc.get_table_rows({
+      code: contract,
+      scope: contract,
+      table: 'config'
+    })
+    if (configResponse.rows.length) {
+      state.config = configResponse.rows[0]
+    }
   },
-  [Actions.SET_CONTRACT_ACCOUNT] (state, account) {
-    state.contractAccount = account
+  async [Actions.LOAD_CONTRACT_ACCOUNT] (state) {
+    if (!state.scatter || !state.scatter.identity) {
+      return null
+    }
+    let account = state.scatter.identity.accounts[0]
+
+    let contract = state.contract
+    let acctResponse = await state.rpc.get_table_rows({
+      code: contract,
+      scope: contract,
+      table: 'accounts',
+      lower_bound: account.name,
+      limit: 1
+    })
+
+    if (acctResponse.rows.length) {
+      state.contractAccount = acctResponse.rows[0]
+    }
   },
   [Actions.SET_IDENTITY] (state, identity) {
     state.identity = identity

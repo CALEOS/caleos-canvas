@@ -7,38 +7,38 @@
       <div class="scores">
         <p
           v-if="account"
-          class="text-md-center"
+          class="score text-md-center"
         >
           Your paint score - {{ currentAccount.paint_score }}
         </p>
-        <p class="text-md-center">
+        <p class="score text-md-center">
           Global paint score - {{ config.global_paint_score }}
         </p>
-      </div>
-      <VDataTable
-        :must-sort="true"
-        :pagination.sync="pagination"
-        :items="leaders"
-        :headers="headers"
-        hide-actions
-      >
-        <template
-          slot="items"
-          slot-scope="props"
+        <VDataTable
+          :must-sort="true"
+          :pagination.sync="pagination"
+          :items="leaders"
+          :headers="headers"
+          hide-actions
         >
-          <td class="text-xs-left">
-            <Avatar
-              :account-name="props.item.account_name"
-              :avatar-url="props.item.avatar"
-              @click.native="viewAccount(props.item.account_name)"
-            />
-            {{ props.item.account_name }}
-          </td>
-          <td class="text-xs-left">
-            {{ props.item.paint_score }}
-          </td>
-        </template>
-      </VDataTable>
+          <template
+            slot="items"
+            slot-scope="props"
+          >
+            <td class="text-xs-left">
+              <Avatar
+                :account-name="props.item.account_name"
+                :avatar-url="props.item.avatar"
+                @click.native="viewAccount(props.item.account_name)"
+              />
+              {{ props.item.account_name }}
+            </td>
+            <td class="text-xs-left">
+              {{ props.item.paint_score }}
+            </td>
+          </template>
+        </VDataTable>
+      </div>
     </VDialog>
   </div>
 </template>
@@ -95,5 +95,9 @@ export default {
 
 .scores
   padding-top 10px
+  background-color white
+
+.score
+  text-align center
 
 </style>
