@@ -6,16 +6,16 @@
       </VBtn>
       <div class="scores">
         <p
-          v-if="account"
+          v-if="myPaintScore"
           class="score text-md-center"
         >
-          Your paint score - {{ currentAccount.paint_score }}
+          Your paint score - {{ myPaintScore }}
         </p>
         <p
-          v-if="config"
+          v-if="globalPaintScore"
           class="score text-md-center"
         >
-          Global paint score - {{ config.global_paint_score }}
+          Global paint score - {{ globalPaintScore }}
         </p>
         <VDataTable
           :must-sort="true"
@@ -84,6 +84,12 @@ export default {
       return !this.$store.state.scatter || !this.$store.state.scatter.identity
         ? null
         : this.$store.state.scatter.identity.accounts[0]
+    },
+    myPaintScore () {
+      return this.currentAccount ? this.currentAccount.paint_score + '' : null
+    },
+    globalPaintScore () {
+      return this.config ? this.config.global_paint_score + '' : null
     }
   },
   methods: {
@@ -102,5 +108,4 @@ export default {
 
 .score
   text-align center
-
 </style>
