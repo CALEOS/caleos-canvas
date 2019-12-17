@@ -78,7 +78,7 @@ export default {
 
   methods: {
     async setupCanvasWatcher () {
-      this.iris = new IrisClient(`ws://${process.env.VUE_APP_IRIS}/iris-head`)
+      this.iris = new IrisClient(`${process.env.VUE_APP_IRIS}/iris-head`)
       await this.iris.connect()
       this.iris.subscribeAction(
         `${process.env.VUE_APP_CONTRACT}::setpixels`,
