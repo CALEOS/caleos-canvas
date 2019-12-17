@@ -9,13 +9,13 @@
           v-if="myPaintScore"
           class="score text-md-center"
         >
-          Your paint score - {{ myPaintScore }}
+          Your paint score: {{ myPaintScore }}
         </p>
         <p
           v-if="globalPaintScore"
           class="score text-md-center"
         >
-          Global paint score - {{ globalPaintScore }}
+          Global paint score: {{ globalPaintScore }}
         </p>
         <VDataTable
           :must-sort="true"
