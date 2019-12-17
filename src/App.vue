@@ -101,22 +101,7 @@ export default {
       )
     },
     async loadLeaderboard () {
-      // TODO: once nodeos is 1.5 and eosjs supports it, reverse sort the table search and don't sort locally
-      let contract = this.$store.state.contract
-      let leaderboardResponse = await this.$store.state.rpc.get_table_rows({
-        code: contract,
-        scope: contract,
-        table: 'accounts',
-        index_position: 2,
-        key_type: 'i64'
-      })
-
-      if (leaderboardResponse.rows.length) {
-        leaderboardResponse.rows.sort(function (a, b) {
-          return b.paint_score - a.paint_score
-        })
-        this.$store.dispatch(Actions.SET_LEADERBOARD, leaderboardResponse.rows)
-      }
+      this.$store.dispatch(Actions.LOAD_LEADERBOARD)
     },
     zoomOut () {
       this.$root.$emit('zoom-out')

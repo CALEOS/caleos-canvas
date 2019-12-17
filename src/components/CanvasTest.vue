@@ -35,7 +35,6 @@ const colorList = [
   'green',
   'cyan',
   'blue',
-  'blue',
   'darkblue',
   'magenta',
   'purple'
@@ -85,7 +84,9 @@ export default {
         `${process.env.VUE_APP_CONTRACT}::setpixels`,
         message => {
           let data = message.trace.act.data
-          console.dir(message)
+          this.$store.dispatch(Actions.LOAD_CONTRACT_CONFIG)
+          this.$store.dispatch(Actions.LOAD_LEADERBOARD)
+          this.$store.dispatch(Actions.LOAD_PAINT_HISTORY)
           for (let i = 0; i < data.pixels.length; i++) {
             let pixel = data.pixels[i]
             let color = colorList[data.colors[i]]

@@ -11,7 +11,10 @@
         >
           Your paint score - {{ currentAccount.paint_score }}
         </p>
-        <p class="score text-md-center">
+        <p
+          v-if="config"
+          class="score text-md-center"
+        >
           Global paint score - {{ config.global_paint_score }}
         </p>
         <VDataTable

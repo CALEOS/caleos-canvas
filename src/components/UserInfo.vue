@@ -40,8 +40,6 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
-
 import { mapState } from 'vuex'
 import { Actions } from '../actions'
 import moment from 'moment'
@@ -62,7 +60,8 @@ export default {
       myLastRefresh: 'lastRefresh',
       myIdentity: 'identity',
       mySendingTransaction: 'sendingTransaction',
-      myContractConfig: 'config'
+      myContractConfig: 'config',
+      myContractAccount: 'contractAccount'
     }),
     account () {
       if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
@@ -77,6 +76,9 @@ export default {
     },
     myIdentity () {
       this.loadAccount()
+    },
+    myContractAccount () {
+      this.loadContractAccount()
     }
   },
   mounted () {
@@ -167,6 +169,8 @@ export default {
       }
 
       await this.$store.dispatch(Actions.LOAD_CONTRACT_ACCOUNT)
+    },
+    async loadContractAccount () {
       if (!this.$store.state.contractAccount) {
         return
       }

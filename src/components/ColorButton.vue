@@ -1,7 +1,7 @@
 <template>
   <div
     id="color-button"
-    :class="[color,{active: isActive}]"
+    :class="[color, { active: isActive }]"
     @click="triggerEvent()"
   >
     <h1 />
@@ -28,7 +28,9 @@ export default {
   },
   computed: {
     isActive: function () {
-      return this.color != null ? this.color === this.$store.state.activeColorName : false
+      return this.color != null
+        ? this.color === this.$store.state.activeColorName
+        : false
     }
   },
   methods: {
@@ -38,10 +40,20 @@ export default {
         this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, null)
         this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, null)
       } else {
-        this.$store.dispatch(Actions.SET_ACTIVE_COLOR_NAME, this.color)
+        this.$store.dispatch(
+          Actions.SET_ACTIVE_COLOR_NAME,
+          this.color.substring(2, this.color.length)
+        )
         this.$store.dispatch(Actions.SET_ACTIVE_COLOR_HEX, this.hex)
         this.$store.dispatch(Actions.SET_ACTIVE_COLOR_INT, this.colorint)
-        console.log('Color-int: ' + this.$store.state.activeColorInt + '\nColor: ' + this.$store.state.activeColorName + '\nHex: ' + this.$store.state.activeColorHex)
+        console.log(
+          'Color-int: ' +
+            this.$store.state.activeColorInt +
+            '\nColor: ' +
+            this.$store.state.activeColorName +
+            '\nHex: ' +
+            this.$store.state.activeColorHex
+        )
       }
     }
   }

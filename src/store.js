@@ -97,8 +97,8 @@ const getters = {
 }
 
 const actions = {
-  [Actions.LOAD_CONTRACT_CONFIG] ({ commit }) {
-    commit(Actions.LOAD_CONTRACT_CONFIG)
+  async [Actions.LOAD_CONTRACT_CONFIG] ({ commit }) {
+    await commit(Actions.LOAD_CONTRACT_CONFIG)
   },
   [Actions.LOAD_CONTRACT_ACCOUNT] ({ commit }, account) {
     commit(Actions.LOAD_CONTRACT_ACCOUNT, account)
@@ -158,8 +158,8 @@ const actions = {
   [Actions.LOAD_PAINT_HISTORY] ({ commit }) {
     commit(Actions.LOAD_PAINT_HISTORY)
   },
-  [Actions.SET_LEADERBOARD] ({ commit }, leaderboard) {
-    commit(Actions.SET_LEADERBOARD, leaderboard)
+  [Actions.LOAD_LEADERBOARD] ({ commit }) {
+    commit(Actions.LOAD_LEADERBOARD)
   },
   [Actions.SET_PIXELS_REMAINING] ({ commit }, pixels) {
     commit(Actions.SET_PIXELS_REMAINING, pixels)
@@ -288,7 +288,26 @@ const mutations = {
       state.paintHistory = response.data.actions
     })
   },
-  async [Actions.SET_LEADERBOARD] (state, leaderboard) {
+  async [Actions.LOAD_LEADERBOARD] (state) {
+    // TODO: once nodeos is 1.5 and eosjs supports it, reverse sort the table search and don't sort locally
+    let contract = state.contract
+    let leaderboardResponse = await state.rpc.get_table_rows({
+      code: contract,
+      scope: contract,
+      table: 'accounts',
+      index_position: 2,
+      key_type: 'i64'
+    })
+
+    if (leaderboardResponse.rows.length) {
+      leaderboardResponse.rows.sort(function (a, b) {
+        return b.paint_score - a.paint_score
+      })
+    } else {
+      return
+    }
+
+    let leaderboard = leaderboardResponse.rows
     let accountNames = []
     for (let i = 0; i < leaderboard.length; i++) {
       accountNames.push(leaderboard[i].account_name)

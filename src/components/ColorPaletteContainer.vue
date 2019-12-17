@@ -2,82 +2,82 @@
   <div id="color-palette-container">
     <Undo name="undo" />
     <ColorButton
-      color="white"
+      color="c-white"
       hex="#FFFFFF"
       colorint="0"
     />
     <ColorButton
-      color="lightgrey"
+      color="c-lightgrey"
       hex="#D3D3D3"
       colorint="1"
     />
     <ColorButton
-      color="grey"
+      color="c-grey"
       hex="#808080"
       colorint="2"
     />
     <ColorButton
-      color="black"
+      color="c-black"
       hex="#000000"
       colorint="3"
     />
     <ColorButton
-      color="pink"
+      color="c-pink"
       hex="#FFC0CB"
       colorint="4"
     />
     <ColorButton
-      color="red"
+      color="c-red"
       hex="#FF0000"
       colorint="5"
     />
     <ColorButton
-      color="orange"
+      color="c-orange"
       hex="#FFA500"
       colorint="6"
     />
     <ColorButton
-      color="brown"
+      color="c-brown"
       hex="#A52A2A"
       colorint="7"
     />
     <ColorButton
-      color="yellow"
+      color="c-yellow"
       hex="#FFFF00"
       colorint="8"
     />
     <ColorButton
-      color="lime"
+      color="c-lime"
       hex="#00FF00"
       colorint="9"
     />
     <ColorButton
-      color="green"
+      color="c-green"
       hex="#008000"
       colorint="10"
     />
     <ColorButton
-      color="cyan"
+      color="c-cyan"
       hex="#00FFFF"
       colorint="11"
     />
     <ColorButton
-      color="blue"
+      color="c-blue"
       hex="#0000FF"
       colorint="12"
     />
     <ColorButton
-      color="darkblue"
+      color="c-darkblue"
       hex="#00008B"
       colorint="13"
     />
     <ColorButton
-      color="magenta"
+      color="c-magenta"
       hex="#FF00FF"
       colorint="14"
     />
     <ColorButton
-      color="purple"
+      color="c-purple"
       hex="#800080"
       colorint="15"
     />
@@ -104,7 +104,7 @@ export default {
     }
   },
   mounted () {
-    this.$root.$on('cooldown', (active) => {
+    this.$root.$on('cooldown', active => {
       let transactionButton = document.getElementsByName('share-square')
       if (active) {
         transactionButton[0].classList.remove('green-button')
@@ -132,37 +132,36 @@ export default {
   margin auto
   margin-top 2px
   min-width 630px
-.white
+.c-white
   background-color #FFFFFF
-.lightgrey
+.c-lightgrey
   background-color #D3D3D3
-.grey
+.c-grey
   background-color #808080
-.black
+.c-black
   background-color #000000
-.pink
+.c-pink
   background-color #FFC0CB
-.red
+.c-red
   background-color #FF0000
-.orange
+.c-orange
   background-color #FFA500
-.brown
+.c-brown
   background-color #A52A2A
-.yellow
+.c-yellow
   background-color #FFFF00
-.lime
+.c-lime
   background-color #00FF00
-.green
+.c-green
   background-color #008000
-.cyan
+.c-cyan
   background-color #00FFFF
-.blue
+.c-blue
   background-color #0000FF
-.darkblue
+.c-darkblue
   background-color #00008B
-.magenta
+.c-magenta
   background-color #FF00FF
-.purple
+.c-purple
   background-color #800080
-
 </style>

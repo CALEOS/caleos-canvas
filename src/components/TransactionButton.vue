@@ -12,10 +12,9 @@
 </template>
 
 <script>
-
 import 'vue-awesome/icons/share-square'
 import Icon from 'vue-awesome/components/Icon.vue'
-import {Actions} from '../actions'
+import { Actions } from '../actions'
 import { mapState } from 'vuex'
 
 export default {
@@ -33,10 +32,9 @@ export default {
       myScatter: 'scatter'
     }),
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) return null
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
       return this.$store.state.scatter.identity.accounts[0]
     }
-
   },
   mounted () {
     this.$root.$on('trigger-transaction', () => {
@@ -47,34 +45,46 @@ export default {
   methods: {
     async sendTransaction () {
       if (!this.$store.state.pixelCoordArray.length) {
-        alert('You have not painted any pixels! Select a color and click on the canvas to start painting.')
+        alert(
+          'You have not painted any pixels! Select a color and click on the canvas to start painting.'
+        )
         return
       }
       this.$root.$emit('send-transaction')
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
-      await this.$store.state.api.transact({
-        actions: [{
-          account: this.$store.state.contract,
-          name: 'setpixels',
-          authorization: [{
-            actor: this.account.name,
-            permission: 'active'
-          }],
-          data: {
-            account_name: this.account.name,
-            pixels: this.$store.state.pixelCoordArray,
-            colors: this.$store.state.intColorArray
-          }
+      await this.$store.state.api.transact(
+        {
+          actions: [
+            {
+              account: this.$store.state.contract,
+              name: 'setpixels',
+              authorization: [
+                {
+                  actor: this.account.name,
+                  permission: 'active'
+                }
+              ],
+              data: {
+                account_name: this.account.name,
+                pixels: this.$store.state.pixelCoordArray,
+                colors: this.$store.state.intColorArray
+              }
+            }
+          ]
+        },
+        {
+          blocksBehind: 3,
+          expireSeconds: 30
         }
-        ]}, {
-        blocksBehind: 3,
-        expireSeconds: 30
-      })
+      )
       this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, false)
       this.$store.dispatch(Actions.LOAD_CONTRACT_CONFIG)
       this.$store.dispatch(Actions.LOAD_CONTRACT_ACCOUNT)
+      this.$store.dispatch(Actions.LOAD_LEADERBOARD)
+      // let hyperion index... may take a few seconds
+      setTimeout(() => this.$store.dispatch(Actions.LOAD_PAINT_HISTORY), 5000)
     }
   }
 }
