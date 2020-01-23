@@ -5,6 +5,7 @@ import { Network } from 'scatterjs-core'
 import { JsonRpc } from 'eosjs'
 import axios from 'axios'
 import PPP from '@smontero/ppp-client-api'
+import { PublicFields } from '@smontero/ppp-common'
 
 Vue.use(Vuex)
 PPP.configure(process.env.VUE_APP_PPP_ENV)
@@ -59,12 +60,12 @@ const state = {
   chatHistoryLength: 1000
 }
 
-function limitArrayLength (a, l) {
+function limitArrayLength(a, l) {
   if (a.length < l) return
   a.splice(l, (a.length - l))
 }
 
-async function getAccountProfiles (accountNames) {
+async function getAccountProfiles(accountNames) {
   let foundAccounts = {}
   let neededAccountNames = []
 
@@ -80,7 +81,7 @@ async function getAccountProfiles (accountNames) {
     const response = await profileApi.getProfiles(neededAccountNames)
     for (let account in response) {
       let profile = response[account]
-      await PPP.profileApi().getAvatarUrl(profile.publicData.profileImage, profile.publicData.s3Identity).then((url) => {
+      await PPP.profileApi().getImageUrl(profile.publicData[PublicFields.AVATAR_IMAGE], profile.publicData[PublicFields.S3_IDENTITY]).then((url) => {
         profile.avatar = url
       })
     }
@@ -97,80 +98,80 @@ const getters = {
 }
 
 const actions = {
-  async [Actions.LOAD_CONTRACT_CONFIG] ({ commit }) {
+  async [Actions.LOAD_CONTRACT_CONFIG]({ commit }) {
     await commit(Actions.LOAD_CONTRACT_CONFIG)
   },
-  [Actions.LOAD_CONTRACT_ACCOUNT] ({ commit }, account) {
+  [Actions.LOAD_CONTRACT_ACCOUNT]({ commit }, account) {
     commit(Actions.LOAD_CONTRACT_ACCOUNT, account)
   },
-  [Actions.SET_IDENTITY] ({ commit }, identity) {
+  [Actions.SET_IDENTITY]({ commit }, identity) {
     commit(Actions.SET_IDENTITY, identity)
   },
-  [Actions.SET_API] ({ commit }, api) {
+  [Actions.SET_API]({ commit }, api) {
     commit(Actions.SET_API, api)
   },
-  [Actions.SET_LAST_REFRESH] ({ commit }, lastRefresh) {
+  [Actions.SET_LAST_REFRESH]({ commit }, lastRefresh) {
     commit(Actions.SET_LAST_REFRESH, lastRefresh)
   },
-  [Actions.SET_SENDING_TRANSACTION] ({ commit }, isSending) {
+  [Actions.SET_SENDING_TRANSACTION]({ commit }, isSending) {
     commit(Actions.SET_SENDING_TRANSACTION, isSending)
   },
-  [Actions.SET_CANVASSE] ({ commit }, canvasse) {
+  [Actions.SET_CANVASSE]({ commit }, canvasse) {
     commit(Actions.SET_CANVASSE, canvasse)
   },
-  [Actions.SET_SCATTER] ({ commit }, scatter) {
+  [Actions.SET_SCATTER]({ commit }, scatter) {
     if (scatter.identity) { commit(Actions.SET_IDENTITY, scatter.identity) }
     commit(Actions.SET_SCATTER, scatter)
   },
-  [Actions.INCREMENT] ({ commit }) {
+  [Actions.INCREMENT]({ commit }) {
     commit(Actions.INCREMENT)
   },
-  [Actions.SET_ACTIVE_COLOR_INT] ({ commit }, colorInt) {
+  [Actions.SET_ACTIVE_COLOR_INT]({ commit }, colorInt) {
     commit(Actions.SET_ACTIVE_COLOR_INT, colorInt)
   },
-  [Actions.SET_ACTIVE_COLOR_NAME] ({ commit }, colorName) {
+  [Actions.SET_ACTIVE_COLOR_NAME]({ commit }, colorName) {
     commit(Actions.SET_ACTIVE_COLOR_NAME, colorName)
   },
-  [Actions.SET_ACTIVE_COLOR_HEX] ({ commit }, colorHex) {
+  [Actions.SET_ACTIVE_COLOR_HEX]({ commit }, colorHex) {
     commit(Actions.SET_ACTIVE_COLOR_HEX, colorHex)
   },
-  [Actions.SET_LOADING_STATUS] ({ commit }, boolStatus) {
+  [Actions.SET_LOADING_STATUS]({ commit }, boolStatus) {
     commit(Actions.SET_LOADING_STATUS, boolStatus)
   },
-  [Actions.ADD_PIXEL_TO_ARRAY] ({ commit }, pixelObj) {
+  [Actions.ADD_PIXEL_TO_ARRAY]({ commit }, pixelObj) {
     commit(Actions.ADD_PIXEL_TO_ARRAY, pixelObj)
   },
-  [Actions.REMOVE_PIXEL_FROM_ARRAY] ({ commit }, pixelObj) {
+  [Actions.REMOVE_PIXEL_FROM_ARRAY]({ commit }, pixelObj) {
     commit(Actions.REMOVE_PIXEL_FROM_ARRAY, pixelObj)
   },
-  [Actions.CLEAR_PIXEL_ARRAY] ({ commit }) {
+  [Actions.CLEAR_PIXEL_ARRAY]({ commit }) {
     commit(Actions.CLEAR_PIXEL_ARRAY)
   },
-  [Actions.SET_MOUSE_COORDS] ({ commit }, pixelObj) {
+  [Actions.SET_MOUSE_COORDS]({ commit }, pixelObj) {
     commit(Actions.SET_MOUSE_COORDS, pixelObj)
   },
-  [Actions.SET_ZOOM_LEVEL] ({ commit }) {
+  [Actions.SET_ZOOM_LEVEL]({ commit }) {
     commit(Actions.SET_ZOOM_LEVEL)
   },
-  [Actions.PUSH_CHAT_HISTORY] ({ commit }, historyObj) {
+  [Actions.PUSH_CHAT_HISTORY]({ commit }, historyObj) {
     commit(Actions.PUSH_CHAT_HISTORY, historyObj)
   },
-  [Actions.LOAD_PAINT_HISTORY] ({ commit }) {
+  [Actions.LOAD_PAINT_HISTORY]({ commit }) {
     commit(Actions.LOAD_PAINT_HISTORY)
   },
-  [Actions.LOAD_LEADERBOARD] ({ commit }) {
+  [Actions.LOAD_LEADERBOARD]({ commit }) {
     commit(Actions.LOAD_LEADERBOARD)
   },
-  [Actions.SET_PIXELS_REMAINING] ({ commit }, pixels) {
+  [Actions.SET_PIXELS_REMAINING]({ commit }, pixels) {
     commit(Actions.SET_PIXELS_REMAINING, pixels)
   },
-  [Actions.SET_COOLDOWN_EXPIRES] ({ commit }, expires) {
+  [Actions.SET_COOLDOWN_EXPIRES]({ commit }, expires) {
     commit(Actions.SET_COOLDOWN_EXPIRES, expires)
   }
 }
 
 const mutations = {
-  async [Actions.LOAD_CONTRACT_CONFIG] (state) {
+  async [Actions.LOAD_CONTRACT_CONFIG](state) {
     let contract = state.contract
     let configResponse = await state.rpc.get_table_rows({
       code: contract,
@@ -181,7 +182,7 @@ const mutations = {
       state.config = configResponse.rows[0]
     }
   },
-  async [Actions.LOAD_CONTRACT_ACCOUNT] (state) {
+  async [Actions.LOAD_CONTRACT_ACCOUNT](state) {
     if (!state.scatter || !state.scatter.identity) {
       return null
     }
@@ -200,40 +201,40 @@ const mutations = {
       state.contractAccount = acctResponse.rows[0]
     }
   },
-  [Actions.SET_IDENTITY] (state, identity) {
+  [Actions.SET_IDENTITY](state, identity) {
     state.identity = identity
   },
-  [Actions.SET_API] (state, api) {
+  [Actions.SET_API](state, api) {
     state.api = api
   },
-  [Actions.SET_LAST_REFRESH] (state, lastRefresh) {
+  [Actions.SET_LAST_REFRESH](state, lastRefresh) {
     state.lastRefresh = lastRefresh
   },
-  [Actions.SET_SENDING_TRANSACTION] (state, isSending) {
+  [Actions.SET_SENDING_TRANSACTION](state, isSending) {
     state.sendingTransaction = isSending
   },
-  [Actions.SET_CANVASSE] (state, canvasse) {
+  [Actions.SET_CANVASSE](state, canvasse) {
     state.canvasse = canvasse
   },
-  [Actions.SET_SCATTER] (state, scatter) {
+  [Actions.SET_SCATTER](state, scatter) {
     state.scatter = scatter
   },
-  [Actions.INCREMENT] (state) {
+  [Actions.INCREMENT](state) {
     state.count++
   },
-  [Actions.SET_ACTIVE_COLOR_INT] (state, int) {
+  [Actions.SET_ACTIVE_COLOR_INT](state, int) {
     state.activeColorInt = int
   },
-  [Actions.SET_ACTIVE_COLOR_NAME] (state, colorName) {
+  [Actions.SET_ACTIVE_COLOR_NAME](state, colorName) {
     state.activeColorName = colorName
   },
-  [Actions.SET_ACTIVE_COLOR_HEX] (state, colorHex) {
+  [Actions.SET_ACTIVE_COLOR_HEX](state, colorHex) {
     state.activeColorHex = colorHex
   },
-  [Actions.SET_LOADING_STATUS] (state, boolStatus) {
+  [Actions.SET_LOADING_STATUS](state, boolStatus) {
     state.reloading = boolStatus
   },
-  [Actions.ADD_PIXEL_TO_ARRAY] (state, pixelObj) {
+  [Actions.ADD_PIXEL_TO_ARRAY](state, pixelObj) {
     // the mouse listeners are doubling up for some reason, temp fix @TODO
     let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)
     if (index < 0) {
@@ -243,7 +244,7 @@ const mutations = {
       console.dir(state.pixelCoordArray)
     }
   },
-  [Actions.REMOVE_PIXEL_FROM_ARRAY] (state, pixelObj) {
+  [Actions.REMOVE_PIXEL_FROM_ARRAY](state, pixelObj) {
     let index = state.pixelCoordArray.indexOf((pixelObj.y * 1000) + pixelObj.x)
     if (index > -1) {
       state.pixelCoordArray.splice(index, 1)
@@ -251,24 +252,24 @@ const mutations = {
       state.pixelObjArray.splice(index, 1)
     }
   },
-  [Actions.CLEAR_PIXEL_ARRAY] (state) {
+  [Actions.CLEAR_PIXEL_ARRAY](state) {
     state.pixelCoordArray = []
     state.intColorArray = []
     state.pixelObjArray = []
     console.dir(state.pixelCoordArray)
   },
-  [Actions.SET_MOUSE_COORDS] (state, coords) {
+  [Actions.SET_MOUSE_COORDS](state, coords) {
     state.mouseX = coords.x
     state.mouseY = coords.y
   },
-  [Actions.SET_ZOOM_LEVEL] (state, zoomLevel) {
+  [Actions.SET_ZOOM_LEVEL](state, zoomLevel) {
     state.zoomLevel = zoomLevel
   },
-  [Actions.PUSH_CHAT_HISTORY] (state, chat) {
+  [Actions.PUSH_CHAT_HISTORY](state, chat) {
     Vue.set(state.chatHistory, state.chatHistory.length, chat)
     limitArrayLength(state.chatHistory, state.chatHistoryLength)
   },
-  [Actions.LOAD_PAINT_HISTORY] (state, paint) {
+  [Actions.LOAD_PAINT_HISTORY](state, paint) {
     hyperion.get(`v2/history/get_actions?track=50&filter=${process.env.VUE_APP_CONTRACT}%3Asetpixels&sort=desc`).then(async response => {
       let accounts = []
       for (let i = 0; i < response.data.actions.length; i++) {
@@ -288,7 +289,7 @@ const mutations = {
       state.paintHistory = response.data.actions
     })
   },
-  async [Actions.LOAD_LEADERBOARD] (state) {
+  async [Actions.LOAD_LEADERBOARD](state) {
     // TODO: once nodeos is 1.5 and eosjs supports it, reverse sort the table search and don't sort locally
     let contract = state.contract
     let leaderboardResponse = await state.rpc.get_table_rows({
@@ -320,10 +321,10 @@ const mutations = {
     }
     state.leaderboard = leaderboard
   },
-  [Actions.SET_PIXELS_REMAINING] (state, pixels) {
+  [Actions.SET_PIXELS_REMAINING](state, pixels) {
     state.pixelsRemaining = pixels
   },
-  [Actions.SET_COOLDOWN_EXPIRES] (state, expires) {
+  [Actions.SET_COOLDOWN_EXPIRES](state, expires) {
     state.cooldownExpire = expires
   }
 }

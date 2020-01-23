@@ -16,7 +16,6 @@ import UserInfo from './UserInfo.vue'
 import Coordinates from './Coordinates.vue'
 import ColorPaletteContainer from './ColorPaletteContainer.vue'
 import { mapState } from 'vuex'
-import { debug } from 'util'
 
 export default {
   components: {
@@ -39,10 +38,11 @@ export default {
     ...mapState([
       'pixelsRemaining'
     ]),
-    account() {
-    if (!this.$store.state.scatter || !this.$store.state.scatter.identity)
-      return null;
-    return this.$store.state.scatter.identity.accounts[0];
+    account () {
+      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
+        return null
+      }
+      return this.$store.state.scatter.identity.accounts[0]
     }
   }
 }

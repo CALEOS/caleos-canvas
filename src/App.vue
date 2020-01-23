@@ -2,7 +2,7 @@
   <div class="app-container">
     <HeaderContainer name="header" />
     <CanvasContainer name="pixels" />
-    <FooterContainer name />
+    <FooterContainer name="footer" />
     <button
       v-shortkey.once="['-']"
       class="hotkey"
