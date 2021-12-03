@@ -466,7 +466,7 @@ export default {
         }
         */
         requestAnimationFrame(draw)
-        if (mouse.overId === 'zoom-canv_as') {
+        if (mouse.overId === 'zoom-canvas') {
           canvas.style.cursor = mouse.button ? 'none' : 'move'
         } else {
           canvas.style.cursor = 'default'
