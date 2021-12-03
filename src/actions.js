@@ -11,8 +11,6 @@ export const Actions = {
   SET_API: 'SetApi',
   SET_LAST_REFRESH: 'SetLastRefresh',
   SET_SENDING_TRANSACTION: 'SetSendingTransaction',
-  SET_SCATTER: 'SetScatter',
-  SET_IDENTITY: 'SetIdentity',
   SET_CANVASSE: 'SetCanvasse',
   LOAD_CONTRACT_CONFIG: 'LoadContractConfig',
   LOAD_CONTRACT_ACCOUNT: 'LoadContractAccount',

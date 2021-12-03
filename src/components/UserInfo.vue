@@ -1,35 +1,14 @@
 <template>
   <div class="info-block">
-    <VBtn
-      v-if="myScatter && !account"
-      class="login"
-      @click="login"
-    >
-      <img
-        height="40px"
-        src="../assets/sqrl.png"
-      >
-      <div>or</div>
-      <img
-        height="40px"
-        src="../assets/scatter.png"
-      >
-    </VBtn>
-    <span
-      v-if="myScatter && account"
-      class="user-info"
-    >
-      <VBtn @click="logout">Logout {{ account.name }}</VBtn>
-    </span>
     <!-- commenting out for now, can add back later -->
     <!-- <span class="cooldown-div">
-      <span v-if="myScatter && account">
+      <span v-if="isAuthenticated">
         Lifetime paint actions: {{ lifetimePixels }}
       </span>
 
     </span>-->
     <span
-      v-if="cooldownMessage && myScatter && account && !mySendingTransaction"
+      v-if="cooldownMessage && isAuthenticated && !mySendingTransaction"
       class="white-text message-span"
     >{{ cooldownMessage }}</span>
     <span
@@ -40,8 +19,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { Actions } from '../actions'
+import {mapState} from 'vuex'
 import moment from 'moment'
 import 'moment-countdown'
 
@@ -56,61 +34,34 @@ export default {
   },
   computed: {
     ...mapState({
-      myScatter: 'scatter',
       myLastRefresh: 'lastRefresh',
-      myIdentity: 'identity',
       mySendingTransaction: 'sendingTransaction',
       myContractConfig: 'config',
       myContractAccount: 'contractAccount'
     }),
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
-        return null
-      }
-      return this.$store.state.scatter.identity.accounts[0]
+      return this.$store.state.account.accountName
+    },
+    isAuthenticated () {
+      return !!this.$store.state.account.accountName
     }
   },
   watch: {
     myLastRefresh () {
-      this.loadAccount()
+      this.loadContractAccount()
     },
-    myIdentity () {
-      this.loadAccount()
+    isAuthenticated () {
+      console.log('IS AUTHENTICATED CHANGED')
+      this.loadContractAccount()
     },
     myContractAccount () {
       this.loadContractAccount()
     }
   },
   mounted () {
-    this.loadAccount()
+    this.loadContractAccount()
   },
   methods: {
-    async login () {
-      await this.$store.state.scatter
-        .getIdentity({ accounts: [this.$store.state.network] })
-        .catch(async err => {
-          if (err.code === 402 && err.type === 'no_network') {
-            await this.$store.state.scatter.suggestNetwork(
-              this.$store.state.network
-            )
-          }
-          this.loadIdentity()
-        })
-    },
-
-    async logout () {
-      await this.$store.state.scatter.forgetIdentity()
-      this.loadIdentity()
-    },
-
-    loadIdentity () {
-      this.$store.dispatch(
-        Actions.SET_IDENTITY,
-        this.$store.state.scatter.identity
-      )
-      this.loadAccount()
-    },
-
     setCooldownMessage () {
       if (!this.$store.state.config) {
         return
@@ -161,14 +112,6 @@ export default {
       return seconds > 60
         ? Math.floor(seconds / 60) + ' min ' + (seconds % 60) + ' sec'
         : seconds + ' sec '
-    },
-
-    async loadAccount () {
-      if (!this.account) {
-        return
-      }
-
-      await this.$store.dispatch(Actions.LOAD_CONTRACT_ACCOUNT)
     },
     async loadContractAccount () {
       if (!this.$store.state.contractAccount) {

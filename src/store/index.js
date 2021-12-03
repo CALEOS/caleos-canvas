@@ -1,26 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Actions } from './actions'
-import { Network } from 'scatterjs-core'
-import { JsonRpc } from 'eosjs'
+import { Actions } from '../actions'
 import axios from 'axios'
-import PPP from '@smontero/ppp-client-api'
 import { PublicFields } from '@smontero/ppp-common'
+import account from './account'
 
 Vue.use(Vuex)
-PPP.configure(process.env.VUE_APP_PPP_ENV)
-const profileApi = PPP.profileApi()
 
 const hyperion = axios.create({
   baseURL: `https://${process.env.VUE_APP_HYPERION}/`
-})
-
-const network = Network.fromJson({
-  blockchain: 'eos',
-  protocol: 'https',
-  host: process.env.VUE_APP_ENDPOINT,
-  port: 443,
-  chainId: process.env.VUE_APP_CHAIN_ID
 })
 
 const profiles = {}
@@ -33,13 +21,8 @@ const state = {
   mouseX: null,
   mouseY: null,
   contract: process.env.VUE_APP_CONTRACT,
-  scatterAppName: 'Telos Place',
   canvasse: null,
-  scatter: null,
-  identity: null,
   count: 0,
-  network: network,
-  rpc: new JsonRpc(network.fullhost(), { fetch }),
   api: null,
   lastRefresh: null,
   activeColorInt: null,
@@ -78,7 +61,9 @@ async function getAccountProfiles (accountNames) {
   })
 
   if (neededAccountNames.length > 0) {
-    const response = await profileApi.getProfiles(neededAccountNames)
+    // const response = await profileApi.getProfiles(neededAccountNames)
+    // TODO: add profiles back from new profile table
+    const response = []
     for (let account in response) {
       let profile = response[account]
       if (!profile || !profile.publicData) {
@@ -91,9 +76,11 @@ async function getAccountProfiles (accountNames) {
         continue
       }
 
+      /*
       await PPP.profileApi().getImageUrl(avatarImage, s3Ident).then((url) => {
         profile.avatar = url
       })
+       */
     }
     Object.assign(foundAccounts, response)
   }
@@ -114,12 +101,6 @@ const actions = {
   [Actions.LOAD_CONTRACT_ACCOUNT] ({ commit }, account) {
     commit(Actions.LOAD_CONTRACT_ACCOUNT, account)
   },
-  [Actions.SET_IDENTITY] ({ commit }, identity) {
-    commit(Actions.SET_IDENTITY, identity)
-  },
-  [Actions.SET_API] ({ commit }, api) {
-    commit(Actions.SET_API, api)
-  },
   [Actions.SET_LAST_REFRESH] ({ commit }, lastRefresh) {
     commit(Actions.SET_LAST_REFRESH, lastRefresh)
   },
@@ -128,10 +109,6 @@ const actions = {
   },
   [Actions.SET_CANVASSE] ({ commit }, canvasse) {
     commit(Actions.SET_CANVASSE, canvasse)
-  },
-  [Actions.SET_SCATTER] ({ commit }, scatter) {
-    if (scatter.identity) { commit(Actions.SET_IDENTITY, scatter.identity) }
-    commit(Actions.SET_SCATTER, scatter)
   },
   [Actions.INCREMENT] ({ commit }) {
     commit(Actions.INCREMENT)
@@ -183,7 +160,7 @@ const actions = {
 const mutations = {
   async [Actions.LOAD_CONTRACT_CONFIG] (state) {
     let contract = state.contract
-    let configResponse = await state.rpc.get_table_rows({
+    let configResponse = await store['$api'].getRpc().get_table_rows({
       code: contract,
       scope: contract,
       table: 'config'
@@ -193,29 +170,21 @@ const mutations = {
     }
   },
   async [Actions.LOAD_CONTRACT_ACCOUNT] (state) {
-    if (!state.scatter || !state.scatter.identity) {
-      return null
-    }
-    let account = state.scatter.identity.accounts[0]
+    if (!this.$type === 'ual') { return }
 
+    let accountName = this.state.account.accountName
     let contract = state.contract
-    let acctResponse = await state.rpc.get_table_rows({
+    let acctResponse = await store['$api'].getRpc().get_table_rows({
       code: contract,
       scope: contract,
       table: 'accounts',
-      lower_bound: account.name,
+      lower_bound: accountName,
       limit: 1
     })
 
     if (acctResponse.rows.length) {
       state.contractAccount = acctResponse.rows[0]
     }
-  },
-  [Actions.SET_IDENTITY] (state, identity) {
-    state.identity = identity
-  },
-  [Actions.SET_API] (state, api) {
-    state.api = api
   },
   [Actions.SET_LAST_REFRESH] (state, lastRefresh) {
     state.lastRefresh = lastRefresh
@@ -225,9 +194,6 @@ const mutations = {
   },
   [Actions.SET_CANVASSE] (state, canvasse) {
     state.canvasse = canvasse
-  },
-  [Actions.SET_SCATTER] (state, scatter) {
-    state.scatter = scatter
   },
   [Actions.INCREMENT] (state) {
     state.count++
@@ -302,7 +268,7 @@ const mutations = {
   async [Actions.LOAD_LEADERBOARD] (state) {
     // TODO: once nodeos is 1.5 and eosjs supports it, reverse sort the table search and don't sort locally
     let contract = state.contract
-    let leaderboardResponse = await state.rpc.get_table_rows({
+    let leaderboardResponse = await store['$api'].getRpc().get_table_rows({
       code: contract,
       scope: contract,
       table: 'accounts',
@@ -341,6 +307,9 @@ const mutations = {
 }
 
 export const store = new Vuex.Store({
+  modules: {
+    account
+  },
   state,
   actions,
   mutations,

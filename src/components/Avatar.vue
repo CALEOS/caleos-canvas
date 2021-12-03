@@ -11,8 +11,14 @@ const md5 = require('md5')
 export default {
   name: 'Avatar',
   props: {
-    accountName: String,
-    avatarUrl: String
+    accountName: {
+      type: String,
+      default: ''
+    },
+    avatarUrl: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {

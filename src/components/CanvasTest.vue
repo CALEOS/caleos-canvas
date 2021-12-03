@@ -20,7 +20,7 @@ import Canvasse from '../js/Canvasse'
 import { Actions } from '../actions'
 import { mapState } from 'vuex'
 import moment from 'moment'
-import IrisClient from '@caleos/iris-client'
+/*
 const colorList = [
   'white',
   'lightgrey',
@@ -39,6 +39,7 @@ const colorList = [
   'magenta',
   'purple'
 ]
+ */
 
 export default {
   props: {
@@ -52,14 +53,14 @@ export default {
     ...mapState({
       myHeight: 'height',
       myWidth: 'width',
-      myRpc: 'rpc',
       myContract: 'contract',
       pixelCoordArray: 'pixelCoordArray'
     }),
+    myRpc () {
+      return this.$store['$api'].getRpc()
+    },
     account () {
-      return !this.$store.state.scatter || !this.$store.state.scatter.identity
-        ? null
-        : this.$store.state.scatter.identity.accounts[0]
+      return this.$store.state.account.accountName
     }
   },
 
@@ -78,6 +79,7 @@ export default {
 
   methods: {
     async setupCanvasWatcher () {
+      /*
       this.iris = new IrisClient(`${process.env.VUE_APP_IRIS}/iris-head`)
       await this.iris.connect()
       this.iris.subscribeAction(
@@ -97,6 +99,7 @@ export default {
           }
         }
       )
+       */
     },
 
     async refreshCanvas () {

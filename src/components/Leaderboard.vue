@@ -81,9 +81,7 @@ export default {
       return this.$store.state.leaderboard
     },
     account () {
-      return !this.$store.state.scatter || !this.$store.state.scatter.identity
-        ? null
-        : this.$store.state.scatter.identity.accounts[0]
+      return this.$store.state.account.accountName
     },
     myPaintScore () {
       return this.currentAccount ? this.currentAccount.paint_score + '' : null

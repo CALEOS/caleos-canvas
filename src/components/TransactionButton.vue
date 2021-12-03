@@ -15,7 +15,6 @@
 import 'vue-awesome/icons/share-square'
 import Icon from 'vue-awesome/components/Icon.vue'
 import { Actions } from '../actions'
-import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -28,12 +27,8 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      myScatter: 'scatter'
-    }),
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) { return null }
-      return this.$store.state.scatter.identity.accounts[0]
+      return this.$store.state.account.accountName
     }
   },
   mounted () {
@@ -52,30 +47,24 @@ export default {
       }
       this.$root.$emit('send-transaction')
       this.$store.dispatch(Actions.SET_SENDING_TRANSACTION, true)
-      await this.$store.state.api.transact(
-        {
-          actions: [
-            {
-              account: this.$store.state.contract,
-              name: 'setpixels',
-              authorization: [
-                {
-                  actor: this.account.name,
-                  permission: 'active'
-                }
-              ],
-              data: {
-                account_name: this.account.name,
-                pixels: this.$store.state.pixelCoordArray,
-                colors: this.$store.state.intColorArray
+      await this.$store['$api'].signTransaction(
+        [
+          {
+            account: this.$store.state.contract,
+            name: 'setpixels',
+            authorization: [
+              {
+                actor: this.account,
+                permission: 'active'
               }
+            ],
+            data: {
+              account_name: this.account,
+              pixels: this.$store.state.pixelCoordArray,
+              colors: this.$store.state.intColorArray
             }
-          ]
-        },
-        {
-          blocksBehind: 3,
-          expireSeconds: 30
-        }
+          }
+        ]
       )
       this.$store.dispatch(Actions.CLEAR_PIXEL_ARRAY)
       this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())

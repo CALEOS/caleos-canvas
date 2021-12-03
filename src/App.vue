@@ -22,20 +22,13 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
-
-import ScatterJS from 'scatterjs-core'
-import ScatterEOS from 'scatterjs-plugin-eosjs2'
 import { Actions } from './actions'
 import 'babel-polyfill'
 import HeaderContainer from './components/Header'
 import CanvasContainer from './components/CanvasTest.vue'
 import FooterContainer from './components/Footer.vue'
-import { Api } from 'eosjs'
 import moment from 'moment'
 import { setInterval } from 'timers'
-
-ScatterJS.plugins(new ScatterEOS())
 
 export default {
   components: {
@@ -46,54 +39,20 @@ export default {
 
   computed: {
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
-        return null
-      }
-      return this.$store.state.scatter.identity.accounts[0]
-    }
-  },
-
-  watch: {
-    account () {
-      this.setApiInstance()
+      return this.$store.state.account.accountName
     }
   },
 
   mounted () {
-    this.setApiInstance()
+    this.setupUAL()
     this.loadContractConfig()
     this.loadLeaderboard()
-    // this.setupWebSocket()
-    let _this = this
-    ScatterJS.scatter
-      .connect(this.$store.state.scatterAppName)
-      .then(connected => {
-        if (!connected) {
-          console.error('Could not connect to Scatter.')
-          return
-        }
-        _this.$store.dispatch(Actions.SET_SCATTER, ScatterJS.scatter)
-        window.ScatterJS = null
-      })
     this.startWatcher()
   },
 
   methods: {
-    setApiInstance () {
-      if (this.account) {
-        this.$store.dispatch(
-          Actions.SET_API,
-          this.$store.state.scatter.eos(this.$store.state.network, Api, {
-            rpc: this.$store.state.rpc,
-            beta3: true
-          })
-        )
-      } else {
-        this.$store.dispatch(
-          Actions.SET_API,
-          new Api({ rpc: this.$store.state.rpc })
-        )
-      }
+    setupUAL () {
+
     },
     async loadContractConfig () {
       this.$store.dispatch(

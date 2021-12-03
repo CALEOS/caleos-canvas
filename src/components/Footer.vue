@@ -2,8 +2,15 @@
   <div id="footer">
     <UserInfo name="user-info" />
     <Coordinates />
-    <ColorPaletteContainer v-if="account" name="color palette container" />
-    <span v-if="account" id="pixels-remaining" class="white-text" >
+    <ColorPaletteContainer
+      v-if="account"
+      name="color palette container"
+    />
+    <span
+      v-if="account"
+      id="pixels-remaining"
+      class="white-text"
+    >
       Remaining Session Pixels:<b :class="countColor">
         {{ pixelsRemaining }}
       </b>
@@ -39,10 +46,7 @@ export default {
       'pixelsRemaining'
     ]),
     account () {
-      if (!this.$store.state.scatter || !this.$store.state.scatter.identity) {
-        return null
-      }
-      return this.$store.state.scatter.identity.accounts[0]
+      return this.$store.state.account.accountName
     }
   }
 }
