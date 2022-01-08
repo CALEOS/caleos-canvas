@@ -42,6 +42,10 @@ const colorList = [
  */
 
 export default {
+  data () {
+    return { touch: false }
+  },
+
   props: {
     name: {
       type: String,
@@ -70,6 +74,16 @@ export default {
     }
   },
   mounted () {
+    // calculate canvas sizing
+    var cnv = document.getElementById('zoom-canvas');
+    let viewportHeight = window.innerHeight; 
+    let viewportWidth = window.innerWidth;
+    var newHeight = viewportHeight > 925 ? 925 : viewportHeight - 75;
+    var newWidth = viewportWidth > 1000 ? 1000 : viewportWidth;
+
+    cnv.height = newHeight; //75 for top and bottom bar margins
+    cnv.width = newWidth;
+
     let canvasElement = document.getElementById('place-canvasse')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
@@ -231,6 +245,7 @@ export default {
       }
 
       let paintZoom = event => {
+        alert("Paint:"+Math.floor(event.clientX)+","+Math.floor(event.clientY))
         console.log('paintZoom')
         if (!this.account) {
           return
@@ -295,7 +310,8 @@ export default {
         overId: '', // id of element mouse is over
         dragging: false,
         whichWheel: -1, // first wheel event will get the wheel
-        wheel: 0
+        wheel: 0,
+        touch: {scaling: false, last: 0, start: {dist: 0, pos: {x: 0, y: 0}}}
       }
 
       // View handles zoom and pan (can also handle rotate but have taken that out as rotate can not be contrained without losing some of the image or seeing some of the background.
@@ -422,6 +438,8 @@ export default {
             pos.x = at.x - (at.x - pos.x) * amount
             pos.y = at.y - (at.y - pos.y) * amount
             dirty = true
+
+            console.log("scale at: " + scale);
           },
           move (x, y) {
             // move is in screen coords
@@ -446,6 +464,9 @@ export default {
       })()
       view.setBounds(0, 0, canvas2.width, canvas2.height)
       view.setContext(context)
+
+      //calculate scale based on zoom-canvas size, ratio:  1000 = 1.0 scale
+      view.scale = (canvas.width / 1000);
 
       // draw the larger canvas
       function draw () {
@@ -475,22 +496,115 @@ export default {
       // add events to document so that mouse is captured when down on canvas
       // This allows the mouseup event to be heard no matter where the mouse has
       // moved to.
-      'mousemove,mousedown,mouseup,mousewheel,wheel,DOMMouseScroll'
-        .split(',')
-        .forEach(eventName => document.addEventListener(eventName, mouseEvent))
+      // Added mobile events 'touchstart,touchmove,touchend,'
+      this.touch = ("ontouchstart" in document.documentElement);
+
+      if(this.touch) {
+            canvas.addEventListener("touchstart", touchEvent, false);
+            document.addEventListener("touchmove", touchEvent, false);
+            document.addEventListener("touchend", touchEvent, false);
+        } else {
+            canvas.addEventListener("mousedown", mouseEvent, false);
+            document.addEventListener("mousemove", mouseEvent, false);
+            document.addEventListener("mouseup", mouseEvent, false);
+            document.addEventListener("mousewheel", mouseEvent, false);
+            document.addEventListener("wheel", mouseEvent, false);
+            document.addEventListener("DOMMouseScroll", mouseEvent, false);
+        }
+    
+      function touchEvent (event) {
+        if(event.target.id === 'zoom-canvas') {
+          event.preventDefault();
+          mouse.posLast.x = mouse.pos.x;
+          mouse.posLast.y = mouse.pos.y;
+
+          if(event.targetTouches.length > 0) {
+            mouse.pos.x = event.targetTouches[0].pageX - canvas.offsetLeft;
+            mouse.pos.y = event.targetTouches[0].pageY - canvas.offsetTop;
+          }
+
+          if(event.type === "touchstart") {
+            if (event.touches.length === 2) {
+              mouse.touch.scaling = true;
+              pinchStart(event);
+            }
+            doubleTapCheck(event);
+          } else if(event.type === "touchmove") {
+            //two finger behavior
+            if (mouse.touch.scaling) {
+                pinchMove(event);
+            } else {  //single finger behavior
+                view.move(
+                  mouse.pos.x - mouse.posLast.x,
+                  mouse.pos.y - mouse.posLast.y
+                )
+            }
+          } else if(event.type === "touchend") {
+            if (event.touches.length < 2) {
+              mouse.touch.scaling = false;
+              pinchEnd(event);
+            }
+          }
+        }
+      }
+
+      function doubleTapCheck(event) {
+        if(event.targetTouches.length == 0) { return; }
+
+        event.clientX = event.targetTouches[0].pageX;
+        event.clientY = event.targetTouches[0].pageY;
+
+        var now = new Date().getTime();
+        var timesince = now - mouse.touch.last;
+        if((timesince < 600) && (timesince > 0)){
+          // double tap   
+          if (!mouse.touch.scaling) paintZoom(event)
+        }else{
+          // too much time to be a doubletap
+        }
+
+        mouse.touch.last = new Date().getTime();
+      }
+
+      function pinchStart(event) {
+          var dist = Math.hypot(
+           event.touches[0].pageX - event.touches[1].pageX,
+           event.touches[0].pageY - event.touches[1].pageY);
+          
+          var midX = Math.floor((event.touches[0].pageX + event.touches[1].pageX) / 2);
+          var midY = Math.floor((event.touches[0].pageY + event.touches[1].pageY) / 2);
+
+          mouse.touch.start.dist = dist;
+          mouse.touch.start.pos.x = midX;
+          mouse.touch.start.pos.y = midY;
+      }
+
+      function pinchMove(event) {
+          var dist = Math.hypot(
+           event.touches[0].pageX - event.touches[1].pageX,
+           event.touches[0].pageY - event.touches[1].pageY);
+
+          if ((Math.floor(view.getScale()) <= (view.getMaxZoom())) && (view.getScale() >= 1)) {
+            view.scaleAt( mouse.touch.start.pos,
+            Math.exp((((dist - mouse.touch.start.dist) * zoomIntensity)/mouse.touch.start.dist)));
+          } 
+      }
+
+      function pinchEnd(event) {
+      }
 
       function mouseEvent (event) {
         mouse.overId = event.target.id
         if (event.target.id === 'zoom-canvas' || mouse.dragging) {
           // only interested in canvas mouse events including drag event started on the canvas.
-
           mouse.posLast.x = mouse.pos.x
           mouse.posLast.y = mouse.pos.y
           mouse.pos.x = event.clientX - canvas.offsetLeft
           mouse.pos.y = event.clientY - canvas.offsetTop
           view.toWorld(mouse.pos, mouse.worldPos) // gets the world coords (where on canvas 2 the mouse is)
-          if (event.type === 'mousemove') {
+          if ((event.type === 'mousemove')) {
             store.dispatch(Actions.SET_MOUSE_COORDS, getPixelObj(event))
+
             if (mouse.button) {
               mouse.dragging = true
               view.move(

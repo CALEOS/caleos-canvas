@@ -18,6 +18,8 @@ install project dependencies<br/>
 `npm install` <br/>
 
 ### Running caleos-canvas
+build project for deployment<br />
+`npm run-script build`<br />
 
 run dev build with hot-reloading<br />
 `npm run dev`<br />

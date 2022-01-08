@@ -158,13 +158,17 @@ export default {
         }
       }
 
-
       // ctx.drawImage(document.getElementById('place-canvasse'), 0, 0)  //draw unzoomed
       // canvas.style.left = (parseInt(screen.width) / 2) - 500 + 'px' //to center unzoomed canvas
       function zoom (clicks) {
         if ((canvas.width >= maxCanvasWidth && clicks > 0) || (canvas.width <= minCanvasWidth && clicks < 0)) return
         var factor = scaleFactor ** clicks
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        //*DEBUG*
+        console.log("factor: " + factor);
+        //*DEBUG END*
+
         ctx.scale(ctx, factor, factor)
         canvas.width *= factor
         canvas.height *= factor
