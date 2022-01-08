@@ -74,6 +74,16 @@ export default {
     }
   },
   mounted () {
+    // calculate canvas sizing
+    var cnv = document.getElementById('zoom-canvas');
+    let viewportHeight = window.innerHeight; 
+    let viewportWidth = window.innerWidth;
+    var newHeight = viewportHeight > 925 ? 925 : viewportHeight - 75;
+    var newWidth = viewportWidth > 1000 ? 1000 : viewportWidth;
+
+    cnv.height = newHeight; //75 for top and bottom bar margins
+    cnv.width = newWidth;
+
     let canvasElement = document.getElementById('place-canvasse')
     this.$store.dispatch(Actions.SET_CANVASSE, new Canvasse(canvasElement))
     this.$store.dispatch(Actions.SET_LAST_REFRESH, Date.now())
@@ -428,6 +438,8 @@ export default {
             pos.x = at.x - (at.x - pos.x) * amount
             pos.y = at.y - (at.y - pos.y) * amount
             dirty = true
+
+            console.log("scale at: " + scale);
           },
           move (x, y) {
             // move is in screen coords
@@ -452,6 +464,9 @@ export default {
       })()
       view.setBounds(0, 0, canvas2.width, canvas2.height)
       view.setContext(context)
+
+      //calculate scale based on zoom-canvas size, ratio:  1000 = 1.0 scale
+      view.scale = (canvas.width / 1000);
 
       // draw the larger canvas
       function draw () {
