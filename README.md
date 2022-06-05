@@ -1,6 +1,6 @@
 ## caleos-canvas
 
-A pixel painting dApp on the EOS blockchain using Vue + webpack
+A pixel painting dApp on the Telos blockchain using Vue + webpack
 
 ### Dependencies
 
