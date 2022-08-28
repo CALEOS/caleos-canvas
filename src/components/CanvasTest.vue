@@ -505,7 +505,7 @@ export default {
               mouse.dragging = false
               // Calculate the distance between the two pointers
               const curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX)
-              const diffToScroll = 2
+              const diffToScroll = 120
 
               if (prevDiff > 0) {
                 if (curDiff > prevDiff) {
