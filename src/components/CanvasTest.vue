@@ -11,6 +11,7 @@
       id="zoom-canvas"
       width="1000"
       height="1000"
+      style="touch-action: none"
     />
   </div>
 </template>
@@ -170,6 +171,8 @@ export default {
     },
 
     createZoomCanvas () {
+      const evCache = []
+      let prevDiff = -1
       let state = this.$store.state
       let store = this.$store
       // let canvass = document.getElementById('place-canvasse')
@@ -472,14 +475,8 @@ export default {
           canvas.style.cursor = 'default'
         }
       }
-      // add events to document so that mouse is captured when down on canvas
-      // This allows the mouseup event to be heard no matter where the mouse has
-      // moved to.
-      'mousemove,mousedown,mouseup,mousewheel,wheel,DOMMouseScroll'
-        .split(',')
-        .forEach(eventName => document.addEventListener(eventName, mouseEvent))
 
-      function mouseEvent (event) {
+      let mouseEvent = (event) => {
         mouse.overId = event.target.id
         if (event.target.id === 'zoom-canvas' || mouse.dragging) {
           // only interested in canvas mouse events including drag event started on the canvas.
@@ -489,8 +486,44 @@ export default {
           mouse.pos.x = event.clientX - canvas.offsetLeft
           mouse.pos.y = event.clientY - canvas.offsetTop
           view.toWorld(mouse.pos, mouse.worldPos) // gets the world coords (where on canvas 2 the mouse is)
-          if (event.type === 'mousemove') {
+          console.log('TYPE: ' + event.type)
+          console.log(JSON.stringify(evCache, null, 4))
+          if (event.type === 'pointermove') {
             store.dispatch(Actions.SET_MOUSE_COORDS, getPixelObj(event))
+
+            for (let i = 0; i < evCache.length; i++) {
+              if (event.pointerId === evCache[i].pointerId) {
+                evCache[i] = event
+                break
+              }
+            }
+
+            // If two pointers are down, check for pinch gestures
+            if (evCache.length === 2) {
+              console.log('Pinching')
+              mouse.button = false
+              mouse.dragging = false
+              // Calculate the distance between the two pointers
+              const curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX)
+              const diffToScroll = 120
+
+              if (prevDiff > 0) {
+                if (curDiff > prevDiff) {
+                  // The distance between the two pointers has increased
+                  // zoom in
+                  mouse.wheel = (curDiff - prevDiff) * diffToScroll
+                }
+                if (curDiff < prevDiff) {
+                  // The distance between the two pointers has decreased
+                  // zoom out
+                  mouse.wheel = (curDiff - prevDiff) * diffToScroll
+                }
+              }
+
+              // Cache the distance for the next move event
+              prevDiff = curDiff
+            }
+
             if (mouse.button) {
               mouse.dragging = true
               view.move(
@@ -498,11 +531,32 @@ export default {
                 mouse.pos.y - mouse.posLast.y
               )
             }
-          } else if (event.type === 'mousedown') {
+          } else if (event.type === 'pointerdown') {
             mouse.button = true
             mouse.dragging = false
-          } else if (event.type === 'mouseup') {
+            let replaced = false
+            for (let i = 0; i < evCache.length; i++) {
+              if (event.pointerId === evCache[i].pointerId) {
+                evCache[i] = event
+                replaced = true
+                break
+              }
+            }
+
+            if (!replaced) {
+              evCache.push(event)
+            }
+          } else if (event.type === 'pointerup') {
             mouse.button = false
+            for (let i = 0; i < evCache.length; i++) {
+              if (evCache[i].pointerId === event.pointerId) {
+                evCache.splice(i, 1)
+                break
+              }
+            }
+            if (evCache.length < 2) {
+              prevDiff = -1
+            }
             mouseUpFunction(event)
           } else if (
             event.type === 'mousewheel' &&
@@ -525,6 +579,7 @@ export default {
           }
           if (mouse.wheel !== 0) {
             event.preventDefault()
+            console.log('Wheel == ' + mouse.wheel)
             if (view.getScale() < view.getMaxZoom() || mouse.wheel < 0) {
               view.scaleAt(
                 mouse.pos,
@@ -535,6 +590,13 @@ export default {
           }
         }
       }
+
+      // add events to document so that mouse is captured when down on canvas
+      // This allows the mouseup event to be heard no matter where the mouse has
+      // moved to.
+      'pointermove,pointerdown,pointerup,mousewheel,wheel,DOMMouseScroll'
+        .split(',')
+        .forEach(eventName => document.addEventListener(eventName, mouseEvent))
 
       this.$root.$on('undo-last', async () => {
         await this.getPixelsRaw().then(pixelArray => {

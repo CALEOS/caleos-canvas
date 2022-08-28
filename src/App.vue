@@ -1,7 +1,9 @@
 <template>
-  <div class="app-container">
+  <div class="app-container rows">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <HeaderContainer name="header" />
-    <CanvasContainer name="pixels" />
+    <CanvasContainer name="pixels" class="pb-2 pa-2" />
     <FooterContainer name="footer" />
     <button
       v-shortkey.once="['-']"
